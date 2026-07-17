@@ -241,6 +241,13 @@ P0：core/ 安全、权限、真实性、MCP 红线
 - 单靠规则文件阻止危险操作（需工具权限、Git 钩子、人工确认）
 - 克隆后自动配置 Trae 自定义 Agent 或 MCP（必须手动配置）
 
+## 仓库地址 / Repository
+
+本仓库在 GitCode 与 GitHub 同步托管，内容完全一致：
+
+- GitCode（主仓库）：https://gitcode.com/badhope/AI-RULE
+- GitHub（镜像）：https://github.com/weed33834/AI-RULE
+
 ## 许可证
 
 MIT

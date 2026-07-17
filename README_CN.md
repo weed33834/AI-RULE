@@ -256,9 +256,10 @@ MCP 涉及常驻进程与权限，**配置权在你手里**：AI 禁止自下载
 
 ## 仓库地址
 
-本仓库托管在 GitCode：
+本仓库在 GitCode 与 GitHub 同步托管，内容完全一致：
 
-- 仓库地址：https://gitcode.com/badhope/AI-RULE
+- GitCode（主仓库）：https://gitcode.com/badhope/AI-RULE
+- GitHub（镜像）：https://github.com/weed33834/AI-RULE
 
 ## 许可证
 

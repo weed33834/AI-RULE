@@ -155,8 +155,9 @@ python scripts/sync_rules.py
 
 AI が同じ種類のミスを繰り返すたびに、対応する制約を `AGENTS.md` へ書き戻し、同期を再実行してください。使えば使うほどルールは鋭くなります。本リポジトリ自体もこの鉄則を守ります。すべての成果物は、まず計画し、次に実装し、最後に検証を走らせます。
 
-## リポジトリ（GitCode）
+## リポジトリ
 
-本リポジトリは GitCode で公開されています：
+本リポジトリは GitCode および GitHub で同期公開されています。内容は同一です：
 
-- リポジトリ：https://gitcode.com/badhope/AI-RULE
+- GitCode（メイン）：https://gitcode.com/badhope/AI-RULE
+- GitHub（ミラー）：https://github.com/weed33834/AI-RULE
