@@ -1,0 +1,97 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "read_file",
+        "description": "Read the content of a source file at the given path. Returns the file content with line numbers.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file_path": {
+              "type": "string",
+              "description": "Absolute or repository-relative path to the file to read"
+            },
+            "start_line": {
+              "type": "integer",
+              "description": "Optional starting line number to read from (1-based)"
+            },
+            "end_line": {
+              "type": "integer",
+              "description": "Optional ending line number to read to (inclusive)"
+            }
+          },
+          "required": ["file_path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "run_linter",
+        "description": "Run a code linter on a file or directory to detect style violations, syntax errors, and potential issues. Supports eslint, pylint, flake8, golangci-lint, etc.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file_path": {
+              "type": "string",
+              "description": "Path to the file or directory to lint"
+            },
+            "linter": {
+              "type": "string",
+              "description": "Linter to use. Auto-detected if not specified.",
+              "enum": ["eslint", "pylint", "flake8", "golangci-lint", "rubocop", "auto"]
+            }
+          },
+          "required": ["file_path"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "search_pattern",
+        "description": "Search for a code pattern (regex or text) across the repository. Useful for finding similar implementations, usages of a function, or potential code duplication.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "The search pattern (supports regex)"
+            },
+            "file_glob": {
+              "type": "string",
+              "description": "Optional file glob filter, e.g. '*.py' or 'src/**/*.ts'"
+            },
+            "case_sensitive": {
+              "type": "boolean",
+              "description": "Whether the search is case sensitive. Default: false"
+            }
+          },
+          "required": ["pattern"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_git_diff",
+        "description": "Get the git diff for a specific commit, branch, or pull request. Shows what lines were added, modified, or removed.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "Git reference to diff. Can be a commit hash, branch name, or 'HEAD~1' for the last commit. Use 'branch_name...main' for PR diffs."
+            },
+            "file_path": {
+              "type": "string",
+              "description": "Optional specific file path to limit the diff to"
+            }
+          },
+          "required": ["ref"]
+        }
+      }
+    }
+  ]
+}

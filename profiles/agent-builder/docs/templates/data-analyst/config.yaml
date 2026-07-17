@@ -1,0 +1,51 @@
+# Data Analyst Agent Configuration / 数据分析智能体配置
+# 数据分析智能体 - 查询数据库、统计分析、生成图表和报告
+
+agent:
+  name: "data-analyst-agent"
+  version: "1.0.0"
+  description: "数据分析智能体，使用计划-执行模式进行数据查询、统计分析、可视化和报告导出 / Data analyst agent using plan-and-execute pattern for data querying, statistical analysis, visualization, and report export"
+
+model:
+  provider: "openai"
+  model_name: "gpt-4o"
+  temperature: 0.3
+  max_tokens: 4096
+
+reasoning:
+  pattern: "Plan-and-Execute"
+  description: "先制定分步分析计划，用户确认后逐步执行，每步验证结果 / Create step-by-step plan first, execute after confirmation, verify each step"
+
+memory:
+  short_term: true
+  long_term: false
+  episodic: false
+  task_context: true
+  window_budget:
+    system_prompt: 20
+    tools: 15
+    user_input: 25
+    memory: 25
+    output: 15
+
+safety:
+  confirmation_points:
+    - "export_report"
+  injection_defense: true
+  pii_masking: true
+  sql_read_only: true
+  max_query_rows: 100000
+  blocked_sql_keywords:
+    - "INSERT"
+    - "UPDATE"
+    - "DELETE"
+    - "DROP"
+    - "ALTER"
+    - "TRUNCATE"
+
+tools:
+  - query_database
+  - execute_python
+  - generate_chart
+  - export_report
+  - statistical_test

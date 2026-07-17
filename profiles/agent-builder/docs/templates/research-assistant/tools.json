@@ -1,0 +1,166 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "web_search",
+        "description": "Search the web for information on a given topic. Returns a list of relevant results with titles, URLs, snippets, and publication dates.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "The search query"
+            },
+            "num_results": {
+              "type": "integer",
+              "description": "Number of results to return. Default: 10."
+            },
+            "date_range": {
+              "type": "string",
+              "description": "Optional date range filter, e.g. '2023-2024' or 'last_year'"
+            },
+            "source_type": {
+              "type": "string",
+              "description": "Optional filter for source type",
+              "enum": ["academic", "news", "report", "any"]
+            }
+          },
+          "required": ["query"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "read_url",
+        "description": "Fetch and read the full content of a web page, article, or paper at the given URL. Returns the text content, title, author, and publication date if available.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "The URL to read"
+            },
+            "extract_mode": {
+              "type": "string",
+              "description": "How to extract content",
+              "enum": ["full", "summary", "metadata_only"],
+              "default": "full"
+            }
+          },
+          "required": ["url"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "save_note",
+        "description": "Save a research note with findings, organized by topic. Notes are stored in long-term memory and can be retrieved in future sessions.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "topic": {
+              "type": "string",
+              "description": "Topic or category for the note"
+            },
+            "title": {
+              "type": "string",
+              "description": "Note title"
+            },
+            "content": {
+              "type": "string",
+              "description": "Note content including findings and key points"
+            },
+            "source_urls": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of source URLs referenced in this note"
+            },
+            "tags": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "Tags for easy retrieval"
+            }
+          },
+          "required": ["topic", "title", "content"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "cite_source",
+        "description": "Generate a properly formatted citation for a source. Supports APA, MLA, Chicago, and IEEE formats.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Source URL"
+            },
+            "title": {
+              "type": "string",
+              "description": "Title of the work"
+            },
+            "authors": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of author names"
+            },
+            "publication_date": {
+              "type": "string",
+              "description": "Publication date in YYYY-MM-DD or YYYY format"
+            },
+            "source_type": {
+              "type": "string",
+              "description": "Type of source",
+              "enum": ["journal_article", "web_page", "report", "book", "conference_paper", "preprint"]
+            },
+            "format": {
+              "type": "string",
+              "description": "Citation format",
+              "enum": ["APA", "MLA", "Chicago", "IEEE"],
+              "default": "APA"
+            },
+            "doi": {
+              "type": "string",
+              "description": "Digital Object Identifier if available"
+            },
+            "journal": {
+              "type": "string",
+              "description": "Journal name (for journal articles)"
+            }
+          },
+          "required": ["title", "source_type", "format"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "summarize_paper",
+        "description": "Read and summarize an academic paper from a URL. Extracts abstract, key findings, methodology, sample size, limitations, and conclusions.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "URL of the paper (PDF or HTML)"
+            },
+            "focus": {
+              "type": "string",
+              "description": "Optional focus area for the summary, e.g. 'methodology', 'results', 'limitations'"
+            },
+            "max_length": {
+              "type": "integer",
+              "description": "Maximum summary length in words. Default: 500."
+            }
+          },
+          "required": ["url"]
+        }
+      }
+    }
+  ]
+}

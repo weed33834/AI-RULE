@@ -1,0 +1,119 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_orders",
+        "description": "Search customer orders by order ID, email address, or phone number. Returns a list of matching orders with basic information.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "description": "The order ID to search for, e.g. 'ORD-20240115-001'"
+            },
+            "email": {
+              "type": "string",
+              "description": "Customer email address to search associated orders"
+            },
+            "phone": {
+              "type": "string",
+              "description": "Customer phone number to search associated orders"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "get_order_status",
+        "description": "Get detailed status of a specific order including shipping, delivery, payment, and item information.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "description": "The order ID to query status for"
+            }
+          },
+          "required": ["order_id"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "refund_order",
+        "description": "Process a refund for a specific order. Must be confirmed by the customer before execution. Refunds go to the original payment method.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "description": "The order ID to refund"
+            },
+            "amount": {
+              "type": "number",
+              "description": "Refund amount in USD. Must not exceed the original order total."
+            },
+            "reason": {
+              "type": "string",
+              "description": "Reason for the refund",
+              "enum": ["defective_item", "wrong_item", "customer_request", "shipping_delay", "duplicate_charge"]
+            }
+          },
+          "required": ["order_id", "amount", "reason"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "escalate_to_human",
+        "description": "Escalate the current conversation to a human customer service agent. Use when the issue is beyond AI scope, involves legal/security matters, or customer explicitly requests human assistance.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "order_id": {
+              "type": "string",
+              "description": "Related order ID if applicable"
+            },
+            "reason": {
+              "type": "string",
+              "description": "Reason for escalation",
+              "enum": ["legal_threat", "security_issue", "customer_request", "refund_exceeds_limit", "unresolved_after_attempts", "other"]
+            },
+            "summary": {
+              "type": "string",
+              "description": "Brief summary of the conversation and issue for the human agent"
+            }
+          },
+          "required": ["reason", "summary"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "search_faq",
+        "description": "Search the frequently asked questions knowledge base for answers to common customer questions about shipping, returns, payments, accounts, etc.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Search query for the FAQ knowledge base"
+            },
+            "category": {
+              "type": "string",
+              "description": "Optional category filter",
+              "enum": ["shipping", "returns", "payment", "account", "product", "general"]
+            }
+          },
+          "required": ["query"]
+        }
+      }
+    }
+  ]
+}

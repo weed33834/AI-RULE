@@ -1,0 +1,47 @@
+# Customer Service Agent Configuration / 客服智能体配置
+# 客服智能体 - 处理订单查询、退款、FAQ和升级
+
+agent:
+  name: "customer-service-agent"
+  version: "1.0.0"
+  description: "客服智能体，处理订单查询、退款、FAQ解答和人工升级 / Customer service agent for order inquiries, refunds, FAQ, and human escalation"
+
+model:
+  provider: "openai"
+  model_name: "gpt-4o"
+  temperature: 0.3
+  max_tokens: 4096
+
+reasoning:
+  pattern: "ReAct"
+  description: "推理+行动循环：先分析客户需求，调用工具，观察结果，再回复 / Reason-Act loop: analyze need, call tool, observe result, then respond"
+
+memory:
+  short_term: true
+  long_term: false
+  episodic: false
+  user_preferences: true
+  window_budget:
+    system_prompt: 20
+    tools: 15
+    user_input: 30
+    memory: 20
+    output: 15
+
+safety:
+  confirmation_points:
+    - "refund_order"
+    - "escalate_to_human"
+  injection_defense: true
+  pii_masking: true
+  max_refund_amount: 500
+  rate_limit:
+    max_messages_per_session: 50
+    max_refunds_per_session: 1
+
+tools:
+  - search_orders
+  - get_order_status
+  - refund_order
+  - escalate_to_human
+  - search_faq

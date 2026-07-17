@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安全漏洞请走私有披露
+    url: https://gitcode.com/badhope/AI-RULE/issues
+    about: 不要在此公开提交安全漏洞

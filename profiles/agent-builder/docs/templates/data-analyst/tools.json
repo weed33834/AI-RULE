@@ -1,0 +1,169 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "query_database",
+        "description": "Execute a read-only SQL SELECT query against the connected database. Returns query results as a structured table. Only SELECT statements are allowed.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "sql": {
+              "type": "string",
+              "description": "The SQL SELECT query to execute. Must be a read-only query (no INSERT/UPDATE/DELETE/DROP/ALTER/TRUNCATE)."
+            },
+            "database": {
+              "type": "string",
+              "description": "Optional database name to query. Uses default if not specified."
+            },
+            "limit": {
+              "type": "integer",
+              "description": "Maximum number of rows to return. Default: 10000."
+            }
+          },
+          "required": ["sql"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "execute_python",
+        "description": "Execute Python code for data analysis. Supports pandas, numpy, scipy, scikit-learn, statsmodels. Code runs in an isolated environment with access to query results.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "Python code to execute. Use pandas/numpy for data manipulation, scipy/sklearn for analysis."
+            },
+            "input_data_ref": {
+              "type": "string",
+              "description": "Optional reference to previously queried data (e.g. result ID from query_database) to use as input."
+            }
+          },
+          "required": ["code"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "generate_chart",
+        "description": "Generate a chart/visualization from data. Supports bar, line, scatter, histogram, boxplot, heatmap, pie charts.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "chart_type": {
+              "type": "string",
+              "description": "Type of chart to generate",
+              "enum": ["bar", "line", "scatter", "histogram", "boxplot", "heatmap", "pie", "area"]
+            },
+            "title": {
+              "type": "string",
+              "description": "Chart title"
+            },
+            "x_label": {
+              "type": "string",
+              "description": "X-axis label"
+            },
+            "y_label": {
+              "type": "string",
+              "description": "Y-axis label"
+            },
+            "data_ref": {
+              "type": "string",
+              "description": "Reference to data source (result ID from query_database or execute_python)"
+            },
+            "x_column": {
+              "type": "string",
+              "description": "Column name for X-axis data"
+            },
+            "y_column": {
+              "type": "string",
+              "description": "Column name for Y-axis data"
+            },
+            "color_column": {
+              "type": "string",
+              "description": "Optional column for color grouping"
+            }
+          },
+          "required": ["chart_type", "title", "data_ref"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "export_report",
+        "description": "Compile analysis findings, charts, and statistical results into a structured report. Exports as PDF, HTML, or Markdown.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Report title"
+            },
+            "format": {
+              "type": "string",
+              "description": "Output format",
+              "enum": ["pdf", "html", "markdown"]
+            },
+            "sections": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "heading": {"type": "string", "description": "Section heading"},
+                  "content": {"type": "string", "description": "Section content (markdown supported)"},
+                  "chart_ref": {"type": "string", "description": "Optional chart reference to embed"}
+                },
+                "required": ["heading", "content"]
+              },
+              "description": "Report sections with content"
+            }
+          },
+          "required": ["title", "format", "sections"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "statistical_test",
+        "description": "Perform a statistical hypothesis test on data. Supports t-test, ANOVA, chi-square, correlation, regression, Mann-Whitney, Wilcoxon, Kruskal-Wallis, etc.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "test_type": {
+              "type": "string",
+              "description": "Type of statistical test",
+              "enum": ["ttest_ind", "ttest_paired", "anova", "chi2", "pearson_correlation", "spearman_correlation", "linear_regression", "logistic_regression", "mannwhitney", "wilcoxon", "kruskal_wallis"]
+            },
+            "data_ref": {
+              "type": "string",
+              "description": "Reference to data source"
+            },
+            "column1": {
+              "type": "string",
+              "description": "First column/variable for the test"
+            },
+            "column2": {
+              "type": "string",
+              "description": "Second column/variable for the test (if applicable)"
+            },
+            "group_column": {
+              "type": "string",
+              "description": "Grouping column for tests like ANOVA or ttest_ind"
+            },
+            "alpha": {
+              "type": "number",
+              "description": "Significance level (alpha). Default: 0.05"
+            }
+          },
+          "required": ["test_type", "data_ref"]
+        }
+      }
+    }
+  ]
+}

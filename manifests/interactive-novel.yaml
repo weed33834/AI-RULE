@@ -1,0 +1,76 @@
+# interactive-novel Profile 装配清单
+# 来源仓库: badhope/interactive-novel
+# 适用场景: 互动小说游戏、分支叙事、状态机驱动
+
+profile:
+  id: interactive-novel
+  name: 互动小说游戏规则
+  source_repo: badhope/interactive-novel
+  mutually_exclusive_with:
+    - coding
+    - conversation
+    - novel
+    - agent-builder
+
+includes:
+  core:
+    - core/governance.md
+    - core/interaction.md
+    - core/profile-router.md
+    - core/language-mediation.md
+  profile:
+    - profiles/interactive-novel/AGENTS.md
+    - profiles/interactive-novel/docs/prompts/system-prompt.md
+    - profiles/interactive-novel/docs/prompts/game-master.md
+    - profiles/interactive-novel/docs/prompts/narrator-engine.md
+    - profiles/interactive-novel/docs/prompts/npc-engine.md
+  skills:
+    - profiles/interactive-novel/docs/skills/anti-dumb-ai.md
+    - profiles/interactive-novel/docs/skills/branching-narrative.md
+    - profiles/interactive-novel/docs/skills/combat-system.md
+    - profiles/interactive-novel/docs/skills/context-management.md
+    - profiles/interactive-novel/docs/skills/dialogue-system.md
+    - profiles/interactive-novel/docs/skills/difficulty-engine.md
+    - profiles/interactive-novel/docs/skills/ending-system.md
+    - profiles/interactive-novel/docs/skills/evolution-policy.md
+    - profiles/interactive-novel/docs/skills/game-evaluation.md
+    - profiles/interactive-novel/docs/skills/game-state-machine.md
+    - profiles/interactive-novel/docs/skills/genre-system.md
+    - profiles/interactive-novel/docs/skills/inventory-system.md
+    - profiles/interactive-novel/docs/skills/memory-system.md
+    - profiles/interactive-novel/docs/skills/narrative-coherence.md
+    - profiles/interactive-novel/docs/skills/npc-ai.md
+    - profiles/interactive-novel/docs/skills/onboarding-system.md
+    - profiles/interactive-novel/docs/skills/path-scoped-rules.md
+    - profiles/interactive-novel/docs/skills/player-agency.md
+    - profiles/interactive-novel/docs/skills/replay-system.md
+    - profiles/interactive-novel/docs/skills/security-checklist.md
+    - profiles/interactive-novel/docs/skills/session-management.md
+    - profiles/interactive-novel/docs/skills/state-management.md
+    - profiles/interactive-novel/docs/skills/tool-skill-mcp.md
+    - profiles/interactive-novel/docs/skills/world-simulation.md
+
+enables_capabilities:
+  - creative
+  - research
+  - state-machine
+  - npc-simulation
+  - adaptive-difficulty
+
+forbids_capabilities:
+  - engineering
+  - novel-chapter-deliverable-mode
+
+activation_anchors:
+  - .game-state/
+  - game-state-machine.md
+  - save-slot-*.json
+
+intent_keywords:
+  - 开始一局
+  - 分支
+  - 存档
+  - NPC
+  - 回合
+  - 状态
+  - 选项

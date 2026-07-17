@@ -1,0 +1,71 @@
+# novel Profile 装配清单
+# 来源仓库: badhope/novel
+# 适用场景: 小说写作、章节创作、角色/世界观维护
+
+profile:
+  id: novel
+  name: 小说创作规则
+  source_repo: badhope/novel
+  mutually_exclusive_with:
+    - coding
+    - conversation
+    - interactive-novel
+    - agent-builder
+
+includes:
+  core:
+    - core/governance.md
+    - core/interaction.md
+    - core/profile-router.md
+    - core/language-mediation.md
+  profile:
+    - profiles/novel/AGENTS.md
+    - profiles/novel/docs/prompts/system-prompt.md
+    - profiles/novel/docs/prompts/writer-subagent.md
+    - profiles/novel/docs/prompts/explorer-subagent.md
+    - profiles/novel/docs/prompts/reviewer-subagent.md
+  skills:
+    - profiles/novel/docs/skills/anti-ai-patterns.md
+    - profiles/novel/docs/skills/character-consistency-system.md
+    - profiles/novel/docs/skills/character-crafting.md
+    - profiles/novel/docs/skills/context-management.md
+    - profiles/novel/docs/skills/creative-block-breaker.md
+    - profiles/novel/docs/skills/creative-evaluation.md
+    - profiles/novel/docs/skills/dialogue-crafting.md
+    - profiles/novel/docs/skills/evolution-policy.md
+    - profiles/novel/docs/skills/genre-conventions.md
+    - profiles/novel/docs/skills/pacing-rhythm.md
+    - profiles/novel/docs/skills/path-scoped-rules.md
+    - profiles/novel/docs/skills/plot-architecture.md
+    - profiles/novel/docs/skills/post-generation-pipeline.md
+    - profiles/novel/docs/skills/revision-strategy.md
+    - profiles/novel/docs/skills/scene-crafting.md
+    - profiles/novel/docs/skills/security-checklist.md
+    - profiles/novel/docs/skills/story-graph.md
+    - profiles/novel/docs/skills/tool-skill-mcp.md
+    - profiles/novel/docs/skills/web-novel-guide.md
+    - profiles/novel/docs/skills/world-building.md
+    - profiles/novel/docs/skills/writing-techniques.md
+
+enables_capabilities:
+  - research
+  - worldbuilding
+  - creative
+
+forbids_capabilities:
+  - game-engine
+  - state-machine
+
+activation_anchors:
+  - .ai-memory/creative-blueprint.md
+  - chapters/
+  - outline.md
+
+intent_keywords:
+  - 写一章
+  - 续写
+  - 人物
+  - 伏笔
+  - 文风
+  - 世界观
+  - 章节

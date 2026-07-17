@@ -1,0 +1,41 @@
+# Code Reviewer Agent Configuration / 代码审查智能体配置
+# 代码审查智能体 - 审查代码变更，识别Bug、安全漏洞和风格问题
+
+agent:
+  name: "code-reviewer-agent"
+  version: "1.0.0"
+  description: "代码审查智能体，使用反思模式审查代码变更，识别Bug、安全漏洞、性能问题和风格违规 / Code reviewer agent using reflection pattern to review changes, identify bugs, vulnerabilities, performance and style issues"
+
+model:
+  provider: "openai"
+  model_name: "gpt-4o"
+  temperature: 0.2
+  max_tokens: 4096
+
+reasoning:
+  pattern: "Reflection"
+  description: "初步审查→反思质疑→工具验证→优化反馈→最终输出 / Initial review → Reflect & question → Verify with tools → Refine feedback → Final output"
+
+memory:
+  short_term: true
+  long_term: false
+  episodic: false
+  window_budget:
+    system_prompt: 20
+    tools: 15
+    user_input: 25
+    memory: 10
+    output: 30
+
+safety:
+  confirmation_points: []
+  injection_defense: true
+  pii_masking: true
+  read_only: true
+  max_file_size_mb: 5
+
+tools:
+  - read_file
+  - run_linter
+  - search_pattern
+  - get_git_diff

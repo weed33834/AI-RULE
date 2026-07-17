@@ -1,0 +1,87 @@
+# agent-builder Profile 装配清单
+# 来源仓库: badhope/AgentCreater
+# 适用场景: 设计/评估/部署智能体，产出 config、工具定义、测试用例
+
+profile:
+  id: agent-builder
+  name: 智能体构建规则
+  source_repo: badhope/AgentCreater
+  mutually_exclusive_with:
+    - conversation
+    - novel
+    - interactive-novel
+
+includes:
+  core:
+    - core/governance.md
+    - core/interaction.md
+    - core/profile-router.md
+    - core/language-mediation.md
+  profile:
+    - profiles/agent-builder/AGENTS.md
+    - profiles/agent-builder/docs/prompts/system-prompt.md
+    - profiles/agent-builder/docs/prompts/role-designer.md
+    - profiles/agent-builder/docs/prompts/tool-orchestrator.md
+    - profiles/agent-builder/docs/prompts/memory-architect.md
+    - profiles/agent-builder/docs/prompts/evaluator.md
+    - profiles/agent-builder/docs/prompts/safety-guard.md
+    - profiles/agent-builder/docs/prompts/skill-injector.md
+  skills:
+    - profiles/agent-builder/docs/skills/advanced-patterns.md
+    - profiles/agent-builder/docs/skills/agent-observability.md
+    - profiles/agent-builder/docs/skills/agent-templates-guide.md
+    - profiles/agent-builder/docs/skills/agent-testing-automation.md
+    - profiles/agent-builder/docs/skills/construction-playbook.md
+    - profiles/agent-builder/docs/skills/context-engineering.md
+    - profiles/agent-builder/docs/skills/conversation-design.md
+    - profiles/agent-builder/docs/skills/cost-optimization.md
+    - profiles/agent-builder/docs/skills/deep-search.md
+    - profiles/agent-builder/docs/skills/deployment-guide.md
+    - profiles/agent-builder/docs/skills/error-handling-patterns.md
+    - profiles/agent-builder/docs/skills/evaluation-framework.md
+    - profiles/agent-builder/docs/skills/evolution-policy.md
+    - profiles/agent-builder/docs/skills/fine-tuning-guide.md
+    - profiles/agent-builder/docs/skills/knowledge-injection.md
+    - profiles/agent-builder/docs/skills/memory-systems.md
+    - profiles/agent-builder/docs/skills/multi-agent.md
+    - profiles/agent-builder/docs/skills/orchestration-patterns.md
+    - profiles/agent-builder/docs/skills/persona-design.md
+    - profiles/agent-builder/docs/skills/prompt-iteration-guide.md
+    - profiles/agent-builder/docs/skills/prompt-patterns.md
+    - profiles/agent-builder/docs/skills/reasoning-patterns.md
+    - profiles/agent-builder/docs/skills/registry.md
+    - profiles/agent-builder/docs/skills/role-design.md
+    - profiles/agent-builder/docs/skills/safety-guardrails.md
+    - profiles/agent-builder/docs/skills/skill-hub.md
+    - profiles/agent-builder/docs/skills/tool-design.md
+    - profiles/agent-builder/docs/skills/user-testing-guide.md
+    - profiles/agent-builder/docs/skills/workflow-design.md
+  templates:
+    - profiles/agent-builder/docs/templates/code-reviewer/
+    - profiles/agent-builder/docs/templates/customer-service/
+    - profiles/agent-builder/docs/templates/data-analyst/
+    - profiles/agent-builder/docs/templates/general-assistant/
+    - profiles/agent-builder/docs/templates/research-assistant/
+    - profiles/agent-builder/docs/templates/workflow-automator/
+
+enables_capabilities:
+  - research
+  - agent-governance
+  - engineering
+  - testing
+
+forbids_capabilities:
+  - novel-chapter-deliverable-mode
+  - game-engine
+
+activation_anchors:
+  - config.yaml
+  - tools.json
+  - test-cases.md
+
+intent_keywords:
+  - 设计 Agent
+  - 智能体配置
+  - 工具权限
+  - 评估
+  - 部署 Agent

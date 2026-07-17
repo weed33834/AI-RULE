@@ -1,0 +1,34 @@
+# 工作区记忆/IDE 垃圾，禁止入库
+.workbuddy/
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# 跨工具生成文件（由 sync_rules.py 按 profile 生成，不入库）
+# 克隆后运行: python scripts/sync_rules.py --profile <id> --tool <tool>
+CLAUDE.md
+GEMINI.md
+.cursor/rules/
+.github/copilot-instructions.md
+.github/instructions/
+.trae/rules/
+provenance/

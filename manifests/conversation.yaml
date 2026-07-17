@@ -1,0 +1,56 @@
+# conversation Profile 装配清单
+# 来源仓库: badhope/universal
+# 适用场景: 通用问答、调研、方案对比、信息检索
+
+profile:
+  id: conversation
+  name: 通用对话规则
+  source_repo: badhope/universal
+  mutually_exclusive_with:
+    - novel
+    - interactive-novel
+    - agent-builder
+
+includes:
+  core:
+    - core/governance.md
+    - core/interaction.md
+    - core/profile-router.md
+    - core/language-mediation.md
+  profile:
+    - profiles/conversation/AGENTS.md
+    - profiles/conversation/docs/prompts/system-prompt.md
+  skills:
+    - profiles/conversation/docs/skills/truth-protocol.md
+    - profiles/conversation/docs/skills/deep-search.md
+    - profiles/conversation/docs/skills/anti-dumb-ai.md
+    - profiles/conversation/docs/skills/clarification-protocol.md
+    - profiles/conversation/docs/skills/conversation-quality.md
+    - profiles/conversation/docs/skills/source-credibility.md
+    - profiles/conversation/docs/skills/reasoning-depth.md
+    - profiles/conversation/docs/skills/solution-framework.md
+    - profiles/conversation/docs/skills/multi-turn-coherence.md
+    - profiles/conversation/docs/skills/context-management.md
+    - profiles/conversation/docs/skills/slash-commands.md
+    - profiles/conversation/docs/skills/path-scoped-rules.md
+    - profiles/conversation/docs/skills/security-checklist.md
+    - profiles/conversation/docs/skills/tool-skill-mcp.md
+    - profiles/conversation/docs/skills/evolution-policy.md
+
+enables_capabilities:
+  - research
+
+forbids_capabilities:
+  - engineering
+  - creative
+  - game-engine
+
+activation_anchors: []
+
+intent_keywords:
+  - 查询
+  - 对比
+  - 分析
+  - 调研
+  - 总结
+  - 解释

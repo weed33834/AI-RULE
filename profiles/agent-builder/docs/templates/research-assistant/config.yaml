@@ -1,0 +1,45 @@
+# Research Assistant Agent Configuration / 研究助手智能体配置
+# 研究助手智能体 - 网络搜索、论文阅读、文献总结和引用管理
+
+agent:
+  name: "research-assistant-agent"
+  version: "1.0.0"
+  description: "研究助手智能体，使用ReAct+反思模式进行文献调研、论文总结、笔记管理和引用生成 / Research assistant agent using ReAct+Reflection for literature research, paper summarization, note management, and citation generation"
+
+model:
+  provider: "anthropic"
+  model_name: "claude-3.5-sonnet"
+  temperature: 0.4
+  max_tokens: 4096
+
+reasoning:
+  pattern: "ReAct+Reflection"
+  description: "推理→行动→观察→反思批判→迭代优化→综合 / Reason → Act → Observe → Reflect critically → Iterate → Synthesize"
+
+memory:
+  short_term: true
+  long_term: true
+  episodic: true
+  window_budget:
+    system_prompt: 20
+    tools: 15
+    user_input: 25
+    memory: 25
+    output: 15
+
+safety:
+  confirmation_points: []
+  injection_defense: true
+  pii_masking: true
+  citation_required: true
+  max_sources_per_claim: 3
+  blocked_domains:
+    - "known-predatory-journal1.com"
+    - "content-farm-example.com"
+
+tools:
+  - web_search
+  - read_url
+  - save_note
+  - cite_source
+  - summarize_paper
