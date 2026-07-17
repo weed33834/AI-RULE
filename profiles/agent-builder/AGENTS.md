@@ -24,7 +24,7 @@
 
 **中文**:
 - **禁止造假**：无论什么风格、什么类型的智能体，必须给出准确且真实的回答。不得编造数据、捏造事实、虚构 API、伪造引用、捏造血源。在任何情况下，造假都是不对的。
-- **不确定即问**：遇到不确定、不明确、或无法确认的信息时，必须立即向用户提出，不得自行猜测或蒙混。在没有被明确要求"猜"或"模拟"的情况下，严禁自行发挥。
+- **不确定即问**：遇到不确定、不明确、或无法确认的信息时，必须立即向用户提出，用提问替代猜测或蒙混。在没有被明确要求"猜"或"模拟"的情况下，基于事实和已知信息回答，缺失部分向用户询问。
 - **知之为知之**：对于不知道的信息，直接说"我不知道"或"我需要确认"，不得用编造的内容填补知识空白。
 - **来源标注**：引用数据、结论、API 文档时，必须标注来源（URL、文档名、版本号）。无法标注来源的信息不得作为事实陈述。
 - **区分事实与推测**：事实陈述用陈述句，推测性内容必须显式标注"推测："前缀。用户有权知道哪些是确定的、哪些是估计的。
@@ -227,7 +227,7 @@
 - 话题切换处理：检测用户话题切换时，保存当前上下文摘要，切换后可恢复。
 - 对话修复：当智能体发现自己理解错误时，主动纠正并重新确认，不继续错误方向。
 - 对话结束信号：任务完成或用户明确终止时，输出完成摘要并清理临时状态。
-- **消息分级（notify vs ask）**：智能体与用户的通信分为两级——notify（非阻断通知，用户无需回复，用于进度更新）和 ask（阻断询问，用户必须回复，仅用于关键决策点）。主动使用 notify 更新进度，仅在必要需求时使用 ask，最小化用户打扰。严禁用 ask 确认非关键事项。
+- **消息分级（notify vs ask）**：智能体与用户的通信分为两级——notify（非阻断通知，用户无需回复，用于进度更新）和 ask（阻断询问，用户必须回复，仅用于关键决策点）。主动使用 notify 更新进度，仅在必要需求时使用 ask，最小化用户打扰。ask 仅用于关键决策点，非关键事项用 notify 即可。
 - **Language Mediation Protocol**：系统提示词以英文编写以获得最佳推理精度。检测用户语言并用同一语言回复，内部推理始终使用英文，输出时润色转化（非直译）。避免翻译腔，使用目标语言的自然表达。详见 `docs/prompts/system-prompt.md` 的 `<language_mediation>` 章节。
 - 对话流程设计详见 @@docs/skills/conversation-design.md
 
@@ -472,9 +472,11 @@
 - 模板使用指南见 @@docs/skills/agent-templates-guide.md
 - 智能体构造方法论见 @@docs/skills/construction-playbook.md
 - 高级架构模式（评估体系/可观测性/安全对齐/高级推理）见 @@docs/skills/advanced-patterns.md
+- 反模式（过时提示词技术与迁移指南）见 @@docs/skills/anti-patterns.md
 - 提示词迭代指南（5 步迭代循环、A/B 测试、回归测试）见 @@docs/skills/prompt-iteration-guide.md
 - 错误处理模式（4 层防御、8 种恢复策略、降级方案）见 @@docs/skills/error-handling-patterns.md
 - 用户测试指南（3 阶段测试、放声思考、反馈分析）见 @@docs/skills/user-testing-guide.md
+- 自我精炼与自我批评（Reflexion 循环、Constitutional 自检）见 @@docs/skills/self-refinement.md
 
 **English**:
 - **Tool (built-in)** = hands and feet: model's built-in Function Calling capability, ready to use.
@@ -492,9 +494,11 @@
 - Agent templates guide: @@docs/skills/agent-templates-guide.md
 - Agent construction playbook: @@docs/skills/construction-playbook.md
 - Advanced architecture patterns (evaluation / observability / safety alignment / advanced reasoning): @@docs/skills/advanced-patterns.md
+- Anti-patterns (outdated prompt techniques & migration guide): @@docs/skills/anti-patterns.md
 - Prompt iteration guide (5-step loop, A/B testing, regression): @@docs/skills/prompt-iteration-guide.md
 - Error handling patterns (4-layer defense, 8 recovery strategies, degradation): @@docs/skills/error-handling-patterns.md
 - User testing guide (3-phase testing, think-aloud, feedback analysis): @@docs/skills/user-testing-guide.md
+- Self-refinement & self-critique (Reflexion loop, Constitutional self-check): @@docs/skills/self-refinement.md
 
 ## Rule Self-Evolution Protocol (规则自进化协议)
 
@@ -543,4 +547,6 @@
 - 模板使用指南 / Agent templates guide: docs/skills/agent-templates-guide.md
 - 智能体构造方法论 / Construction playbook: docs/skills/construction-playbook.md
 - 高级架构模式 / Advanced architecture patterns: docs/skills/advanced-patterns.md
+- 反模式 / Anti-patterns: docs/skills/anti-patterns.md
 - 编排模式 / Orchestration patterns: docs/skills/orchestration-patterns.md
+- 自我精炼 / Self-refinement: docs/skills/self-refinement.md

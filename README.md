@@ -1,174 +1,181 @@
-# Rule Hub — 统一规则中枢
+# Rule Hub — Unified AI Collaboration Rules
 
-> 5 套独立规则体系的单仓整合：核心层 + 单一主 Profile + 能力包。
-> 克隆一次，按场景选择 Profile，同步生成各 AI 工具的规则入口。
+[English] · [中文](README_CN.md) · [日本語](README_JA.md)
 
-## 这个仓库是干嘛的
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Profiles](https://img.shields.io/badge/profiles-5-green)
+![Files](https://img.shields.io/badge/files-226+-orange)
+![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
+![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
-本仓库是 **AI 协作规则的唯一权威来源**，不是任何具体开发项目的业务代码。它整合了 5 套原本独立的规则仓库：
+> A single repository integrating 5 independent rule systems: core layer + one active profile + capability packs.
+> Clone once, pick a profile, sync to any AI tool's rule file.
 
-| 原 Profile | 来源 | 用途 |
+---
+
+## What This Repository Is
+
+This is the **single source of truth for AI collaboration rules** — not application code for any specific project. It consolidates 5 previously separate rule repositories into one, loaded by profile to avoid domain conflicts (e.g., "no fabrication" vs. "novel writing requires fiction").
+
+| Profile | Origin | Use Case |
 |---|---|---|
-| `coding` | badhope/AI | 软件开发、Bug 修复、重构、测试、代码审查 |
-| `conversation` | badhope/universal | 通用问答、调研、方案对比、信息检索 |
-| `novel` | badhope/novel | 小说写作、章节创作、角色/世界观维护 |
-| `interactive-novel` | badhope/interactive-novel | 互动小说游戏、分支叙事、状态机驱动 |
-| `agent-builder` | badhope/AgentCreater | 设计/评估/部署智能体 |
+| `coding` | badhope/AI | Software development, bug fixes, refactoring, code review |
+| `conversation` | badhope/universal | General Q&A, research, comparison, information retrieval |
+| `novel` | badhope/novel | Novel writing, chapter creation, character/worldbuilding |
+| `interactive-novel` | badhope/interactive-novel | Interactive fiction, branching narratives, state machines |
+| `agent-builder` | badhope/AgentCreater | Design, evaluate, and deploy AI agents |
 
-**为什么合并**：避免 5 套规则各自漂移、避免每次使用克隆多个仓库、统一跨工具同步入口。  
-**为什么不揉成一套**：5 套规则的领域约束互相冲突（如"禁止虚构" vs "小说必须能虚构"），必须按 Profile 隔离加载。
+**Why merge**: stop 5 rule sets from drifting apart; clone one repo instead of five; unify the cross-tool sync entry point.
 
-## 快速开始
+**Why not merge into one set**: domain constraints conflict (e.g., "no fabrication" vs. "fiction is the core ability"). Profiles are loaded in isolation.
 
-### 1. 克隆仓库
+## Quick Start
+
+### 1. Clone
 
 ```bash
 git clone https://gitcode.com/badhope/AI-RULE.git
 cd AI-RULE
 ```
 
-### 2. 选择 Profile 并生成工具入口
+### 2. Pick a Profile and Generate Tool Entries
 
 ```bash
-# 列出可用 Profile
+# List available profiles
 python scripts/sync_rules.py --list
 
-# 为 coding Profile 生成 Claude Code 入口
+# Generate Claude Code entry for the coding profile
 python scripts/sync_rules.py --profile coding --tool claude-code
 
-# 为 novel Profile 生成所有工具入口
+# Generate all tool entries for the novel profile
 python scripts/sync_rules.py --profile novel --tool all
 ```
 
-### 3. 在目标项目使用
+### 3. Use in Your Project
 
-把生成的工具入口文件（如 `CLAUDE.md`）复制到你的项目根目录，或用 Git 子模块引用本仓库后运行同步脚本。
+Copy the generated tool entry file (e.g., `CLAUDE.md`) to your project root, or reference this repo as a Git submodule and run the sync script.
 
-### 4. 告诉 AI 加载哪个 Profile
-
-在对话开始时指定：
+### 4. Tell AI Which Profile to Load
 
 ```text
-按 Rule Hub 加载 coding Profile。
+Load the coding Profile from Rule Hub.
 ```
 
-或由项目锚点自动识别（见下文）。
+Or let the project anchors auto-detect (see below).
 
-## Profile 选择
+## Profile Selection
 
-### 显式指定（推荐）
+### Explicit (recommended)
 
 ```text
-按 Rule Hub 加载 <profile-id> Profile。
+Load the <profile-id> Profile from Rule Hub.
 ```
 
-### 项目锚点自动识别
+### Auto-Detection by Project Anchors
 
-| 锚点信号 | 推断 Profile |
+| Anchor Signal | Inferred Profile |
 |---|---|
-| `pyproject.toml`、`package.json`、`requirements.txt` + 源码 | `coding` |
-| `.ai-memory/creative-blueprint.md`、`chapters/`、`outline.md` | `novel` |
-| `.game-state/`、`game-state-machine.md`、`save-slot-*.json` | `interactive-novel` |
+| `pyproject.toml`, `package.json`, `requirements.txt` + source code | `coding` |
+| `.ai-memory/creative-blueprint.md`, `chapters/`, `outline.md` | `novel` |
+| `.game-state/`, `game-state-machine.md`, `save-slot-*.json` | `interactive-novel` |
 | `config.yaml` + `tools.json` + `test-cases.md` | `agent-builder` |
-| 无上述锚点 | `conversation` |
+| None of the above | `conversation` |
 
-### 意图关键词
+### Intent Keywords
 
-| 关键词 | Profile |
+| Keywords | Profile |
 |---|---|
-| 修复/重构/测试/接口/Bug | `coding` |
-| 写一章/续写/人物/伏笔/世界观 | `novel` |
-| 开始一局/分支/存档/NPC/回合 | `interactive-novel` |
-| 设计 Agent/智能体配置/工具权限 | `agent-builder` |
-| 查询/对比/分析/调研 | `conversation` |
+| fix / refactor / test / API / bug | `coding` |
+| write a chapter / continue / character / foreshadowing / worldbuilding | `novel` |
+| start a game / branch / save / NPC / turn | `interactive-novel` |
+| design Agent / agent config / tool permissions | `agent-builder` |
+| query / compare / analyze / research | `conversation` |
 
-## 5 个 Profile 详细说明
+## The 5 Profiles
 
-### coding（软件开发）
-- **来源**：badhope/AI
-- **适用**：Python/FastAPI 开发、Bug 修复、重构、测试、代码审查
-- **核心能力**：Git SOP、依赖管理、PowerShell 语法、MCP 红线、工程卫生
-- **可叠加能力包**：research、testing、review、agent-governance
-- **互斥**：novel、interactive-novel
+### coding (Software Development)
+- **Origin**: badhope/AI
+- **Scope**: Python/FastAPI development, bug fixes, refactoring, testing, code review
+- **Core capabilities**: Git SOP, dependency management, PowerShell syntax, MCP red lines, engineering hygiene
+- **Capability packs**: research, testing, review, agent-governance
+- **Mutually exclusive with**: novel, interactive-novel
 
-### conversation（通用对话）
-- **来源**：badhope/universal
-- **适用**：通用问答、调研、方案对比、信息检索
-- **核心能力**：真实性协议、深度搜索、反降智、澄清协议、推理深度控制
-- **可叠加能力包**：research
-- **互斥**：novel、interactive-novel、agent-builder
+### conversation (General Conversation)
+- **Origin**: badhope/universal
+- **Scope**: General Q&A, research, comparison, information retrieval
+- **Core capabilities**: truth protocol, deep search, anti-dumbing-down, clarification protocol, reasoning depth control
+- **Capability packs**: research
+- **Mutually exclusive with**: novel, interactive-novel, agent-builder
 
-### novel（小说创作）
-- **来源**：badhope/novel
-- **适用**：小说写作、章节创作、角色/世界观维护
-- **核心能力**：创作种子确认、35 项去 AI 文学味、角色一致性、伏笔追踪、故事知识图谱、三层修订
-- **可叠加能力包**：research、worldbuilding、creative
-- **互斥**：coding、conversation、interactive-novel、agent-builder
+### novel (Novel Writing)
+- **Origin**: badhope/novel
+- **Scope**: Novel writing, chapter creation, character/worldbuilding maintenance
+- **Core capabilities**: creative seed confirmation, 35-item anti-AI-literary-flavor checklist, character consistency, foreshadowing tracking, story knowledge graph, three-tier revision
+- **Capability packs**: research, worldbuilding, creative
+- **Mutually exclusive with**: coding, conversation, interactive-novel, agent-builder
 
-### interactive-novel（互动小说游戏）
-- **来源**：badhope/interactive-novel
-- **适用**：互动小说游戏、分支叙事、状态机驱动
-- **核心能力**：游戏种子、状态机、NPC 自主性、自适应难度、存档/读档、回合制
-- **可叠加能力包**：creative、research、state-machine、npc-simulation、adaptive-difficulty
-- **互斥**：coding、conversation、novel、agent-builder
+### interactive-novel (Interactive Fiction)
+- **Origin**: badhope/interactive-novel
+- **Scope**: Interactive fiction games, branching narratives, state machine driven
+- **Core capabilities**: game seeds, state machine, NPC autonomy, adaptive difficulty, save/load, turn-based
+- **Capability packs**: creative, research, state-machine, npc-simulation, adaptive-difficulty
+- **Mutually exclusive with**: coding, conversation, novel, agent-builder
 
-### agent-builder（智能体构建）
-- **来源**：badhope/AgentCreater
-- **适用**：设计/评估/部署智能体，产出 config、工具定义、测试用例
-- **核心能力**：角色四层模型、CTCO 提示词结构、工具副作用分级、记忆系统、评估框架、6 套可执行模板
-- **可叠加能力包**：research、agent-governance、engineering、testing
-- **互斥**：conversation、novel、interactive-novel
+### agent-builder (Agent Construction)
+- **Origin**: badhope/AgentCreater
+- **Scope**: Design, evaluate, and deploy AI agents — produce config, tool definitions, test cases
+- **Core capabilities**: four-layer role model, CTCO prompt structure, tool side-effect grading, memory systems, evaluation framework, 6 executable templates
+- **Capability packs**: research, agent-governance, engineering, testing
+- **Mutually exclusive with**: conversation, novel, interactive-novel
 
-## 核心架构
+## Architecture
 
-![Rule Hub 装配模型](docs/architecture.svg)
+![Rule Hub Assembly Model](docs/architecture.svg)
 
-单源规则（`core/` 层 + `AGENTS.md` 选择器）按 Profile 装配，经 `sync_rules.py` 生成各 AI 工具入口文件。
+Single-source rules (`core/` layer + `AGENTS.md` selector) are assembled per profile, then `sync_rules.py` generates entry files for each AI tool.
 
-## 使用思路
+## Usage Flow
 
-![Rule Hub 使用思路](docs/usage.svg)
+![Rule Hub Usage Flow](docs/usage.svg)
 
-克隆仓库 → 确定 Profile → 运行 sync 装配 → 引入项目 → AI 按统一规则工作（跨工具一致）。
+Clone repo → pick profile → run sync → import to project → AI works under unified rules (consistent across tools).
 
-## 仓库结构
+## Repository Structure
 
 ```
-AI/
-├── AGENTS.md                    # 规则中枢入口（选择器 + 优先级 + 语言中介）
-├── core/                        # 所有 Profile 共享的 P0 硬约束
-│   ├── governance.md            # 安全、权限、MCP 红线、失败熔断
-│   ├── interaction.md           # 澄清、意图归一化、输出规范
-│   ├── profile-router.md        # Profile 选择与能力包白名单
-│   └── language-mediation.md    # 语言中介协议（提示英语、输出用户语言）
-├── profiles/                    # 5 套独立规则，原样保留
-│   ├── coding/          ( 13 文件)
-│   ├── conversation/    ( 19 文件)
-│   ├── novel/           ( 28 文件)
-│   ├── interactive-novel/ (31 文件)
-│   └── agent-builder/   ( 68 文件)
-├── capabilities/                # 13 个按需能力包
-├── manifests/                   # 每个 Profile 的装配清单
-├── provenance/                  # 生成溯源记录（JSON，已 gitignore）
-├── adapters/                    # 可选工具追加片段（扩展点）
-├── scripts/sync_rules.py        # 按 Profile 生成各工具入口
-└── tests/                       # 5 套测试（40 项检查，全部通过）
+AI-RULE/
+├── AGENTS.md                    # Rule hub entry (selector + priority + language mediation)
+├── core/                        # P0 hard constraints shared by all profiles
+│   ├── governance.md            # Security, permissions, MCP red lines, circuit breaker
+│   ├── interaction.md           # Clarification, intent normalization, output spec
+│   ├── profile-router.md        # Profile selection and capability pack whitelist
+│   └── language-mediation.md    # Language mediation protocol (English reasoning, user-language output)
+├── profiles/                    # 5 independent rule sets
+│   ├── coding/          ( 13 files)
+│   ├── conversation/    ( 19 files)
+│   ├── novel/           ( 28 files)
+│   ├── interactive-novel/ (31 files)
+│   └── agent-builder/   ( 70 files)
+├── capabilities/                # 13 on-demand capability packs
+├── manifests/                   # Per-profile assembly manifests
+├── scripts/sync_rules.py        # Generate tool entry files per profile
+└── tests/                       # 5 test suites (40 checks, all passing)
 ```
 
-## 语言机制
+## Language Mechanism
 
-所有规则文件用 **英语** 编写（保证推理精度），但 AI 与你交流时用 **你的语言**：
+All rule files are written in **English** (for reasoning precision), but the AI communicates with you in **your language**:
 
-1. **输入**：自动检测你的语言 → 识别真实意图 → 英语内部推理
-2. **输出**：英语生成 → 翻译回你的语言 → 反翻译腔润色
+1. **Input**: auto-detect your language → identify intent → reason internally in English
+2. **Output**: generate in English → translate to your language → polish against translationese
 
-详见 `core/language-mediation.md`。
+See `core/language-mediation.md` for details.
 
-## 支持的 AI 工具
+## Supported AI Tools
 
-同步脚本可为以下工具生成规则入口：
+The sync script generates rule entries for:
 
-| 工具 | 输出文件 |
+| Tool | Output File |
 |---|---|
 | Claude Code | `CLAUDE.md` |
 | Gemini | `GEMINI.md` |
@@ -177,77 +184,90 @@ AI/
 | Trae | `.trae/rules/project_rules.md` |
 
 ```bash
-# 单工具
+# Single tool
 python scripts/sync_rules.py --profile coding --tool claude-code
 
-# 全部工具
+# All tools
 python scripts/sync_rules.py --profile coding --tool all
 ```
 
-## 验证测试
+## Research-Backed Optimizations
+
+This repository incorporates findings from recent prompt engineering and AI alignment research:
+
+- **Instruction Budget**: Empirical research (ManyIFEval, ICLR 2025) shows instruction adherence degrades as a power law with simultaneous instruction count. P0 rules are capped at ≤5 simultaneously active; total hard constraints ≤12.
+- **Position Effects (Lost in the Middle)**: LLMs attend to the beginning and end of context, under-weighting the middle. P0 rules are placed at both ends of the context window.
+- **Anti-Patterns**: ALL CAPS emphasis, negative-only constraints, and manual "think step by step" are empirically ineffective on next-gen models (Claude 4.x, GPT-4.1). Rules are written with conditional logic and positive alternatives.
+- **Extended Thinking**: Model-native reasoning budget (Claude 4.x / OpenAI o-series) replaces manual CoT for complex tasks.
+- **Three-Tier Behavior Boundaries**: Allowed (autonomous) / Confirmation Required / Forbidden — replacing vague "appropriate behavior" declarations.
+- **GUID Delimiter Injection Defense**: Random GUID-based delimiters replace fixed `[UNTRUSTED]` markers, preventing marker-closing injection attacks.
+- **Abstention Protocol**: Explicit permission to say "I don't know" with anti-inflation guards — preventing confident fabrication.
+- **Self-Refinement**: Reflexion loops and Constitutional self-critique for pre-output quality checking.
+
+See `profiles/agent-builder/docs/skills/` for full documentation.
+
+## Verification
 
 ```bash
-pytest tests/                        # 5 套测试，40 项检查，全部通过
-# 或单文件运行：pytest tests/test_audit.py
+pytest tests/                        # 5 suites, 40 checks, all passing
+# Or run individually: pytest tests/test_audit.py
 ```
 
-全部 40 项检查通过（测试为 pytest 函数风格，需先安装 pytest）。
+## Capability Packs
 
-## 能力包
+Capability packs are composable, on-demand work methods. They don't define agent identity — the profile does. Packs only provide methodology.
 
-能力包是按需加载的可组合工作方法，不定义智能体身份。主 Profile 决定身份，能力包只提供方法。
-
-| 能力包 | 适用 |
+| Pack | Use Case |
 |---|---|
-| `research` | 事实支撑、数据验证 |
-| `testing` | 编写/验证测试 |
-| `review` | 代码/内容审查 |
-| `engineering` | 工程实现 |
-| `creative` | 创意生成、文风、修订 |
-| `worldbuilding` | 世界观、角色、时间线 |
-| `state-machine` | 状态机治理、分支可达性 |
-| `npc-simulation` | NPC 自主性、记忆、关系 |
-| `adaptive-difficulty` | 难度自适应 |
-| `game-engine` | 游戏回合、存档、命令 |
-| `agent-governance` | 智能体评估、观测、安全对齐 |
-| `orchestration` | 多智能体编排 |
-| `novel-chapter-deliverable-mode` | 小说章节交付模式 |
+| `research` | Fact support, data validation |
+| `testing` | Writing/verifying tests |
+| `review` | Code/content review |
+| `engineering` | Engineering implementation |
+| `creative` | Creative generation, style, revision |
+| `worldbuilding` | Worldbuilding, characters, timelines |
+| `state-machine` | State machine governance, branch reachability |
+| `npc-simulation` | NPC autonomy, memory, relationships |
+| `adaptive-difficulty` | Difficulty adaptation |
+| `game-engine` | Game turns, saves, commands |
+| `agent-governance` | Agent evaluation, observability, safety alignment |
+| `orchestration` | Multi-agent orchestration |
+| `novel-chapter-deliverable-mode` | Novel chapter delivery mode |
 
-详见 `capabilities/README.md`。
+See `capabilities/README.md`.
 
-## 规则优先级
+## Rule Priority
 
-冲突时高优先级胜出：
+Higher priority wins on conflict:
 
 ```
-P0：core/ 安全、权限、真实性、MCP 红线
-> P1：用户当前明确确认
-> P2：主 Profile 领域规则
-> P3：能力包按需规则
-> P4：模型默认行为
+P0: core/ security, permissions, truthfulness, MCP red lines
+> P1: user's current explicit confirmation
+> P2: main profile domain rules
+> P3: capability pack on-demand rules
+> P4: model default behavior
 ```
 
-## 重要边界
+## Boundaries
 
-**能保证**：
-- Profile 互斥不冲突
-- manifest 引用完整
-- 生成文件来自指定源
-- 规则集包含 core + profile + skills 三层
-- 手改生成文件可被重新生成覆盖
+**Can guarantee**:
+- Profiles are mutually exclusive and conflict-free
+- Manifest references are complete
+- Generated files come from specified sources
+- Rule sets include core + profile + skills three layers
+- Hand-edited generated files can be overwritten by re-syncing
 
-**不能保证**：
-- 任意模型 100% 执行自然语言规则
-- 单靠规则文件阻止危险操作（需工具权限、Git 钩子、人工确认）
-- 克隆后自动配置 Trae 自定义 Agent 或 MCP（必须手动配置）
+**Cannot guarantee**:
+- Any model 100% executes natural language rules
+- Rule files alone prevent dangerous operations (needs tool permissions, Git hooks, human confirmation)
+- Auto-configuration of Trae custom agents or MCP after cloning (manual setup required)
 
-## 仓库地址 / Repository
+## Repository
 
-本仓库在 GitCode 与 GitHub 同步托管，内容完全一致：
+This repository is mirrored on both GitCode and GitHub with identical content:
 
-- GitCode（主仓库）：https://gitcode.com/badhope/AI-RULE
-- GitHub（镜像）：https://github.com/weed33834/AI-RULE
+- GitCode (primary): https://gitcode.com/badhope/AI-RULE
+- GitHub (mirror): https://github.com/weed33834/AI-RULE
 
-## 许可证
+## License
 
 MIT

@@ -122,6 +122,19 @@
 | 成本 | 中等（额外的元层调用）。 |
 | 示例 | 见下方模板。 |
 
+### 模式 8: Extended Thinking / 扩展思考
+
+| 维度 | 内容 |
+|------|------|
+| 原理 | Model internally allocates reasoning token budget before responding — no manual "think step by step" needed. Claude 4.x and OpenAI o-series support this natively. The model decides how much to reason based on task complexity. |
+| 论文依据 | Anthropic Claude 4 engineering blog (2025); Cognition AI reports 18% planning improvement on Devin with Sonnet 4.5 Extended Thinking; OpenAI GPT-4.1 prompting guide confirms induced planning yields +4% on SWE-bench. |
+| 适用场景 | Complex multi-constraint tasks, mathematical reasoning, architectural decisions, multi-step debugging. Tasks where Chain-of-Thought would help but manual CoT instructions waste tokens. |
+| 不适用 | Simple tasks (classification, translation, formatting). Extended Thinking on trivial tasks wastes tokens and adds latency without benefit. |
+| 成本 | Variable — model self-manages token budget. Higher than Zero-shot, comparable to CoT but more efficient. |
+| 示例 | No manual prompt needed — enable Extended Thinking in your tool's settings. For non-reasoning models, induce planning with: `Before responding, outline your approach in 3-5 steps, then execute.` |
+
+> **Key distinction from CoT**: Extended Thinking is model-native. Do NOT combine with manual "think step by step" instructions — this is redundant and wastes tokens (confirmed by Anthropic, 2025).
+
 ---
 
 ## 决策树 / Decision Tree

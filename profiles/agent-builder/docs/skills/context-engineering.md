@@ -98,6 +98,26 @@ P3 立即裁剪 / Trim immediately:
 
 ---
 
+## Position Effects (Lost in the Middle)
+
+LLMs exhibit a U-shaped attention curve: they attend more reliably to content at the **beginning** and **end** of the context window, while content in the middle receives lower weight. This is an architectural bias caused by RoPE positional encoding's long-range decay — it does not disappear with document reordering.
+
+### Impact on Rule Adherence
+- Rules placed in the middle of a long context may be "seen" but under-weighted in practice.
+- When context exceeds 4k tokens or includes 3+ retrieved documents, middle-positioned rules are at risk.
+
+### Dual-Placement Strategy
+- **P0 red-line rules**: Place at both the **beginning** (system prompt opening) and **end** (keep-alive block / final reminder) of the context.
+- **P1 rules**: Place once at the beginning.
+- **P2-P4 rules**: Place in the middle is acceptable — they are advisory.
+- **Do NOT repeat all rules** — repeating everything removes the priority signal. Only repeat safety-critical hard constraints.
+
+### Reordering for Retrieved Content
+- When injecting retrieved documents, place the most relevant at the beginning and end.
+- Keep individual chunks under 2k tokens to maintain attention quality.
+
+---
+
 ## Unlimited Token Budget, Finite Context Window (Token 无限但上下文有限)
 
 对应 AGENTS.md §10 新增规则。

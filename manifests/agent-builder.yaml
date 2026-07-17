@@ -31,6 +31,7 @@ includes:
     - profiles/agent-builder/docs/skills/agent-observability.md
     - profiles/agent-builder/docs/skills/agent-templates-guide.md
     - profiles/agent-builder/docs/skills/agent-testing-automation.md
+    - profiles/agent-builder/docs/skills/anti-patterns.md
     - profiles/agent-builder/docs/skills/construction-playbook.md
     - profiles/agent-builder/docs/skills/context-engineering.md
     - profiles/agent-builder/docs/skills/conversation-design.md
@@ -52,6 +53,7 @@ includes:
     - profiles/agent-builder/docs/skills/registry.md
     - profiles/agent-builder/docs/skills/role-design.md
     - profiles/agent-builder/docs/skills/safety-guardrails.md
+    - profiles/agent-builder/docs/skills/self-refinement.md
     - profiles/agent-builder/docs/skills/skill-hub.md
     - profiles/agent-builder/docs/skills/tool-design.md
     - profiles/agent-builder/docs/skills/user-testing-guide.md

@@ -2,6 +2,12 @@
 
 [English](README.md) · [中文] · [日本語](README_JA.md)
 
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Profiles](https://img.shields.io/badge/profiles-5-green)
+![Files](https://img.shields.io/badge/files-226+-orange)
+![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
+![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
+
 > 5 套独立规则体系的单仓整合：核心层 + 单一主 Profile + 能力包。
 > 克隆一次，按场景选择 Profile，同步生成各 AI 工具的规则入口。
 
@@ -182,6 +188,21 @@ python scripts/sync_rules.py --profile coding --tool claude-code
 python scripts/sync_rules.py --profile coding --tool all
 ```
 
+## 研究驱动的优化
+
+本仓库融合了提示词工程与 AI 对齐领域的最新研究成果：
+
+- **指令预算 (Instruction Budget)**：ManyIFEval (ICLR 2025) 证明同时激活的指令越多，单条指令的遵循率越低（幂律衰减）。P0 红线规则限制在 ≤5 条同时激活，全部硬约束 ≤12 条。
+- **位置效应 (Lost in the Middle)**：大模型对上下文的注意力呈 U 型——首尾被重视，中间被弱化。P0 规则放在上下文窗口的首尾两端。
+- **反模式 (Anti-Patterns)**：全大写强调、纯否定式约束、手写"一步步思考"在新一代模型上已失效。规则采用条件逻辑 + 正向替代写法。
+- **扩展思考 (Extended Thinking)**：Claude 4.x / OpenAI o 系列的原生推理预算分配取代手动 CoT，用于复杂推理任务。
+- **三层行为边界**：允许（自主执行）/ 需确认 / 禁止——替代模糊的"适当行为"声明。
+- **GUID 分隔符注入防御**：随机 GUID 分隔符替代固定 `[UNTRUSTED]` 标记，防止标记闭合逃逸攻击。
+- **弃权协议 (Abstention Protocol)**：允许说"我不知道"，同时防止虚张声势——避免自信地编造。
+- **自我精炼 (Self-Refinement)**：Reflexion 循环与 Constitutional 自我批评，在输出前做质量自检。
+
+详见 `profiles/agent-builder/docs/skills/`。
+
 ## 验证测试
 
 ```bash
@@ -245,10 +266,10 @@ P0：core/ 安全、权限、真实性、MCP 红线
 
 ## 安全与保密红线（节选）
 
-- 绝对禁止把 API Key / Token / 密码硬编码进源代码，必须用 `os.getenv()` 读取。
-- 严禁把 `.env` 提交到 Git，确保其在 `.gitignore`。
-- 拉取外部模板时禁止带入其 `.git`、LICENSE、README 等无关文件。
-- 提交前必须 `git status` 检查意外文件；绝不自动 `git push`、绝不 `git push -f`、绝不盲目 `git add .`。
+- API Key / Token / 密码一律通过 `os.getenv()` 读取，保持源代码中无硬编码凭证。
+- `.env` 需列入 `.gitignore`，确保其不出现在 Git 历史中。
+- 拉取外部模板时只包含请求的文件，排除其 `.git`、LICENSE、README 等无关文件。
+- 提交前用 `git status` 检查意外文件；`git push` 需用户确认后再执行，`git push -f` 仅在明确批准时使用，暂存用 `git add <path>` 逐个指定而非 `git add .`。
 
 ## MCP 怎么配（通用）
 

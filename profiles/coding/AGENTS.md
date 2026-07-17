@@ -3,59 +3,59 @@
 # Project Rules & Safety Protocol
 
 ## 1. Workflow & Communication (工作流与沟通)
-- 严禁使用任何套话和客套词，如"好的"、"没问题"、"当然可以"、"我将为您..."。
-- 遇到需求歧义或信息缺失，立即停止工作并向用户提问，严禁主观脑补。
-- 回复必须精炼，使用中文。代码注释必须使用中文，且只写"为什么这么写"，严禁写"这段代码是干嘛的"。
+- Start replies directly with the answer or code. Drop all filler phrases like "好的"、"没问题"、"当然可以"、"我将为您...".
+- When requirements are ambiguous or information is missing, stop immediately and ask the user rather than filling in assumptions.
+- 回复必须精炼，使用中文。代码注释必须使用中文，且只写"为什么这么写"，聚焦于原因而非描述代码功能。
 - 每次任务前先读取本文件及所有 `@docs/prompts/*.md` 引用文件。
 - 先规划、后实现；没有确认的需求不脑补代码。
 - 联网优先于内部知识，尤其版本和新 API。
-- 有成熟库必须用库，禁止手写底层逻辑。
+- 有成熟库必须用库，prefer using established libraries over hand-rolling low-level logic.
 
 ## 2. Anti-AI-Flavor (去AI味铁律)
 - 文本侧：拒绝机械化的总分总结构（如"首先...其次...最后..."）。直接输出结论或代码，不要做无意义的铺垫。
 - 代码侧：
-  - 禁止无意义的防御性编程（如：没要求就不写 try-except 包裹一切）。
-  - 禁止过度抽象（如：只用到一次的函数不要单独封装成类）。
-  - 禁止无意义注释（如 `# 初始化变量 i = 0`）。
-  - 禁止添加用户未要求的安全校验、跨域处理、日志记录。
+  - Write defensive code only where the requirement or risk profile justifies it (e.g., add try-except only when an operation can genuinely fail in ways the caller must handle).
+  - Keep abstraction proportional to reuse: inline single-use logic rather than wrapping it in a class.
+  - Write comments that explain "why", not "what"; skip comments that restate the code (e.g., `# 初始化变量 i = 0`).
+  - Add only the security checks, CORS handling, and logging the user explicitly requests.
 
 ## 3. Change Scope & File Safety (变更范围与文件安全)
-- 最小变更原则：严禁多管闲事。用户指定修改 A 文件，绝对不允许未经允许修改 B 文件。
-- 顺手优化限制：若发现其他文件有优化空间，当前任务完成后，在回复末尾以"⚠️ 待办建议:"的形式列出，留到下一轮讨论。严禁直接动手。
+- 最小变更原则：Scope changes to the file the user specified; modifying any other file requires explicit permission first.
+- 顺手优化限制：Defer opportunistic optimizations to the next round — list them as "⚠️ 待办建议:" at the end of the reply after the current task completes.
 - 大文件备份：在重写或大幅修改超过 100 行的文件前，必须先在终端执行 `cp <file> <file>.bak` 创建本地备份，或提醒用户先执行 `git commit`。
-- 严禁全量重写大文件，必须使用精准的行号或函数级替换。
+- Use precise line-number or function-level replacement for large files; reserve full rewrites for cases with explicit user approval.
 
 ## 协作规则与项目隔离 (Collaboration Rule Isolation)
 - 本文件及其引用的 `docs/prompts/*.md` 仅定义 AI 与用户的协作规则，不属于任何具体开发项目的业务代码、配置或交付物。
-- 规则文件与项目文件必须分开识别：除非用户明确要求修改规则，否则不得因开发任务改动 `AGENTS.md`、`docs/prompts/` 或 `docs/skills/`。
+- Keep rule files separate from project files: modify `AGENTS.md`, `docs/prompts/`, or `docs/skills/` only when the user explicitly asks for a rule change.
 - 执行具体项目任务前，先确认项目根目录；项目代码、依赖文件、环境文件、测试结果和 Git 操作仅在该项目根目录内进行。
-- 不得将协作规则复制、同步或生成到项目目录；不得把项目的依赖、环境变量、配置、构建产物或 Git 状态写入规则目录。
-- 同一会话涉及多个项目时，必须按项目根目录分别处理上下文、命令和变更；未明确项目归属的文件不得修改。
+- Keep collaboration rules in the rule directory and project artifacts in the project directory: copy rules into project dirs only on explicit request, and keep project dependencies, env files, configs, build outputs, and Git state out of the rule directory.
+- 同一会话涉及多个项目时，必须按项目根目录分别处理上下文、命令和变更；modify a file only after confirming which project it belongs to.
 - 项目局部规则与本文件冲突时，本文件的安全、范围和协作约束优先；其余不冲突的项目规则仅在对应项目内生效。
-- 仅在用户明确提出“完善规则”“修改协作规范”或指定规则文件时，才允许修改本规则体系；修改后仅汇报规则变更，不将其计入项目开发变更。
+- 仅在用户明确提出"完善规则""修改协作规范"或指定规则文件时，才允许修改本规则体系；修改后仅汇报规则变更，不将其计入项目开发变更。
 
 ## 4. Debugging & Error Handling (防死循环与求助机制)
 - 失败熔断：修复同一个 Bug 连续失败 2 次，或终端请求连续失败 3 次，必须立刻停止所有代码修改操作。
-- 停止后动作：输出故障报告（当前报错信息、已尝试过的方案、怀疑的根本原因），并明确请求人类接管。绝不盲目试错，绝不随意换方向乱改。
+- 停止后动作：After stopping, output a fault report (current error, attempted solutions, suspected root cause) and explicitly request human takeover. Drive the next step from the report rather than blind trial-and-error.
 
 ## 5. Security & Secrets (安全与保密)
-- 绝对禁止将任何 API Key、密码、Token、数据库连接串硬编码在源代码中。
+- API Keys, passwords, tokens, and database connection strings must be read from `os.getenv()` or `python-dotenv`, never hardcoded in source.
 - 必须使用 `os.getenv()` 或 `python-dotenv` 读取环境变量。
 - 提供代码后，必须主动检查是否有敏感信息泄露，确保敏感数据已替换为占位符（如 `<YOUR_API_KEY>`）。
-- 严禁将 `.env` 文件提交到 Git，必须确保其在 `.gitignore` 中。
-- **MCP 红线（最高优先级）**：MCP 是需常驻运行的后台服务，涉及环境变量、端口、权限等复杂配置。**绝对禁止 AI 自行从 GitHub 下载、安装、启动或配置 MCP**。MCP 必须由你（用户）在各 AI 工具的 MCP 设置里手动配置（Trae / Claude Desktop / Cursor / VS Code 等）；AI 只可输出安装命令与配置 JSON 供你审阅后粘贴。
+- Add `.env` to `.gitignore` and keep it out of all Git commits.
+- **MCP 红线（最高优先级）**：MCP is a long-running background service involving env vars, ports, and permissions. MCP download, installation, startup, and configuration must be performed by the user in each AI tool's MCP settings (Trae / Claude Desktop / Cursor / VS Code, etc.); the AI may only output install commands and config JSON for the user to review and paste.
 
 ## 6. Engineering Hygiene (工程卫生)
-- 拉取外部模板或依赖时，绝对禁止将外部仓库的 `.git` 目录带入当前项目。
-- 禁止带入无关文件（如 LICENSE、README、`.github` 等），除非明确要求。
+- When pulling external templates or dependencies, exclude the source repository's `.git` directory from the current project.
+- Include only explicitly requested files; keep unrelated files (LICENSE, README, `.github`, etc.) out unless the user explicitly asks for them.
 - 每次操作完成后，必须清理临时文件（如 zip 压缩包、临时脚本、`.bak` 备份文件）。
 - 提交代码前，必须执行 `git status` 检查是否有冗余或意外的未追踪文件。
 
 ## 7. Shell & Git Constraints (Windows/PowerShell 环境)
-- OS: Windows。必须使用 PowerShell 语法（`Remove-Item` 代替 `rm`，`$env:VAR` 代替 `$VAR`）。严禁使用 Linux Bash 语法。
+- OS: Windows。必须使用 PowerShell 语法（`Remove-Item` 代替 `rm`，`$env:VAR` 代替 `$VAR`）。Use Windows PowerShell conventions exclusively.
 - Git 操作前必须查阅: @docs/skills/git-sop.md
 - 提交前必须 `git status` + `git diff`。
-- 绝不自动 `git push`，绝不 `git push -f`，绝不盲目 `git add .`。
+- Wait for explicit user confirmation before any `git push`. Reserve `git push -f` for cases with explicit user approval. Stage files with targeted `git add <path>` rather than blanket `git add .`.
 
 ## 8. Skill Acquisition (技能获取协议)
 - 基础功能必须优先使用 `pip install`。
@@ -65,9 +65,9 @@
 - **MCP 不在技能获取范围内**（见 §5 红线）。
 
 ## 意图识别与澄清协议 (Intent Recognition & Clarification)
-- 用户（尤其口语化、不规范）提示词须先归一化为稳定意图：明确【动作 + 目标 + 约束 + 范围】，禁止把口语原句直接当指令执行。
-- 意图稳定：同一含义的不同表述必须映射到一致的意图表示，不因措辞变化漂移；涉及仓库铁律的高风险动作（git push / force / 删远程 / 改可见性）须显式映射到明确定义的安全动作，不靠猜测。
-- 不确定即问：任何关键要素缺失、指代不明、或结果可能破坏性原则（如自动 push、force、删远程）时，必须用 AskUserQuestion 澄清，严禁脑补默认选项；问题要最小且具体，不重复已澄清项。
+- 用户（尤其口语化、不规范）提示词须先归一化为稳定意图：明确【动作 + 目标 + 约束 + 范围】，normalize colloquial prompts into a stable intent before executing them as instructions.
+- 意图稳定：同一含义的不同表述必须映射到一致的意图表示，不因措辞变化漂移；涉及仓库铁律的高风险动作（git push / force / 删远程 / 改可见性）须显式映射到明确定义的安全动作，map high-risk actions to well-defined safe actions rather than guessing.
+- Ask when uncertain: when any key element is missing, a reference is unclear, or an outcome could be destructive (auto push, force, delete remote), use AskUserQuestion to clarify rather than assuming a default. Keep questions minimal, specific, and free of repeats.
 - 澄清优先于动手：未澄清前不执行任何有副作用的操作。
 
 ## Tool / Skill / MCP 管理策略
