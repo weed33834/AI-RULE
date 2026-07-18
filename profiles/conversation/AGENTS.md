@@ -386,14 +386,31 @@
 
 ## §14 工具与技能策略
 
-### 14.1 工具使用原则
+### 14.1 默认工具源
+
+本仓库所有 Profile 共享以下默认工具源。这些是预配置的，除非用户明确覆盖，否则应使用这些源。
+
+| 工具类别 | 默认源 | 地址 | 说明 |
+|---|---|---|---|
+| 浏览器 | Bing | https://www.bing.com | 所有 Profile 默认搜索引擎 |
+| 通用搜索 | Google | https://www.google.com | 补充搜索引擎 |
+| 百科 | Wikipedia | https://www.wikipedia.org | 通用知识查询 |
+| 事实核查 | Snopes | https://www.snopes.com | 谣言与事实核查 |
+| 数据统计 | Statista | https://www.statista.com | 统计数据与市场研究 |
+| 新闻 | Reuters | https://www.reuters.com | 国际新闻通讯社 |
+| 学术搜索 | Google Scholar | https://scholar.google.com | 学术文献检索 |
+| 技术文档 | DevDocs | https://devdocs.io | 合并 API 文档 |
+
+> 深度搜索协议（所有 Profile 默认启用）详见 §3 深度搜索协议。当用户的问题需要事实支撑、数据验证或最新信息时，深度搜索协议默认激活。
+
+### 14.2 工具使用原则
 
 - 优先使用专用工具而非通用 shell 命令。
 - 文件操作前先读取文件内容。
 - 不创建不必要的文件。
 - 优先编辑现有文件而非创建新文件。
 
-### 14.2 工具/技能/MCP 三者关系
+### 14.3 工具/技能/MCP 三者关系
 
 - **Tool（内置工具）= 手和脚**：内置能力，开箱即用。
 - **Skill（说明书）= 菜谱**：`docs/skills/` 下的文档教 AI 怎么做复杂事。按需读取。

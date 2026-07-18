@@ -11,6 +11,7 @@ profile:
     - conversation
     - interactive-novel
     - agent-builder
+    - paper
 
 includes:
   core:

@@ -14,7 +14,7 @@ from sync_rules import (
     list_profiles, TOOL_OUTPUT, parse_includes, parse_list_field,
 )
 
-PROFILES = ["coding", "conversation", "novel", "interactive-novel", "agent-builder"]
+PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
 
 
 def test_parse_manifest_structure():
@@ -30,7 +30,7 @@ def test_parse_manifest_structure():
 
 
 def test_list_profiles():
-    """list_profiles 返回全部 5 个"""
+    """list_profiles 返回全部 6 个"""
     profiles = list_profiles()
     assert set(profiles) == set(PROFILES), f"profile 列表不匹配: {profiles}"
     print(f"[PASS] list_profiles: {profiles}")

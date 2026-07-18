@@ -2,6 +2,25 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，版本号参考语义化版本。
 
+## [1.2.0] — 2026-07-18
+
+### 新增
+
+- **paper Profile（学术论文写作）**：新增第 6 个 Profile，专门用于学术论文写作。包含 22 个文件（1 AGENTS.md + 1 INIT-PROMPT + 4 prompts + 16 skills），覆盖学术诚信协议、引用验证流程、文献综述方法论、论文结构框架（IMRaD/Review/Position/Case Study）、研究问题提炼、方法论设计、数据呈现、去AI学术味、模拟同行评审、修订信回复。
+- **默认工具源配置**：所有 6 个 Profile 统一默认工具源——浏览器 Bing（所有 Profile 默认）、coding（PyPI/npm/GitHub/Stack Overflow/MDN）、conversation（Google/Wikipedia/Snopes/Statista）、novel（Merriam-Webster/Etymonline/Behind the Name/Zdic）、interactive-novel（Game Designing/Unity Docs/Unreal Docs）、agent-builder（Hugging Face/Papers with Code/LangChain/MCP Registry）、paper（Google Scholar/Semantic Scholar/arXiv/PubMed/DBLP/Zotero/CrossRef/Retraction Watch）。
+- **深度搜索协议**：所有 6 个 Profile 默认启用深度搜索协议——查询 → 多源搜索 → 交叉验证（2+ 独立来源）→ 综合。用于事实支持、数据验证和领域特定查找。
+- **CITATION.cff**：学术引用文件，GitHub 自动显示"Cite this repository"按钮。
+- **GitHub Discussions**：已启用，Q&A 与 Issue 分离。
+- **Star History + Back to Top**：三个语言版本 README 末尾添加。
+
+### 变更
+
+- `core/profile-router.md`：主 Profile 表加入 paper；互斥表更新；锚点加入 `manuscript/` 和 `references.bib`；关键词加入论文/文献/引用/投稿/审稿。
+- `manifests/coding.yaml`、`conversation.yaml`、`novel.yaml`、`interactive-novel.yaml`：互斥列表加入 paper。
+- 3 个 README：Profile 数 5→6；文件数 209→234；徽章更新。
+- `SECURITY.md`：漏洞披露联系方式改为"在仓库提 issue 向维护者索取"。
+- `tests/conftest.py`：新增 session-scope fixture，测试结束后自动用 coding profile 恢复所有生成文件。
+
 ## [1.1.0] — 2026-07-17
 
 ### 新增

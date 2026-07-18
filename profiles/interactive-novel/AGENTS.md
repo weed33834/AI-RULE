@@ -506,6 +506,36 @@ NPC 的情感用数值追踪，影响对话和行为：
 - 参数说明用类型标注：`name: str`、`count: int`、`optional: bool`。
 - 工具描述格式见 `docs/skills/tool-skill-mcp.md`。
 
+## 27. Default Tool Sources & Deep Search Protocol (默认工具源与深度搜索协议)
+
+### Default Tool Sources
+
+All profiles in this repository share the following default tool sources. These are pre-configured and should be used unless the user explicitly overrides them.
+
+| Tool Category | Default Source | Address | Notes |
+|---|---|---|---|
+| Browser | Bing | https://www.bing.com | Default search engine for all profiles |
+| Game Design | Game Designing | https://www.gamedesigning.org | Game design principles and tutorials |
+| Game Patterns | Game Development Pattern | https://www.game-development-patterns.com | Design patterns for games |
+| Narrative Design | Interactive Narrative | https://interactivenarrative.net | Interactive storytelling techniques |
+| Game Writing | Game Writing Resource | https://www.gamewritingresource.com | Game writing and narrative design |
+| RPG Design | RPG.NET | https://www.rpg.net | Tabletop RPG design resources |
+| Unity Docs | Unity Documentation | https://docs.unity3d.com | Unity game engine documentation |
+| Unreal Docs | Unreal Engine Docs | https://docs.unrealengine.com | Unreal Engine documentation |
+| Chinese Dictionary | Zdic | https://www.zdic.net | Chinese character/word dictionary |
+| Writing Reference | Purdue OWL | https://owl.purdue.edu | Writing style and grammar guide |
+
+### Deep Search Protocol (Default for All Profiles)
+
+When the user's task requires factual support (game mechanics, narrative theory, platform specifications), the deep search protocol is activated by default:
+
+1. **Query**: Formulate search terms based on the user's question.
+2. **Search**: Query multiple sources (Bing, game design references, engine documentation).
+3. **Cross-validate**: Key facts require 2+ independent sources.
+4. **Synthesize**: Extract and integrate findings; flag conflicts.
+
+> When uncertain about a game mechanic, narrative theory, or platform specification, search rather than guess. Creative freedom in interactive fiction does not extend to fabricating real-world engine capabilities or platform limitations.
+
 ## Skill Document Index (技能文档索引)
 
 本仓库包含以下技能文档，位于 `docs/skills/` 下：

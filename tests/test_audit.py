@@ -12,7 +12,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from sync_rules import parse_manifest, build_ruleset, list_profiles, TOOL_OUTPUT
 
-PROFILES = ["coding", "conversation", "novel", "interactive-novel", "agent-builder"]
+PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
 
 issues = []
 

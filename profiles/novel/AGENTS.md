@@ -384,31 +384,61 @@
 - 创作工具描述需包含：适用类型、适用分级、是否需要联网。
 - 详细标准见 `docs/skills/tool-skill-mcp.md`。
 
-## 18. Rule Compliance Audit (规则遵守审计)
+## 18. Default Tool Sources & Deep Search Protocol (默认工具源与深度搜索协议)
+
+### Default Tool Sources
+
+All profiles in this repository share the following default tool sources. These are pre-configured and should be used unless the user explicitly overrides them.
+
+| Tool Category | Default Source | Address | Notes |
+|---|---|---|---|
+| Browser | Bing | https://www.bing.com | Default search engine for all profiles |
+| Dictionary | Merriam-Webster | https://www.merriam-webster.com | English dictionary and thesaurus |
+| Thesaurus | Power Thesaurus | https://www.powerthesaurus.org | Community-driven synonym finder |
+| Etymology | Etymonline | https://www.etymonline.com | Word origin and history |
+| Naming | Behind the Name | https://www.behindthename.com | Character name meanings and origins |
+| Idioms | The Free Dictionary | https://idioms.thefreedictionary.com | Idiom lookup and usage |
+| Chinese Dictionary | Zdic | https://www.zdic.net | Chinese character/word dictionary |
+| Chinese Synonym | 百度汉语 | https://hanyu.baidu.com | Chinese synonyms and usage examples |
+| Writing Reference | Purdue OWL | https://owl.purdue.edu | Writing style and grammar guide |
+| Publishing Info | Query Tracker | https://querytracker.net | Publisher and agent information |
+
+### Deep Search Protocol (Default for All Profiles)
+
+When the user's task requires factual support (historical settings, cultural details, genre conventions), the deep search protocol is activated by default:
+
+1. **Query**: Formulate search terms based on the user's question.
+2. **Search**: Query multiple sources (Bing, dictionaries, encyclopedias, genre-specific references).
+3. **Cross-validate**: Key facts require 2+ independent sources.
+4. **Synthesize**: Extract and integrate findings; flag conflicts.
+
+> When uncertain about a historical fact, cultural detail, or technical reference, search rather than guess. Creative freedom does not extend to fabricating real-world facts referenced in the narrative.
+
+## 19. Rule Compliance Audit (规则遵守审计)
 - 每次创作会话结束后，自动生成审计摘要：本章触发规则次数、一致性违规次数、伏笔状态。
 - 审计数据存储于 `.ai-memory/audit-log.md`，供演进策略分析。
 - 详细审计维度见 `docs/skills/creative-evaluation.md` 模式 1。
 
-## 19. Creative Evaluation & Advanced Architecture (创意评估与高级架构模式)
+## 20. Creative Evaluation & Advanced Architecture (创意评估与高级架构模式)
 > 12 项高级架构模式的小说创作场景定制版，来源：DeepEval / RAGAS / BFCL / τ-bench / OpenTelemetry GenAI / Langfuse / Promptfoo / Garak / SelfCheckGPT / Vectara HEM / Anthropic Constitutional AI / Reflexion / Microsoft GraphRAG / Anthropic MCP。
 > 完整规范见 `docs/skills/creative-evaluation.md`。
 
-### 19.1 创意评估体系（4 项）
+### 20.1 创意评估体系（4 项）
 - **模式 1** 创意写作自动化评估：三道判定（语法检查 → 内部一致性检查 → LLM-as-judge 文学质量评估）+ 六维雷达图（文学性/吸引力/一致性/角色深度/节奏感/创意度）。
 - **模式 2** 创意辅助工具可靠性：评估角色生成器/情节推演器/世界观检查器的输出质量。
 - **模式 3** 创意 τ-bench 测试：读者模拟器 → 被测写作 Agent → 文学评判器三角色架构。
 - **模式 4** 跨平台一致性：同一创作种子在不同 AI 平台的输出质量对比 + Elo 排名。
 
-### 19.2 创意可观测性（2 项）
+### 20.2 创意可观测性（2 项）
 - **模式 5** 六类 span 模型：root/agent/subagent/transfer/rule/tool + 创作专属 `scene span`（场景号/角色/字数/情绪标签/POV）。
 - **模式 6** 可观测性架构：采集（OTel SDK）→ 存储（Langfuse 自部署）→ 分析（trace→创作模式→改进闭环）。
 
-### 19.3 创意安全与对齐（3 项）
+### 20.3 创意安全与对齐（3 项）
 - **模式 7** 对抗性测试：测试 AI 是否生成不一致/陈词滥调/模板化/越级内容。
 - **模式 8** 内部一致性检测（替代幻觉检测）：三层——角色行为一致性 / 世界观规则自洽 / 时间线连贯性。
 - **模式 9** Constitutional Self-Critique：输出前用全部创作规则 + 内容分级 + 内部一致性规则自我批评+修订。
 
-### 19.4 创意高级架构（3 项）
+### 20.4 创意高级架构（3 项）
 - **模式 10** 创意 Reflexion：写不好→分析原因（套路化？OOC？节奏失调？）→调整策略→重写。
 - **模式 11** 创意 GraphRAG / Agentic RAG：基于故事知识图谱的全局查询（"所有角色的关系网络""所有未回收伏笔"）。
 - **模式 12** 创意 MCP Server 封装：把核心能力（一致性检查/角色生成/情节推演/伏笔追踪）封装为标准 MCP 工具。

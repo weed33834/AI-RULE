@@ -1,0 +1,77 @@
+# paper Profile Assembly Manifest
+# Source repo: badhope/paper
+# Scenario: Academic paper writing, literature review, manuscript drafting, peer-review simulation
+
+profile:
+  id: paper
+  name: Academic Paper Writing Rules
+  source_repo: badhope/paper
+  mutually_exclusive_with:
+    - novel
+    - interactive-novel
+
+includes:
+  core:
+    - core/governance.md
+    - core/interaction.md
+    - core/profile-router.md
+    - core/language-mediation.md
+  profile:
+    - profiles/paper/AGENTS.md
+    - profiles/paper/docs/prompts/system-prompt.md
+    - profiles/paper/docs/prompts/literature-reviewer.md
+    - profiles/paper/docs/prompts/writer-subagent.md
+    - profiles/paper/docs/prompts/reviewer-subagent.md
+  skills:
+    - profiles/paper/docs/skills/academic-integrity.md
+    - profiles/paper/docs/skills/citation-protocol.md
+    - profiles/paper/docs/skills/literature-synthesis.md
+    - profiles/paper/docs/skills/paper-structure.md
+    - profiles/paper/docs/skills/research-question.md
+    - profiles/paper/docs/skills/methodology-design.md
+    - profiles/paper/docs/skills/data-presentation.md
+    - profiles/paper/docs/skills/academic-style.md
+    - profiles/paper/docs/skills/peer-review-simulation.md
+    - profiles/paper/docs/skills/revision-response.md
+    - profiles/paper/docs/skills/context-management.md
+    - profiles/paper/docs/skills/evolution-policy.md
+    - profiles/paper/docs/skills/path-scoped-rules.md
+    - profiles/paper/docs/skills/security-checklist.md
+    - profiles/paper/docs/skills/tool-skill-mcp.md
+    - profiles/paper/docs/skills/git-sop.md
+
+enables_capabilities:
+  - research
+
+forbids_capabilities:
+  - game-engine
+  - state-machine
+  - npc-simulation
+  - novel-chapter-deliverable-mode
+
+activation_anchors:
+  - .ai-memory/paper-blueprint.md
+  - manuscript/
+  - references.bib
+
+intent_keywords:
+  - paper
+  - literature review
+  - abstract
+  - introduction
+  - methodology
+  - results
+  - discussion
+  - citation
+  - submit
+  - review
+  - 论文
+  - 文献综述
+  - 摘要
+  - 引言
+  - 方法
+  - 结果
+  - 讨论
+  - 引用
+  - 投稿
+  - 审稿

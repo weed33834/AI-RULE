@@ -12,12 +12,13 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from sync_rules import parse_manifest, list_profiles, TOOL_OUTPUT
 
 CORE_FILES = ["governance.md", "interaction.md", "profile-router.md", "language-mediation.md"]
-PROFILES = ["coding", "conversation", "novel", "interactive-novel", "agent-builder"]
+PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
 MUTEX = {
     "coding": ["novel", "interactive-novel"],
     "conversation": ["novel", "interactive-novel", "agent-builder"],
-    "novel": ["coding", "conversation", "interactive-novel", "agent-builder"],
-    "interactive-novel": ["coding", "conversation", "novel", "agent-builder"],
+    "novel": ["coding", "conversation", "interactive-novel", "agent-builder", "paper"],
+    "interactive-novel": ["coding", "conversation", "novel", "agent-builder", "paper"],
+    "paper": ["novel", "interactive-novel"],
     "agent-builder": ["conversation", "novel", "interactive-novel"],
 }
 
@@ -40,7 +41,7 @@ def test_profiles_exist():
         file_count = sum(1 for _ in docs.rglob("*") if _.is_file())
         assert file_count > 0, f"{pid}: docs/ 为空"
         print(f"  {pid}: AGENTS.md + docs/ ({file_count} 文件) OK")
-    print("[PASS] 5 个 Profile 结构完整")
+    print("[PASS] 6 个 Profile 结构完整")
 
 
 def test_manifests_exist():
@@ -85,7 +86,7 @@ def test_sync_all_profiles():
         out = write_tool_file("claude-code", pid, ruleset)
         assert out.exists(), f"{pid}: 写入失败"
         print(f"  {pid}: {len(ruleset)} 字符 -> {out.name}")
-    print("[PASS] 5 个 Profile 均可同步生成")
+    print("[PASS] 6 个 Profile 均可同步生成")
 
 
 def test_generated_drift():

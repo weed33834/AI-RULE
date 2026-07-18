@@ -500,6 +500,36 @@
 - User testing guide (3-phase testing, think-aloud, feedback analysis): @@docs/skills/user-testing-guide.md
 - Self-refinement & self-critique (Reflexion loop, Constitutional self-check): @@docs/skills/self-refinement.md
 
+## Default Tool Sources & Deep Search Protocol
+
+### Default Tool Sources
+
+All profiles in this repository share the following default tool sources. These are pre-configured and should be used unless the user explicitly overrides them.
+
+| Tool Category | Default Source | Address | Notes |
+|---|---|---|---|
+| Browser | Bing | https://www.bing.com | Default search engine for all profiles |
+| AI Models | Hugging Face | https://huggingface.co | Model hub and benchmarks |
+| AI Papers | Papers with Code | https://paperswithcode.com | ML papers with code implementations |
+| Prompt Library | Prompt Engineering Guide | https://www.promptingguide.ai | Prompt engineering patterns and techniques |
+| Agent Framework | LangChain Docs | https://python.langchain.com | Agent framework documentation |
+| LLM Evaluation | Open LLM Leaderboard | https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard | LLM benchmark leaderboard |
+| ML Datasets | Hugging Face Datasets | https://huggingface.co/datasets | Dataset hub |
+| Vector Database | Chroma | https://www.trychroma.com | Open-source vector database |
+| MCP Registry | Anthropic MCP | https://modelcontextprotocol.io | Model Context Protocol specification |
+| Python Package | PyPI | https://pypi.org | Python package index |
+
+### Deep Search Protocol (Default for All Profiles)
+
+When the user's task requires factual support (model capabilities, benchmark results, framework features), the deep search protocol is activated by default:
+
+1. **Query**: Formulate search terms based on the user's question.
+2. **Search**: Query multiple sources (Bing, Hugging Face, Papers with Code, official documentation).
+3. **Cross-validate**: Key claims require 2+ independent sources.
+4. **Synthesize**: Extract and integrate findings; flag conflicts.
+
+> When uncertain about a model's capability, a benchmark result, or a framework feature, search rather than guess. Do not fabricate model names, benchmark scores, or API capabilities.
+
 ## Rule Self-Evolution Protocol (规则自进化协议)
 
 **中文**:

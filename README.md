@@ -3,12 +3,12 @@
 [English] · [中文](README_CN.md) · [日本語](README_JA.md)
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Profiles](https://img.shields.io/badge/profiles-5-green)
-![Files](https://img.shields.io/badge/files-209+-orange)
+![Profiles](https://img.shields.io/badge/profiles-6-green)
+![Files](https://img.shields.io/badge/files-234+-orange)
 ![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
-> A single repository integrating 5 independent rule systems: core layer + one active profile + capability packs.
+> A single repository integrating 6 independent rule systems: core layer + one active profile + capability packs.
 > Clone once, pick a profile, sync to any AI tool's rule file.
 
 ---
@@ -150,11 +150,12 @@ AI-RULE/
 │   ├── interaction.md           # Clarification, intent normalization, output spec
 │   ├── profile-router.md        # Profile selection and capability pack whitelist
 │   └── language-mediation.md    # Language mediation protocol (English reasoning, user-language output)
-├── profiles/                    # 5 independent rule sets
+├── profiles/                    # 6 independent rule sets
 │   ├── coding/          ( 13 files)
 │   ├── conversation/    ( 19 files)
 │   ├── novel/           ( 28 files)
 │   ├── interactive-novel/ (31 files)
+│   ├── paper/           ( 22 files)
 │   └── agent-builder/   ( 70 files)
 ├── capabilities/                # 13 on-demand capability packs
 ├── manifests/                   # Per-profile assembly manifests

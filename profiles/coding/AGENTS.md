@@ -77,6 +77,36 @@
 - 允许的 MCP 服务清单与配置说明见 @docs/skills/mcp-registry.md（仅参考，手动配置）。
 - 三者关系与落地结构详解见 @docs/skills/tool-skill-mcp.md。
 
+## Default Tool Sources & Deep Search Protocol
+
+### Default Tool Sources
+
+All profiles in this repository share the following default tool sources. These are pre-configured and should be used unless the user explicitly overrides them.
+
+| Tool Category | Default Source | Address | Notes |
+|---|---|---|---|
+| Browser | Bing | https://www.bing.com | Default search engine for all profiles |
+| Package Registry (Python) | PyPI | https://pypi.org | Python package index |
+| Package Registry (Node.js) | npm | https://www.npmjs.com | Node.js package registry |
+| Code Repository | GitHub | https://github.com | Code hosting, issue tracking, CI/CD |
+| Q&A | Stack Overflow | https://stackoverflow.com | Programming Q&A community |
+| Web Docs | MDN Web Docs | https://developer.mozilla.org | HTML, CSS, JavaScript, Web API |
+| API Reference | DevDocs | https://devdocs.io | Consolidated API documentation |
+| Vulnerability DB | CVE Details | https://www.cvedetails.com | Security vulnerability lookup |
+| Dependency Security | Snyk DB | https://security.snyk.io | Dependency vulnerability database |
+| Python Docs | python.org | https://docs.python.org | Official Python documentation |
+
+### Deep Search Protocol (Default for All Profiles)
+
+When the user's task requires factual support, dependency verification, or error diagnosis, the deep search protocol is activated by default:
+
+1. **Query**: Formulate search terms based on the user's question.
+2. **Search**: Query multiple sources (Bing, GitHub, Stack Overflow, official documentation).
+3. **Cross-validate**: Key claims require 2+ independent sources.
+4. **Synthesize**: Extract and integrate findings; flag conflicts.
+
+> When uncertain, searching beats guessing. Do not fabricate APIs, libraries, or version numbers.
+
 ## Tech Stack & Commands (技术栈与命令)
 - Primary: Python 3.12+ (async/await + type hints by default)
 - Frameworks: FastAPI, Pydantic (按实际改)

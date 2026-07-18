@@ -3,21 +3,21 @@
 [English](README.md) · [中文] · [日本語](README_JA.md)
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Profiles](https://img.shields.io/badge/profiles-5-green)
-![Files](https://img.shields.io/badge/files-209+-orange)
+![Profiles](https://img.shields.io/badge/profiles-6-green)
+![Files](https://img.shields.io/badge/files-234+-orange)
 ![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
-> 5 套独立规则体系的单仓整合：核心层 + 单一主 Profile + 能力包。
+> 6 套独立规则体系的单仓整合：核心层 + 单一主 Profile + 能力包。
 > 克隆一次，按场景选择 Profile，同步生成各 AI 工具的规则入口。
 
 ---
 
 ## 这个仓库是干嘛的
 
-本仓库是 **AI 协作规则的唯一权威来源**，不是任何具体开发项目的业务代码。它整合了 5 套原本独立的规则仓库（coding / conversation / novel / interactive-novel / agent-builder），按场景隔离加载，避免"禁止虚构"与"小说必须能虚构"这类领域约束互相冲突。
+本仓库是 **AI 协作规则的唯一权威来源**，不是任何具体开发项目的业务代码。它整合了 6 套原本独立的规则仓库（coding / conversation / novel / interactive-novel / paper / agent-builder），按场景隔离加载，避免"禁止虚构"与"小说必须能虚构"这类领域约束互相冲突。
 
-**为什么合并**：避免 5 套规则各自漂移、避免每次使用克隆多个仓库、统一跨工具同步入口。
+**为什么合并**：避免 6 套规则各自漂移、避免每次使用克隆多个仓库、统一跨工具同步入口。
 **为什么不揉成一套**：领域约束互斥，必须按 Profile 隔离。
 
 ## 核心架构
@@ -96,7 +96,7 @@ python scripts/sync_rules.py --profile novel --tool all
 | 设计 Agent/智能体配置/工具权限 | `agent-builder` |
 | 查询/对比/分析/调研 | `conversation` |
 
-## 5 个 Profile 详细说明
+## 6 个 Profile 详细说明
 
 ### coding（软件开发）
 - **来源**：badhope/AI
@@ -126,6 +126,13 @@ python scripts/sync_rules.py --profile novel --tool all
 - **可叠加能力包**：creative、research、state-machine、npc-simulation、adaptive-difficulty
 - **互斥**：coding、conversation、novel、agent-builder
 
+### paper（学术论文写作）
+- **来源**：badhope/paper
+- **适用**：学术论文写作、文献综述、投稿、审稿回复
+- **核心能力**：学术诚信协议、引用验证流程、文献综述方法论、论文结构框架（IMRaD/Review/Position/Case Study）、研究问题提炼、方法论设计、数据呈现、去AI学术味、模拟同行评审、修订信回复
+- **可叠加能力包**：research
+- **互斥**：novel、interactive-novel
+
 ### agent-builder（智能体构建）
 - **来源**：badhope/AgentCreater
 - **适用**：设计/评估/部署智能体，产出 config、工具定义、测试用例
@@ -143,12 +150,13 @@ AI-RULE/
 │   ├── interaction.md           # 澄清、意图归一化、输出规范
 │   ├── profile-router.md        # Profile 选择与能力包白名单
 │   └── language-mediation.md    # 语言中介协议（提示英语、输出用户语言）
-├── profiles/                    # 5 套独立规则
+├── profiles/                    # 6 套独立规则
 │   ├── coding/          ( 13 文件)
 │   ├── conversation/    ( 19 文件)
 │   ├── novel/           ( 28 文件)
 │   ├── interactive-novel/ (31 文件)
-│   └── agent-builder/   ( 70 文件)   # 合计 161 文件
+│   ├── paper/           ( 22 文件)
+│   └── agent-builder/   ( 70 文件)   # 合计 183 文件
 ├── capabilities/                # 13 个按需能力包（capabilities/*.md）
 ├── manifests/                   # 每个 Profile 的装配清单
 ├── adapters/                    # 可选工具追加片段（扩展点，sync_rules.py 检测，不存在时跳过）
@@ -157,7 +165,7 @@ AI-RULE/
 └── tests/                       # 5 套测试（40 项检查，全部通过）
 ```
 
-> 真实统计：5 个 Profile 合计 **161** 个文件；`capabilities/` 13 个能力包；`core/` 4 个文件；仓库总文件 **209**（不含 `.git`）。
+> 真实统计：6 个 Profile 合计 **183** 个文件；`capabilities/` 13 个能力包；`core/` 4 个文件；仓库总文件 **234**（不含 `.git`）。
 
 ## 语言机制
 

@@ -11,6 +11,7 @@ profile:
     - conversation
     - novel
     - agent-builder
+    - paper
 
 includes:
   core:

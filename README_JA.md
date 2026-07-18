@@ -3,12 +3,12 @@
 [English](README.md) · [中文](README_CN.md) · [日本語]
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Profiles](https://img.shields.io/badge/profiles-5-green)
-![Files](https://img.shields.io/badge/files-209+-orange)
+![Profiles](https://img.shields.io/badge/profiles-6-green)
+![Files](https://img.shields.io/badge/files-234+-orange)
 ![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
-> 5つの独立ルール体系を一つのリポジトリに統合：コア層＋単一プロファイル＋機能パック。
+> 6つの独立ルール体系を一つのリポジトリに統合：コア層＋単一プロファイル＋機能パック。
 > 一度クローンし、プロファイルを選択、各AIツールのルールエントリを生成。
 
 ---
@@ -68,7 +68,7 @@ AI-RULE/
 │   ├── interaction.md           # 確認、意図正規化、出力仕様
 │   ├── profile-router.md        # プロファイル選択と機能パックホワイトリスト
 │   └── language-mediation.md    # 言語仲介プロトコル
-├── profiles/                    # 5つの独立ルールセット
+├── profiles/                    # 6つの独立ルールセット
 ├── capabilities/                # 13のオンデマンド機能パック
 ├── manifests/                   # プロファイル別アセンブリマニフェスト
 ├── scripts/sync_rules.py        # ツールエントリファイル生成

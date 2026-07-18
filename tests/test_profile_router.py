@@ -11,7 +11,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from sync_rules import parse_manifest
 
-PROFILES = ["coding", "conversation", "novel", "interactive-novel", "agent-builder"]
+PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
 
 # profile-router.md 中声明的关键词映射
 ROUTER_KEYWORDS = {

@@ -1,6 +1,6 @@
 """
 复杂场景测试
-用 5 个真实复杂任务验证 Profile 选择、能力包叠加、互斥约束和规则冲突处理。
+用 6 个真实复杂任务验证 Profile 选择、能力包叠加、互斥约束和规则冲突处理。
 运行: python tests/test_scenarios.py
 """
 import sys
