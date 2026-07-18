@@ -271,3 +271,15 @@ This repository is mirrored on both GitCode and GitHub with identical content:
 ## License
 
 MIT
+
+---
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=weed33834/AI-RULE&type=Date)](https://star-history.com/#weed33834/AI-RULE&Date)
+
+<div align="center">
+
+[↑ Back to Top](#rule-hub--unified-ai-collaboration-rules)
+
+</div>

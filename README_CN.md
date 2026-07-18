@@ -285,3 +285,15 @@ MCP 涉及常驻进程与权限，**配置权在你手里**：AI 禁止自下载
 ## 许可证
 
 MIT
+
+---
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=weed33834/AI-RULE&type=Date)](https://star-history.com/#weed33834/AI-RULE&Date)
+
+<div align="center">
+
+[↑ 返回顶部](#-rule-hub--统一规则中枢中文)
+
+</div>
