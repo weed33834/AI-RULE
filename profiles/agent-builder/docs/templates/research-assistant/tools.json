@@ -14,7 +14,8 @@
             },
             "num_results": {
               "type": "integer",
-              "description": "Number of results to return. Default: 10."
+              "description": "Number of results to return. Default: 10.",
+              "default": 10
             },
             "date_range": {
               "type": "string",
@@ -155,7 +156,8 @@
             },
             "max_length": {
               "type": "integer",
-              "description": "Maximum summary length in words. Default: 500."
+              "description": "Maximum summary length in words. Default: 500.",
+              "default": 500
             }
           },
           "required": ["url"]

@@ -154,6 +154,11 @@ def run_all():
             print(f"[FAIL] {t.__name__}: {e}")
             return False
     print(f"\n{passed}/{len(tests)} 通过")
+    # 清理：用 coding profile 重新生成所有工具文件，恢复仓库初始状态
+    rs = build_ruleset("coding")
+    for tool in TOOL_OUTPUT:
+        write_tool_file(tool, "coding", rs)
+    print("[cleanup] 已用 coding profile 恢复所有生成文件")
     return True
 
 

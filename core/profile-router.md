@@ -9,9 +9,9 @@
 |---|---|---|---|
 | `coding` | AI | 软件开发、Bug 修复、重构、测试、代码审查 | novel、interactive-novel |
 | `conversation` | universal | 通用问答、调研、方案对比、信息检索 | novel、interactive-novel、agent-builder |
-| `novel` | novel | 小说写作、章节创作、角色/世界观维护 | interactive-novel、coding、agent-builder |
-| `interactive-novel` | interactive-novel | 互动小说游戏、分支叙事、状态机驱动 | novel、coding、agent-builder |
-| `agent-builder` | AgentCreater | 设计/评估/部署智能体，产出 config、工具、测试 | novel、interactive-novel |
+| `novel` | novel | 小说写作、章节创作、角色/世界观维护 | coding、conversation、interactive-novel、agent-builder |
+| `interactive-novel` | interactive-novel | 互动小说游戏、分支叙事、状态机驱动 | coding、conversation、novel、agent-builder |
+| `agent-builder` | AgentCreater | 设计/评估/部署智能体，产出 config、工具、测试 | conversation、novel、interactive-novel |
 
 ## 2. 选择优先级
 

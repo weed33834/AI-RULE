@@ -157,7 +157,7 @@ def build_ruleset(profile_id: str) -> str:
     # 生成头
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     src_hash = hashlib.sha256(f"{profile_id}".encode()).hexdigest()[:12]
-    parts.append(f"<!-- 由 sync_rules.py 自动生成 | profile: {profile_id} | generated: {ts} | hash: {src_hash} | 禁止手工编辑 -->\n")
+    parts.append(f"<!-- 由 sync_rules.py 自动生成 | profile: {profile_id} | generated: {ts} | profile_hash: {src_hash} | 禁止手工编辑 -->\n")
 
     # core 层
     parts.append("# === CORE LAYER ===\n")

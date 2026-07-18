@@ -151,6 +151,8 @@ AI-RULE/
 │   └── agent-builder/   ( 70 文件)   # 合计 161 文件
 ├── capabilities/                # 13 个按需能力包（capabilities/*.md）
 ├── manifests/                   # 每个 Profile 的装配清单
+├── adapters/                    # 可选工具追加片段（扩展点，sync_rules.py 检测，不存在时跳过）
+├── provenance/                  # 生成溯源记录（JSON，已 gitignore）
 ├── scripts/sync_rules.py        # 按 Profile 生成各工具入口
 └── tests/                       # 5 套测试（40 项检查，全部通过）
 ```

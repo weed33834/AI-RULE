@@ -50,7 +50,7 @@
       "type": "function",
       "function": {
         "name": "generate_chart",
-        "description": "Generate a chart/visualization from data. Supports bar, line, scatter, histogram, boxplot, heatmap, pie charts.",
+        "description": "Generate a chart/visualization from data. Supports bar, line, scatter, histogram, boxplot, heatmap, pie, area charts.",
         "parameters": {
           "type": "object",
           "properties": {

@@ -119,7 +119,7 @@
       "type": "function",
       "function": {
         "name": "schedule_event",
-        "description": "Schedule a calendar event with title, time, duration, attendees, and optional reminders. Requires user confirmation.",
+        "description": "Schedule a calendar event with title, start/end time, attendees, and optional reminders. Requires user confirmation.",
         "parameters": {
           "type": "object",
           "properties": {

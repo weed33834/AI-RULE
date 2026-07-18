@@ -8,7 +8,7 @@ agent:
 
 model:
   provider: "anthropic"
-  model_name: "claude-3.5-sonnet"
+  model_name: "claude-sonnet-4-5-20250929"
   temperature: 0.4
   max_tokens: 4096
 
