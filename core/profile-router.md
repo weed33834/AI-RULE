@@ -8,7 +8,7 @@
 | Profile ID | 来源仓库 | 适用场景 | 互斥 |
 |---|---|---|---|
 | `coding` | AI | 软件开发、Bug 修复、重构、测试、代码审查 | novel、interactive-novel |
-| `conversation` | universal | 通用问答、调研、方案对比、信息检索 | novel、interactive-novel、agent-builder 不作为默认叠加 |
+| `conversation` | universal | 通用问答、调研、方案对比、信息检索 | novel、interactive-novel、agent-builder |
 | `novel` | novel | 小说写作、章节创作、角色/世界观维护 | interactive-novel、coding、agent-builder |
 | `interactive-novel` | interactive-novel | 互动小说游戏、分支叙事、状态机驱动 | novel、coding、agent-builder |
 | `agent-builder` | AgentCreater | 设计/评估/部署智能体，产出 config、工具、测试 | novel、interactive-novel |
@@ -46,11 +46,11 @@
 
 | 主 Profile | 可叠加能力包 | 禁止默认叠加 |
 |---|---|---|
-| `coding` | `research`、`testing`、`review`、`agent-governance`（仅 agent 项目） | `game-engine`、`worldbuilding`、`npc-simulation` |
+| `coding` | `research`、`testing`、`review`、`agent-governance` | `game-engine`、`worldbuilding`、`npc-simulation` |
 | `conversation` | `research` | `engineering`、`creative`、`game-engine` 的强制行为 |
 | `novel` | `research`（真实背景时）、`worldbuilding`、`creative` | `game-engine`、`state-machine` |
-| `interactive-novel` | `creative`、`research`、`state-machine`、`npc-simulation`、`adaptive-difficulty` | `novel` 的"章节稿件交付模式" |
-| `agent-builder` | `research`、`agent-governance`、`engineering`、`testing` | `novel`、`game-engine`，除非目标 Agent 本属该领域 |
+| `interactive-novel` | `creative`、`research`、`state-machine`、`npc-simulation`、`adaptive-difficulty` | `novel-chapter-deliverable-mode`、`engineering` |
+| `agent-builder` | `research`、`agent-governance`、`engineering`、`testing` | `novel-chapter-deliverable-mode`、`game-engine` |
 
 ## 6. 冲突解决
 

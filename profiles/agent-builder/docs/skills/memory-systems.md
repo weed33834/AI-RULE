@@ -226,7 +226,7 @@ decay_factor = exp(-lambda * days_since_last_access)
   - **推测标注**：所有画像结论注入上下文时必须带"推测："前缀和置信度，不得作为事实陈述给用户。
   - **合规适配**：画像数据按 GDPR / PIPL / CCPA 的"用户画像"条款处理，提供导出与删除接口。
 
-- **来源**：Hermes Agent 用户建模 + Honcho（plastic Labs）用户心智模型。
+- **来源**：Hermes Agent 用户建模 + Honcho（Plastic Labs）用户心智模型。
 
 ### 4. 索引机制（Indexing / RAG Retrieval）
 

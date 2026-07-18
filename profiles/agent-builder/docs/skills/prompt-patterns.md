@@ -5,9 +5,9 @@
 
 ## 一句话描述 / One-line Description
 
-> 本文档收录经过论文验证的七种提示词技术，按"认知负荷从低到高"排列，每种附真实原理、适用场景与可复用示例，供按需组合使用。
+> 本文档收录经过论文验证的八种提示词技术，按"认知负荷从低到高"排列，每种附真实原理、适用场景与可复用示例，供按需组合使用。
 >
-> This document collects seven prompt techniques validated by research papers, ordered by cognitive load from low to high, each with real principles, applicable scenarios, and reusable examples for on-demand composition.
+> This document collects eight prompt techniques validated by research papers, ordered by cognitive load from low to high, each with real principles, applicable scenarios, and reusable examples for on-demand composition.
 
 ---
 

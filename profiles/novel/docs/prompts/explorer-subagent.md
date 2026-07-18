@@ -20,7 +20,7 @@
 ## 命名避坑指南
 > 参考 `docs/skills/anti-ai-patterns.md` 第 20 项（角色名从频率表取）。
 - **禁止**使用 AI 高频名字池：Thorne、Blackwood、Elara、Kael、Lyra、Sterling 等统计高频组合。
-- 名字必须符合世界观的文化背景——查阅 `worldbuilding.md` 的文化设定。
+- 名字必须符合世界观的文化背景——查阅 `world-building.md` 的文化设定。
 - 中文创作避免过于"翻译腔"的名字（如"艾拉拉·索恩"）。
 - 地名避免直接拼凑奇幻词汇（如"幽暗之谷""星落之城"）——除非类型惯例需要。
 

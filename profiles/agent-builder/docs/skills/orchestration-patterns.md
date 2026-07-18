@@ -1,7 +1,7 @@
 # 编排模式目录 (Orchestration Patterns)
 
 > 本文档定义多智能体系统的 5 种标准编排模式，源自 Azure 和 OpenAI 的共识框架。
-> 与 `multi-agent-design.md` 互补——后者定义"如何设计角色"，本文档定义"如何编排协作"。
+> 与 `multi-agent.md` 互补——后者定义"如何设计角色"，本文档定义"如何编排协作"。
 
 ## §1 核心原则：最低可靠复杂度
 
@@ -160,7 +160,7 @@ Agent A → (交接) → Agent B → (交接) → Agent C
 
 ## §6 与其他文档的关系
 
-- **`multi-agent-design.md`**: 角色设计定义"每个 Agent 是谁"，本文档定义"它们如何协作"。
+- **`multi-agent.md`**: 角色设计定义"每个 Agent 是谁"，本文档定义"它们如何协作"。
 - **`memory-systems.md`**: 记忆系统是编排的基础设施——短期 checkpointer 支持容错中断。
 - **`tool-design.md`**: 工具是 Worker 的手脚——工具设计质量直接影响编排可靠性。
 - **`safety-guardrails.md`**: 护栏是编排的安全网——条件路由边 + recursion_limit 双护栏防失控。

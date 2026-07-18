@@ -14,7 +14,7 @@ Confirm before starting:
 - Synced rule files are up to date: `python scripts/sync_rules.py`.
 - At least one LLM API key is set in `.env` (copy from `.env.example`).
 - (Optional) MCP servers configured: `cp mcp.example.json mcp.json`.
-- The 21 skill documents under `docs/skills/` and 4 prompts under
+- The 25 skill documents under `docs/skills/` and 4 prompts under
   `docs/prompts/` are present.
 
 ---

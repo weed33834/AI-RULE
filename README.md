@@ -4,7 +4,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-5-green)
-![Files](https://img.shields.io/badge/files-226+-orange)
+![Files](https://img.shields.io/badge/files-209+-orange)
 ![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
@@ -164,7 +164,7 @@ AI-RULE/
 
 ## Language Mechanism
 
-All rule files are written in **English** (for reasoning precision), but the AI communicates with you in **your language**:
+All **system prompts** are written in **English** (for reasoning precision); rule documentation uses bilingual Chinese-English for clarity. The AI communicates with you in **your language**:
 
 1. **Input**: auto-detect your language → identify intent → reason internally in English
 2. **Output**: generate in English → translate to your language → polish against translationese

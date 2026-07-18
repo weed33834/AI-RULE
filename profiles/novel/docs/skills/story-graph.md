@@ -27,7 +27,7 @@
 | Location | 新地点出现时 | 手动或从场景描述提取 |
 | Event | 重大事件发生时 | 写作后手动记录 |
 | Item | 重要道具出现时 | 手动记录 |
-| Concept | 世界观规则确立时 | 从 worldbuilding.md 导入 |
+| Concept | 世界观规则确立时 | 从 `.ai-memory/worldbuilding.md` 导入 |
 | PlotThread | 伏笔埋设时 | 自动从 plot-threads.md 同步 |
 
 ## §2 实体 Schema

@@ -9,7 +9,7 @@
 - [ ] 否
 
 ## 同步校验
-- [ ] 已确认 `CLAUDE.md` / `GEMINI.md` / `.github/copilot-instructions.md` 由脚本生成，未手工修改
+- [ ] 已确认 `CLAUDE.md` / `GEMINI.md` / `.cursor/rules/project.mdc` / `.github/copilot-instructions.md` / `.trae/rules/project_rules.md` 由脚本生成，未手工修改
 
 ## 多语言 README
 - [ ] 三语言 README（中/英/日）已同步更新

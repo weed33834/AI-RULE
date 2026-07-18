@@ -184,7 +184,7 @@ def check_character_consistency(scene_text, character_card):
 #### 反思记忆
 - 失败原因存入 `.ai-memory/creative-reflections.md`。
 - 下次遇到类似场景时，先读取反思记忆，避免重复犯错。
-- 最大重试次数：3 次（超过则触发创作熔断，见 §4）。
+- 最大重试次数：3 次（超过则触发创作熔断，见 AGENTS.md §4）。
 
 ### §11 创意 GraphRAG / Agentic RAG
 

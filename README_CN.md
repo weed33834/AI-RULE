@@ -4,7 +4,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-5-green)
-![Files](https://img.shields.io/badge/files-226+-orange)
+![Files](https://img.shields.io/badge/files-209+-orange)
 ![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
@@ -136,7 +136,7 @@ python scripts/sync_rules.py --profile novel --tool all
 ## 仓库结构
 
 ```
-AI/
+AI-RULE/
 ├── AGENTS.md                    # 规则中枢入口（选择器 + 优先级 + 语言中介）
 ├── core/                        # 所有 Profile 共享的 P0 硬约束（4 文件）
 │   ├── governance.md            # 安全、权限、MCP 红线、失败熔断
@@ -148,20 +148,18 @@ AI/
 │   ├── conversation/    ( 19 文件)
 │   ├── novel/           ( 28 文件)
 │   ├── interactive-novel/ (31 文件)
-│   └── agent-builder/   ( 68 文件)   # 合计 159 文件
+│   └── agent-builder/   ( 70 文件)   # 合计 161 文件
 ├── capabilities/                # 13 个按需能力包（capabilities/*.md）
 ├── manifests/                   # 每个 Profile 的装配清单
-├── provenance/                  # 生成溯源记录（JSON，已 gitignore）
-├── adapters/                    # 可选工具追加片段（扩展点）
 ├── scripts/sync_rules.py        # 按 Profile 生成各工具入口
 └── tests/                       # 5 套测试（40 项检查，全部通过）
 ```
 
-> 真实统计：5 个 Profile 合计 **159** 个文件；`capabilities/` 13 个能力包；`core/` 4 个文件；仓库总文件 **226**（不含 `.git`）。
+> 真实统计：5 个 Profile 合计 **161** 个文件；`capabilities/` 13 个能力包；`core/` 4 个文件；仓库总文件 **209**（不含 `.git`）。
 
 ## 语言机制
 
-所有规则文件用 **英语** 编写（保证推理精度），但 AI 与你交流时用 **你的语言**：
+所有 **系统提示词（system-prompt.md）** 用 **英语** 编写（保证推理精度），规则文档使用中英双语以兼顾清晰度。AI 与你交流时用 **你的语言**：
 
 1. **输入**：自动检测你的语言 → 识别真实意图 → 英语内部推理
 2. **输出**：英语生成 → 翻译回你的语言 → 反翻译腔润色
@@ -273,7 +271,7 @@ P0：core/ 安全、权限、真实性、MCP 红线
 
 ## MCP 怎么配（通用）
 
-MCP 涉及常驻进程与权限，**配置权在你手里**：AI 禁止自下载、自安装、自启动、自配置 MCP（见 `core/governance.md` 红线）。你从 `capabilities/mcp-registry.md` 挑选可信服务，按各工具配置文件手动粘贴 `mcp.example.json` 里对应的 JSON，把占位符换成你的环境变量。
+MCP 涉及常驻进程与权限，**配置权在你手里**：AI 禁止自下载、自安装、自启动、自配置 MCP（见 `core/governance.md` 红线）。你从 `profiles/coding/docs/skills/mcp-registry.md` 挑选可信服务，按各工具配置文件手动粘贴 `mcp.example.json` 里对应的 JSON，把占位符换成你的环境变量。
 
 ## 仓库地址
 

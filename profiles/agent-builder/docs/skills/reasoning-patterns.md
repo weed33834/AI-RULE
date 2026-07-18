@@ -69,8 +69,8 @@ Action: Finish(最终答案)
 ### 模式 2: Plan-and-Execute (规划-执行)
 
 | 维度 | 内容 |
-|------| 原理 | 分两阶段：(1) **Plan（规划）**：模型先将复杂任务分解为有序的子步骤列表；(2) **Execute（执行）**：逐步执行每个子步骤（可调用工具或子 Agent）；(3) **Re-plan（重规划）**：执行结果与预期不符时，可重新规划剩余步骤。核心贡献：将"全局规划"与"局部执行"解耦，避免 ReAct 式的短视（每步只看眼前）。 |
 |------|------|
+| 原理 | 分两阶段：(1) **Plan（规划）**：模型先将复杂任务分解为有序的子步骤列表；(2) **Execute（执行）**：逐步执行每个子步骤（可调用工具或子 Agent）；(3) **Re-plan（重规划）**：执行结果与预期不符时，可重新规划剩余步骤。核心贡献：将"全局规划"与"局部执行"解耦，避免 ReAct 式的短视（每步只看眼前）。 |
 | 论文引用 | 作为 Agent 架构模式，Plan-and-Execute 在 LangChain/LangGraph 等框架中被广泛实现。相关的提示词层面研究见 Wang, L. et al. "Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models." arXiv:2305.04091 (2023). https://arxiv.org/abs/2305.04091 。注意：Plan-and-Solve Prompting（提示词技术）与 Plan-and-Execute Agent（架构模式）是相关但不同的概念。 |
 | 适用场景 | 步骤较多、需要全局视野的复杂任务（多步骤研究、长流程自动化）；需要可审计的执行计划（每步可追溯）；子任务间有依赖关系。 |
 | 不适用 | 步骤无法预先规划、需高度动态响应的任务（更适合 ReAct）；简单任务（规划开销不划算）。 |

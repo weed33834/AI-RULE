@@ -4,7 +4,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-5-green)
-![Files](https://img.shields.io/badge/files-226+-orange)
+![Files](https://img.shields.io/badge/files-209+-orange)
 ![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
@@ -77,7 +77,7 @@ AI-RULE/
 
 ## 言語メカニズム
 
-ルールファイルは推論精度のため **英語** で記述されていますが、AIはユーザーの言語で応答します：
+ルールファイルは推論精度のため **英語** で記述されたシステムプロンプトと、明確さのため中英バイリンガルで書かれたルール文書で構成されています。AIはユーザーの言語で応答します：
 
 1. 入力：言語を自動検出 → 英語で推論
 2. 出力：英語で生成 → ユーザー言語に翻訳 → 翻訳調を除去
@@ -100,7 +100,7 @@ AI-RULE/
 
 - **命令予算 (Instruction Budget)**：同時にアクティブな命令が増えると遵守率がべき乗減衰。P0ルールは同時5件以下、全体で12件以下に制限。
 - **位置効果 (Lost in the Middle)**：LLMは文脈の先頭と末尾に注意を向ける。P0ルールはコンテキストウィンドウの両端に配置。
-- **アンチパターン**：全大写、純否定制約、手動CoTは新世代モデルで無効。条件ロジック＋正の代替で記述。
+- **アンチパターン**：全大文字、純否定制約、手動CoTは新世代モデルで無効。条件ロジック＋正の代替で記述。
 - **拡張思考 (Extended Thinking)**：Claude 4.x / OpenAI o シリーズのネイティブ推論で手動CoTを置き換え。
 - **三層行動境界**：許可（自律）/ 要確認 / 禁止 — 曖昧な「適切な行動」宣言を置き換え。
 - **GUID区切り文字注入防御**：固定 `[UNTRUSTED]` マーカーの代わりにランダムGUIDでマーカー閉鎖攻撃を防止。
