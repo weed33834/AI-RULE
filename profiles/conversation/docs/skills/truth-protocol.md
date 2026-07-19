@@ -4,6 +4,7 @@
 > 真实性是 AGENTS.md §2 真实性铁律的完整实现。
 > 与 `source-credibility.md` 互补——本文档定义验证流程，该文档定义来源评估标准。
 > 与 `deep-search.md` 互补——搜索获取信息，本文档验证信息真伪。
+> **DAR 集成**：CoV 第 3 步逐条验证使用 DAR T1-T4 分级判断来源可信度；降级策略 L0-L4 与 DAR 时效表联动。详见 `core/dar-spec.md`。
 
 ## §1 核心理念
 

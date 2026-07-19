@@ -1,0 +1,165 @@
+# DAR: agent-builder（智能体构建）
+
+source_registry:
+  T1:
+    # AI 模型库/平台
+    - name: "Hugging Face"
+      url: "https://huggingface.co/"
+      type: "模型库"
+    - name: "Papers with Code"
+      url: "https://paperswithcode.com/"
+      type: "论文+代码"
+    # 框架官方文档
+    - name: "LangChain Docs"
+      url: "https://python.langchain.com/docs/"
+      type: "框架文档"
+    - name: "LlamaIndex Docs"
+      url: "https://docs.llamaindex.ai/"
+      type: "框架文档"
+    - name: "AutoGen Docs"
+      url: "https://microsoft.github.io/autogen/"
+      type: "框架文档"
+    - name: "CrewAI Docs"
+      url: "https://docs.crewai.com/"
+      type: "框架文档"
+    # 模型 API 文档
+    - name: "OpenAI API Docs"
+      url: "https://platform.openai.com/docs/"
+      type: "API 文档"
+    - name: "Anthropic API Docs"
+      url: "https://docs.anthropic.com/"
+      type: "API 文档"
+    - name: "Google AI Docs"
+      url: "https://ai.google.dev/"
+      type: "API 文档"
+    # 协议规范
+    - name: "MCP Spec"
+      url: "https://modelcontextprotocol.io/"
+      type: "协议规范"
+    # Benchmark
+    - name: "Open LLM Leaderboard"
+      url: "https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard"
+      type: "模型评测"
+    - name: "LMSYS Chatbot Arena"
+      url: "https://chat.lmsys.org/"
+      type: "模型评测"
+  T2:
+    - name: "Prompt Engineering Guide"
+      url: "https://www.promptingguide.ai/"
+      type: "提示词工程"
+    - name: "Chroma Docs"
+      url: "https://docs.trychroma.com/"
+      type: "向量数据库"
+    - name: "Pinecone Docs"
+      url: "https://docs.pinecone.io/"
+      type: "向量数据库"
+    - name: "Weaviate Docs"
+      url: "https://weaviate.io/developers/weaviate"
+      type: "向量数据库"
+    - name: "LangSmith"
+      url: "https://docs.smith.langchain.com/"
+      type: "可观测性"
+    - name: "Phoenix (Arize)"
+      url: "https://phoenix.arize.com/"
+      type: "可观测性"
+    - name: "tau-Bench"
+      url: "https://github.com/sierra-research/tau-bench"
+      type: "Agent 评测"
+
+scoring_protocol:
+  weights:
+    relevance: 0.35
+    credibility: 0.30
+    freshness: 0.25
+    consensus: 0.10
+  notes: "Agent 领域发展极快，时效性权重较高"
+
+freshness_table:
+  - type: "模型 API"
+    valid_period: "6 个月"
+    decay_factor: 0.5
+    notes: "API 变更频繁"
+  - type: "框架版本"
+    valid_period: "1 年"
+    decay_factor: 0.6
+    notes: "框架迭代快"
+  - type: "模型评测"
+    valid_period: "3 个月"
+    decay_factor: 0.3
+    notes: "新模型不断发布"
+  - type: "研究论文"
+    valid_period: "2 年"
+    decay_factor: 0.7
+    notes: "领域发展快"
+  - type: "设计模式"
+    valid_period: "3 年"
+    decay_factor: 0.8
+    notes: "模式相对稳定"
+
+routing_rules:
+  - trigger: ["模型选择", "model selection", "哪个模型", "best model"]
+    priority_sources: ["Open LLM Leaderboard", "LMSYS Chatbot Arena", "Hugging Face"]
+    fallback: ["Papers with Code"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["LangChain", "langchain"]
+    priority_sources: ["LangChain Docs"]
+    fallback: ["Prompt Engineering Guide"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["AutoGen", "autogen", "multi-agent"]
+    priority_sources: ["AutoGen Docs", "CrewAI Docs"]
+    fallback: ["LangChain Docs"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["向量数据库", "vector database", "embedding"]
+    priority_sources: ["Chroma Docs", "Pinecone Docs", "Weaviate Docs"]
+    fallback: ["LangChain Docs"]
+    min_tier: T1
+    action: "multi_source"
+  - trigger: ["MCP", "Model Context Protocol"]
+    priority_sources: ["MCP Spec"]
+    fallback: ["Anthropic API Docs"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["Agent 评测", "agent evaluation", "benchmark"]
+    priority_sources: ["tau-Bench", "Open LLM Leaderboard"]
+    fallback: ["Papers with Code"]
+    min_tier: T1
+    action: "must_verify"
+
+domain_knowledge:
+  terminology:
+    - "LLM: 大语言模型"
+    - "RAG: 检索增强生成"
+    - "ReAct: Reasoning + Acting 模式"
+    - "CoT: Chain-of-Thought 思维链"
+    - "tool calling: 工具调用"
+    - "function calling: 函数调用"
+    - "embedding: 向量嵌入"
+    - "vector store: 向量数据库"
+    - "agent: 具有自主行动能力的 AI"
+    - "multi-agent: 多智能体协作"
+  conventions:
+    - "代码示例必须标注框架版本（如 langchain>=0.1.0）"
+    - "模型名称必须完整（如 gpt-4o, claude-3-5-sonnet）"
+    - "API 调用必须标注模型版本"
+    - "评测结果必须标注日期和 benchmark 名称"
+  common_pitfalls:
+    - "使用已废弃的 API（如旧的 OpenAI function calling）"
+    - "混淆不同模型的 API 接口"
+    - "忽略 token 限制——注意上下文窗口大小"
+    - "未处理 API 错误和重试"
+    - "评测结果过时——模型更新快"
+  quality_signals:
+    - "官方文档 > 社区教程"
+    - "近期更新（6 个月内）的文档优先"
+    - "有 benchmark 数据的模型更可靠"
+    - "GitHub Stars 高的项目更活跃"
+
+conflict_policy:
+  same_tier: "优先最新版本/最新 benchmark"
+  different_tier: "官方文档 > 框架文档 > 社区教程"
+  version_conflict: "优先目标版本对应的文档"
+  benchmark_conflict: "多个 benchmark 结果一起呈现"
+  user_override: "用户指定来源覆盖所有 DAR 规则"

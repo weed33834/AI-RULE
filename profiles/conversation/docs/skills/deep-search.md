@@ -4,6 +4,7 @@
 > 深度搜索是 AGENTS.md §3 深度搜索协议的完整实现。
 > 与 `truth-protocol.md` 互补——搜索获取信息，真实性协议验证信息。
 > 与 `source-credibility.md` 互补——搜索找到来源，该文档评估来源质量。
+> **DAR 集成**：查询设计使用 DAR 路由规则导向权威源；结果分析使用 DAR 打分公式排序。详见 `core/dar-spec.md`。
 
 ## §1 核心理念
 
@@ -47,6 +48,8 @@
 
 ### 2.2 第二阶段：查询设计
 
+> **DAR 集成**：查询前先检查 DAR 路由规则（`capabilities/dar/dar-<domain>.yaml`），确定该问题类型应优先查哪些权威源。DAR 路由规则定义了 `trigger → priority_sources → fallback → min_tier` 映射，避免无意义的全网乱搜。
+
 **查询设计原则**：
 - 用具体术语而非泛化词（"httpx vs aiohttp performance benchmark" > "Python async HTTP client"）。
 - 多角度查询（正面搜索 + 反面搜索 + 对比搜索）。
@@ -65,6 +68,8 @@
 ### 2.3 第三阶段：结果分析
 
 搜索结果获取后的处理流程：
+
+> **DAR 集成**：结果分析使用 DAR 打分公式 `Final Score = α×Relevance + β×Credibility + γ×Freshness + δ×Consensus`。每个维度的权重按领域动态调整（见 `core/dar-spec.md` §4）。来源按 T1-T4 分级，T1 权重 ×1.0，T4 权重 ×0.2。过期信息按领域时效表降权。
 
 1. **快速筛选**：根据标题和摘要判断相关性，排除明显不相关的。
 2. **深度阅读**：对高相关性结果阅读全文（不只是摘要）。

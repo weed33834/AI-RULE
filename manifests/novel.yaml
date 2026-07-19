@@ -52,6 +52,7 @@ enables_capabilities:
   - research
   - worldbuilding
   - creative
+  - dar
 
 forbids_capabilities:
   - game-engine

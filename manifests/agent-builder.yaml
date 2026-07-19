@@ -71,6 +71,7 @@ enables_capabilities:
   - agent-governance
   - engineering
   - testing
+  - dar
 
 forbids_capabilities:
   - novel-chapter-deliverable-mode

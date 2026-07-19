@@ -20,6 +20,7 @@
 | `agent-governance` | 智能体评估、观测、安全对齐 | Agent 配置、日志 | 评估报告、风险项 |
 | `orchestration` | 多智能体编排、委派 | 子任务、委派条件 | 编排图、上下文边界 |
 | `novel-chapter-deliverable-mode` | 小说章节交付模式 | 大纲、人物设定 | 章节稿件、修订记录 |
+| `dar` | 域权威注册表——权威源名录、打分公式、检索路由 | 问题、领域 | 排序后的权威源、打分结果 |
 
 ## 加载规则
 
@@ -43,3 +44,4 @@
 - [agent-governance](agent-governance.md)
 - [orchestration](orchestration.md)
 - [novel-chapter-deliverable-mode](novel-chapter-deliverable-mode.md)
+- [dar (Domain Authority Registry)](dar/README.md) — 6 个领域配置（paper/coding/conversation/novel/interactive-novel/agent-builder）

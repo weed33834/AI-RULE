@@ -1,0 +1,218 @@
+# DAR: paper（学术论文写作）
+# 优先导入顶刊名录专属规则
+
+source_registry:
+  T1:
+    # 顶刊（按影响因子排序）
+    - name: "Nature"
+      url: "https://www.nature.com/"
+      if: 64.8
+      field: "综合"
+    - name: "Science"
+      url: "https://www.science.org/"
+      if: 56.9
+      field: "综合"
+    - name: "The Lancet"
+      url: "https://www.thelancet.com/"
+      if: 168.9
+      field: "医学"
+    - name: "JAMA"
+      url: "https://jamanetwork.com/"
+      if: 120.7
+      field: "医学"
+    - name: "BMJ"
+      url: "https://www.bmj.com/"
+      if: 93.3
+      field: "医学"
+    - name: "Cell"
+      url: "https://www.cell.com/cell"
+      if: 66.8
+      field: "生物"
+    - name: "PNAS"
+      url: "https://www.pnas.org/"
+      if: 11.1
+      field: "综合"
+    - name: "IEEE TPAMI"
+      url: "https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=34"
+      field: "计算机视觉/模式识别"
+    - name: "JMLR"
+      url: "https://www.jmlr.org/"
+      field: "机器学习"
+    - name: "ACM Computing Surveys"
+      url: "https://dl.acm.org/journal/csur"
+      field: "计算机综述"
+    - name: "Physical Review Letters"
+      url: "https://journals.aps.org/prl/"
+      field: "物理"
+    - name: "Chemical Reviews"
+      url: "https://pubs.acs.org/journal/chreay"
+      field: "化学"
+    # 索引/验证工具
+    - name: "Google Scholar"
+      url: "https://scholar.google.com/"
+      type: "索引"
+    - name: "Semantic Scholar"
+      url: "https://www.semanticscholar.org/"
+      type: "索引"
+    - name: "arXiv"
+      url: "https://arxiv.org/"
+      type: "预印本"
+    - name: "PubMed"
+      url: "https://pubmed.ncbi.nlm.nih.gov/"
+      type: "索引"
+    - name: "DBLP"
+      url: "https://dblp.org/"
+      type: "索引"
+    - name: "SSRN"
+      url: "https://www.ssrn.com/"
+      type: "预印本"
+    - name: "JSTOR"
+      url: "https://www.jstor.org/"
+      type: "档案库"
+    - name: "CrossRef"
+      url: "https://www.crossref.org/"
+      type: "DOI 验证"
+    - name: "Retraction Watch"
+      url: "https://retractionwatch.com/"
+      type: "撤稿检查"
+    - name: "ORCID"
+      url: "https://orcid.org/"
+      type: "作者验证"
+  T2:
+    - name: "Scopus"
+      url: "https://www.scopus.com/"
+      type: "索引"
+    - name: "Web of Science"
+      url: "https://www.webofscience.com/"
+      type: "索引"
+    - name: "Dimensions"
+      url: "https://app.dimensions.ai/"
+      type: "索引"
+    - name: "Connected Papers"
+      url: "https://www.connectedpapers.com/"
+      type: "可视化"
+    - name: "Inciteful"
+      url: "https://inciteful.xyz/"
+      type: "可视化"
+    - name: "Zotero"
+      url: "https://www.zotero.org/"
+      type: "文献管理"
+    - name: "Mendeley"
+      url: "https://www.mendeley.com/"
+      type: "文献管理"
+    - name: "Citation Geany"
+      url: "https://citationgeany.com/"
+      type: "引用验证"
+  T3:
+    - name: "ResearchGate"
+      url: "https://www.researchgate.net/"
+      type: "学术社交"
+    - name: "Academia.edu"
+      url: "https://www.academia.edu/"
+      type: "学术社交"
+
+scoring_protocol:
+  weights:
+    relevance: 0.30
+    credibility: 0.40
+    freshness: 0.15
+    consensus: 0.15
+  notes: "学术论文以可信度（credibility）为最高权重，确保引用来源的权威性"
+
+freshness_table:
+  - type: "实证研究"
+    valid_period: "5-10 年"
+    decay_factor: 0.8
+    notes: "检查是否有新研究推翻"
+  - type: "理论研究"
+    valid_period: "10-20 年"
+    decay_factor: 0.9
+    notes: "经典理论不降权"
+  - type: "预印本"
+    valid_period: "1 年"
+    decay_factor: 0.7
+    notes: "未同行评审，需标注"
+  - type: "综述文章"
+    valid_period: "5 年"
+    decay_factor: 0.8
+    notes: "检查是否有更新综述"
+  - type: "基础公理"
+    valid_period: "永不过期"
+    decay_factor: 1.0
+    notes: "无需时效检查"
+
+routing_rules:
+  - trigger: ["文献综述", "literature review", "related work"]
+    priority_sources: ["Google Scholar", "Semantic Scholar", "PubMed", "DBLP"]
+    fallback: ["arXiv", "SSRN", "JSTOR"]
+    min_tier: T2
+    action: "must_cite"
+  - trigger: ["引用验证", "citation verification", "引用检查"]
+    priority_sources: ["CrossRef", "Google Scholar", "Semantic Scholar"]
+    fallback: ["ResearchGate", "Academia.edu"]
+    min_tier: T2
+    action: "must_verify"
+  - trigger: ["撤稿检查", "retraction check", "撤稿"]
+    priority_sources: ["Retraction Watch", "CrossRef"]
+    fallback: ["Google Scholar"]
+    min_tier: T1
+    action: "must_check"
+  - trigger: ["方法对比", "methodology comparison"]
+    priority_sources: ["Google Scholar", "Semantic Scholar"]
+    fallback: ["arXiv", "PubMed"]
+    min_tier: T2
+    action: "multi_source"
+  - trigger: ["影响因子", "impact factor", "期刊排名"]
+    priority_sources: ["JCR", "Scopus"]
+    fallback: ["Google Scholar"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["DOI 验证", "DOI lookup"]
+    priority_sources: ["CrossRef", "DOI.org"]
+    fallback: ["Google Scholar"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["作者验证", "author verification", "ORCID"]
+    priority_sources: ["ORCID", "Google Scholar"]
+    fallback: ["ResearchGate"]
+    min_tier: T1
+    action: "must_verify"
+
+domain_knowledge:
+  terminology:
+    - "h-index: 作者学术影响力指标"
+    - "i10-index: Google Scholar 定义的指标"
+    - "IF (Impact Factor): 期刊影响因子"
+    - "Q1/Q2/Q3/Q4: JCR 分区"
+    - "CCF-A/B/C: 中国计算机学会推荐列表"
+    - "SCI/SSCI/EI: 索引收录类型"
+    - "DOI: 数字对象唯一标识符"
+    - "ORCID: 开放研究者与贡献者身份识别码"
+    - "preprint: 预印本，未经同行评审"
+    - "peer review: 同行评审"
+    - "double-blind: 双盲评审"
+    - "open access: 开放获取"
+  conventions:
+    - "引用格式遵循目标期刊要求（APA/IEEE/Chicago/Vancouver）"
+    - "预印本引用必须标注 'Preprint' 或 'arXiv:' 前缀"
+    - "撤稿论文不可引用，必须检查 Retraction Watch"
+    - "自引率过高（>20%）需标注"
+    - "所有 DOI 必须通过 CrossRef 验证"
+  common_pitfalls:
+    - "引用了已撤稿的论文——必须检查 Retraction Watch"
+    - "混淆预印本和正式发表——arXiv 不等于已发表"
+    - "自引过多——学术自引率应 <20%"
+    - "忽略负面结果——只引用支持自己观点的论文"
+    - "引用过时综述——检查是否有更新版本"
+    - "伪造引用——所有引用必须能通过 CrossRef 或 Google Scholar 找到原文"
+  quality_signals:
+    - "发表在 Q1/Q2 期刊的论文优先"
+    - "被引 >100 次的经典论文优先"
+    - "近 3 年发表的论文时效性好"
+    - "作者 h-index >30 的来源可信度高"
+
+conflict_policy:
+  same_tier: "呈现各方观点，分析差异原因"
+  different_tier: "优先高级别来源（T1 > T2 > T3）"
+  time_conflict: "优先最新发表，除非是经典/公理"
+  user_override: "用户指定来源覆盖所有 DAR 规则"

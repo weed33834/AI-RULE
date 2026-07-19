@@ -36,6 +36,7 @@ enables_capabilities:
   - testing
   - review
   - agent-governance
+  - dar
 
 forbids_capabilities:
   - game-engine

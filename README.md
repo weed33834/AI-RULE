@@ -4,8 +4,8 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-234+-orange)
-![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
+![Files](https://img.shields.io/badge/files-245+-orange)
+![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
 > A single repository integrating 6 independent rule systems: core layer + one active profile + capability packs.
@@ -15,7 +15,7 @@
 
 ## What This Repository Is
 
-This is the **single source of truth for AI collaboration rules** — not application code for any specific project. It consolidates 5 previously separate rule repositories into one, loaded by profile to avoid domain conflicts (e.g., "no fabrication" vs. "novel writing requires fiction").
+This is the **single source of truth for AI collaboration rules** — not application code for any specific project. It consolidates 6 previously separate rule repositories into one, loaded by profile to avoid domain conflicts (e.g., "no fabrication" vs. "novel writing requires fiction").
 
 | Profile | Origin | Use Case |
 |---|---|---|
@@ -23,6 +23,7 @@ This is the **single source of truth for AI collaboration rules** — not applic
 | `conversation` | badhope/universal | General Q&A, research, comparison, information retrieval |
 | `novel` | badhope/novel | Novel writing, chapter creation, character/worldbuilding |
 | `interactive-novel` | badhope/interactive-novel | Interactive fiction, branching narratives, state machines |
+| `paper` | badhope/paper | Academic paper writing, literature review, submission |
 | `agent-builder` | badhope/AgentCreater | Design, evaluate, and deploy AI agents |
 
 **Why merge**: stop 5 rule sets from drifting apart; clone one repo instead of five; unify the cross-tool sync entry point.
@@ -91,41 +92,48 @@ Load the <profile-id> Profile from Rule Hub.
 | design Agent / agent config / tool permissions | `agent-builder` |
 | query / compare / analyze / research | `conversation` |
 
-## The 5 Profiles
+## The 6 Profiles
 
 ### coding (Software Development)
 - **Origin**: badhope/AI
 - **Scope**: Python/FastAPI development, bug fixes, refactoring, testing, code review
 - **Core capabilities**: Git SOP, dependency management, PowerShell syntax, MCP red lines, engineering hygiene
-- **Capability packs**: research, testing, review, agent-governance
+- **Capability packs**: research, testing, review, agent-governance, dar
 - **Mutually exclusive with**: novel, interactive-novel
 
 ### conversation (General Conversation)
 - **Origin**: badhope/universal
 - **Scope**: General Q&A, research, comparison, information retrieval
 - **Core capabilities**: truth protocol, deep search, anti-dumbing-down, clarification protocol, reasoning depth control
-- **Capability packs**: research
+- **Capability packs**: research, dar
 - **Mutually exclusive with**: novel, interactive-novel, agent-builder
 
 ### novel (Novel Writing)
 - **Origin**: badhope/novel
 - **Scope**: Novel writing, chapter creation, character/worldbuilding maintenance
 - **Core capabilities**: creative seed confirmation, 35-item anti-AI-literary-flavor checklist, character consistency, foreshadowing tracking, story knowledge graph, three-tier revision
-- **Capability packs**: research, worldbuilding, creative
+- **Capability packs**: research, worldbuilding, creative, dar
 - **Mutually exclusive with**: coding, conversation, interactive-novel, agent-builder
 
 ### interactive-novel (Interactive Fiction)
 - **Origin**: badhope/interactive-novel
 - **Scope**: Interactive fiction games, branching narratives, state machine driven
 - **Core capabilities**: game seeds, state machine, NPC autonomy, adaptive difficulty, save/load, turn-based
-- **Capability packs**: creative, research, state-machine, npc-simulation, adaptive-difficulty
+- **Capability packs**: creative, research, state-machine, npc-simulation, adaptive-difficulty, dar
 - **Mutually exclusive with**: coding, conversation, novel, agent-builder
+
+### paper (Academic Paper Writing)
+- **Origin**: badhope/paper
+- **Scope**: Academic paper writing, literature review, submission, reviewer response
+- **Core capabilities**: academic integrity protocol, citation verification, literature review methodology, paper structure (IMRaD/Review/Position/Case Study), research question extraction, methodology design, data presentation, anti-AI-academic-tone, peer review simulation, revision letter response
+- **Capability packs**: research, dar
+- **Mutually exclusive with**: novel, interactive-novel
 
 ### agent-builder (Agent Construction)
 - **Origin**: badhope/AgentCreater
 - **Scope**: Design, evaluate, and deploy AI agents — produce config, tool definitions, test cases
 - **Core capabilities**: four-layer role model, CTCO prompt structure, tool side-effect grading, memory systems, evaluation framework, 6 executable templates
-- **Capability packs**: research, agent-governance, engineering, testing
+- **Capability packs**: research, agent-governance, engineering, testing, dar
 - **Mutually exclusive with**: conversation, novel, interactive-novel
 
 ## Architecture
@@ -149,7 +157,8 @@ AI-RULE/
 │   ├── governance.md            # Security, permissions, MCP red lines, circuit breaker
 │   ├── interaction.md           # Clarification, intent normalization, output spec
 │   ├── profile-router.md        # Profile selection and capability pack whitelist
-│   └── language-mediation.md    # Language mediation protocol (English reasoning, user-language output)
+│   ├── language-mediation.md    # Language mediation protocol (English reasoning, user-language output)
+│   └── dar-spec.md              # DAR (Domain Authority Registry) unified spec
 ├── profiles/                    # 6 independent rule sets
 │   ├── coding/          ( 13 files)
 │   ├── conversation/    ( 19 files)
@@ -157,10 +166,10 @@ AI-RULE/
 │   ├── interactive-novel/ (31 files)
 │   ├── paper/           ( 22 files)
 │   └── agent-builder/   ( 70 files)
-├── capabilities/                # 13 on-demand capability packs
+├── capabilities/                # 14 on-demand capability packs (incl. dar/ domain registry)
 ├── manifests/                   # Per-profile assembly manifests
 ├── scripts/sync_rules.py        # Generate tool entry files per profile
-└── tests/                       # 5 test suites (40 checks, all passing)
+└── tests/                       # 6 test suites (51 checks, all passing)
 ```
 
 ## Language Mechanism
@@ -210,7 +219,7 @@ See `profiles/agent-builder/docs/skills/` for full documentation.
 ## Verification
 
 ```bash
-pytest tests/                        # 5 suites, 40 checks, all passing
+pytest tests/                        # 6 suites, 51 checks, all passing
 # Or run individually: pytest tests/test_audit.py
 ```
 
@@ -233,6 +242,7 @@ Capability packs are composable, on-demand work methods. They don't define agent
 | `agent-governance` | Agent evaluation, observability, safety alignment |
 | `orchestration` | Multi-agent orchestration |
 | `novel-chapter-deliverable-mode` | Novel chapter delivery mode |
+| `dar` | Domain Authority Registry — authoritative source lists, scoring, routing |
 
 See `capabilities/README.md`.
 

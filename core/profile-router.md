@@ -49,12 +49,14 @@
 
 | 主 Profile | 可叠加能力包 | 禁止默认叠加 |
 |---|---|---|
-| `coding` | `research`、`testing`、`review`、`agent-governance` | `game-engine`、`worldbuilding`、`npc-simulation` |
-| `conversation` | `research` | `engineering`、`creative`、`game-engine` 的强制行为 |
-| `novel` | `research`（真实背景时）、`worldbuilding`、`creative` | `game-engine`、`state-machine` |
-| `interactive-novel` | `creative`、`research`、`state-machine`、`npc-simulation`、`adaptive-difficulty` | `novel-chapter-deliverable-mode`、`engineering` |
-| `paper` | `research` | `game-engine`、`state-machine`、`npc-simulation`、`novel-chapter-deliverable-mode` |
-| `agent-builder` | `research`、`agent-governance`、`engineering`、`testing` | `novel-chapter-deliverable-mode`、`game-engine` |
+| `coding` | `research`、`testing`、`review`、`agent-governance`、`dar` | `game-engine`、`worldbuilding`、`npc-simulation` |
+| `conversation` | `research`、`dar` | `engineering`、`creative`、`game-engine` 的强制行为 |
+| `novel` | `research`（真实背景时）、`worldbuilding`、`creative`、`dar` | `game-engine`、`state-machine` |
+| `interactive-novel` | `creative`、`research`、`state-machine`、`npc-simulation`、`adaptive-difficulty`、`dar` | `novel-chapter-deliverable-mode`、`engineering` |
+| `paper` | `research`、`dar` | `game-engine`、`state-machine`、`npc-simulation`、`novel-chapter-deliverable-mode` |
+| `agent-builder` | `research`、`agent-governance`、`engineering`、`testing`、`dar` | `novel-chapter-deliverable-mode`、`game-engine` |
+
+> **DAR（域权威注册表）**：所有 Profile 默认可叠加。DAR 提供各领域权威源名录、打分规则、检索通道和领域知识，嵌入深度搜索和真实性验证流程。详见 `core/dar-spec.md`。
 
 ## 6. 冲突解决
 

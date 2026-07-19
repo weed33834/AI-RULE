@@ -1,0 +1,159 @@
+# DAR: novel（小说创作）
+# 词典/词源/人名/写作规范
+
+source_registry:
+  T1:
+    # 权威词典
+    - name: "Merriam-Webster"
+      url: "https://www.merriam-webster.com/"
+      type: "英语词典"
+    - name: "Oxford English Dictionary (OED)"
+      url: "https://www.oed.com/"
+      type: "英语词典"
+    - name: "Cambridge Dictionary"
+      url: "https://dictionary.cambridge.org/"
+      type: "英语词典"
+    - name: "Zdic"
+      url: "https://www.zdic.net/"
+      type: "汉语词典"
+    - name: "百度汉语"
+      url: "https://hanyu.baidu.com/"
+      type: "汉语词典"
+    # 词源
+    - name: "Etymonline"
+      url: "https://www.etymonline.com/"
+      type: "词源"
+    # 人名
+    - name: "Behind the Name"
+      url: "https://www.behindthename.com/"
+      type: "人名词源"
+    - name: "Behind the Surname"
+      url: "https://surnames.behindthename.com/"
+      type: "姓氏词源"
+    # 写作规范
+    - name: "Purdue OWL"
+      url: "https://owl.purdue.edu/"
+      type: "写作规范"
+    - name: "Chicago Manual of Style"
+      url: "https://www.chicagomanualofstyle.org/"
+      type: "写作规范"
+    # 地名
+    - name: "GeoNames"
+      url: "https://www.geonames.org/"
+      type: "地名"
+  T2:
+    - name: "Power Thesaurus"
+      url: "https://www.powerthesaurus.org/"
+      type: "同义词"
+    - name: "Thesaurus.com"
+      url: "https://www.thesaurus.com/"
+      type: "同义词"
+    - name: "Free Dictionary Idioms"
+      url: "https://idioms.thefreedictionary.com/"
+      type: "习语"
+    - name: "JSTOR"
+      url: "https://www.jstor.org/"
+      type: "历史资料"
+    - name: "Britannica"
+      url: "https://www.britannica.com/"
+      type: "百科"
+    - name: "Query Tracker"
+      url: "https://querytracker.net/"
+      type: "出版信息"
+    - name: "Publishers Marketplace"
+      url: "https://www.publishersmarketplace.com/"
+      type: "出版信息"
+
+scoring_protocol:
+  weights:
+    relevance: 0.35
+    credibility: 0.20
+    freshness: 0.05
+    consensus: 0.40
+  notes: "小说创作共识度权重最高（历史/文化事实需多源确认），时效性几乎不重要"
+
+freshness_table:
+  - type: "词源/词义"
+    valid_period: "永不过期"
+    decay_factor: 1.0
+    notes: "语言历史不变"
+  - type: "人名含义"
+    valid_period: "永不过期"
+    decay_factor: 1.0
+    notes: "名字历史不变"
+  - type: "历史背景"
+    valid_period: "永不过期"
+    decay_factor: 1.0
+    notes: "历史事实不变"
+  - type: "写作规范"
+    valid_period: "10 年"
+    decay_factor: 0.9
+    notes: "规范偶尔修订"
+  - type: "出版信息"
+    valid_period: "1 年"
+    decay_factor: 0.8
+    notes: "出版界变化快"
+
+routing_rules:
+  - trigger: ["词义", "定义", "definition", "什么意思"]
+    priority_sources: ["Merriam-Webster", "OED", "Cambridge Dictionary"]
+    fallback: ["Wikipedia"]
+    min_tier: T1
+    action: "prefer_authoritative"
+  - trigger: ["词源", "etymology", "词源学", "起源"]
+    priority_sources: ["Etymonline", "OED"]
+    fallback: ["Merriam-Webster"]
+    min_tier: T1
+    action: "prefer_authoritative"
+  - trigger: ["人名", "名字含义", "name meaning", "character name"]
+    priority_sources: ["Behind the Name", "Behind the Surname"]
+    fallback: ["Etymonline"]
+    min_tier: T1
+    action: "prefer_authoritative"
+  - trigger: ["同义词", "synonym", "近义词"]
+    priority_sources: ["Power Thesaurus", "Thesaurus.com"]
+    fallback: ["Merriam-Webster"]
+    min_tier: T2
+    action: "multi_source"
+  - trigger: ["历史背景", "历史事件", "historical"]
+    priority_sources: ["Britannica", "JSTOR"]
+    fallback: ["Wikipedia"]
+    min_tier: T2
+    action: "cross_verify"
+  - trigger: ["写作规范", "格式", "style guide"]
+    priority_sources: ["Purdue OWL", "Chicago Manual of Style"]
+    fallback: ["Wikipedia"]
+    min_tier: T1
+    action: "prefer_authoritative"
+
+domain_knowledge:
+  terminology:
+    - "etymology: 词源学"
+    - "onomastics: 专有名词研究"
+    - "denotation: 字面意义"
+    - "connotation: 隐含意义"
+    - "archaism: 古语/废词"
+    - "neologism: 新造词"
+    - "toponym: 地名"
+    - "anthroponym: 人名"
+  conventions:
+    - "对话标点用中文引号「」或英文双引号"
+    - "古英语引用需标注原文和译文"
+    - "人名需说明文化背景和含义"
+    - "历史背景引用需标注年代"
+  common_pitfalls:
+    - "使用现代词汇描写古代场景——检查词源年代"
+    - "人名不符合文化背景——查 Behind the Name"
+    - "混淆相似人名的文化来源"
+    - "地名拼写错误——查 GeoNames"
+    - "历史细节错误——交叉验证"
+  quality_signals:
+    - "权威词典 > 百科 > 社区"
+    - "词源标注年代的信息更可靠"
+    - "有参考文献的历史资料优先"
+
+conflict_policy:
+  same_tier: "呈现不同词源说法"
+  different_tier: "权威词典 > 百科 > 社区"
+  etymology_conflict: "OED 优先，其次 Etymonline"
+  user_override: "用户指定来源覆盖所有 DAR 规则"

@@ -1,0 +1,160 @@
+# DAR: conversation（通用对话/事实核查）
+
+source_registry:
+  T1:
+    # 政府/国际组织
+    - name: "中国政府网"
+      url: "https://www.gov.cn/"
+      type: "政府门户"
+    - name: "WHO"
+      url: "https://www.who.int/"
+      type: "国际组织"
+    - name: "CDC"
+      url: "https://www.cdc.gov/"
+      type: "卫生组织"
+    - name: "World Bank"
+      url: "https://www.worldbank.org/"
+      type: "国际组织"
+    - name: "IMF"
+      url: "https://www.imf.org/"
+      type: "国际组织"
+    - name: "UN"
+      url: "https://www.un.org/"
+      type: "国际组织"
+    # 权威新闻通讯社
+    - name: "Reuters"
+      url: "https://www.reuters.com/"
+      type: "通讯社"
+    - name: "AP News"
+      url: "https://apnews.com/"
+      type: "通讯社"
+    - name: "新华社"
+      url: "http://www.xinhuanet.com/"
+      type: "通讯社"
+    # 数据/统计
+    - name: "Statista"
+      url: "https://www.statista.com/"
+      type: "统计数据"
+    # 事实核查
+    - name: "Snopes"
+      url: "https://www.snopes.com/"
+      type: "事实核查"
+    - name: "FactCheck.org"
+      url: "https://www.factcheck.org/"
+      type: "事实核查"
+    - name: "PolitiFact"
+      url: "https://www.politifact.com/"
+      type: "事实核查"
+  T2:
+    - name: "Google Scholar"
+      url: "https://scholar.google.com/"
+      type: "学术索引"
+    - name: "BBC"
+      url: "https://www.bbc.com/"
+      type: "权威媒体"
+    - name: "NYT"
+      url: "https://www.nytimes.com/"
+      type: "权威媒体"
+    - name: "Britannica"
+      url: "https://www.britannica.com/"
+      type: "百科"
+    - name: "DevDocs"
+      url: "https://devdocs.io/"
+      type: "文档聚合"
+  T3:
+    - name: "Wikipedia"
+      url: "https://www.wikipedia.org/"
+      type: "百科"
+    - name: "百度百科"
+      url: "https://baike.baidu.com/"
+      type: "百科"
+  T4:
+    - name: "自媒体平台"
+      type: "社交媒体"
+
+scoring_protocol:
+  weights:
+    relevance: 0.45
+    credibility: 0.25
+    freshness: 0.10
+    consensus: 0.20
+  notes: "通用问答相关性和共识度权重高，时效性要求因问题而异"
+
+freshness_table:
+  - type: "统计数据"
+    valid_period: "1-3 年"
+    decay_factor: 0.7
+    notes: "查最新数据"
+  - type: "政策法规"
+    valid_period: "5 年"
+    decay_factor: 0.8
+    notes: "检查修订"
+  - type: "历史事件"
+    valid_period: "永不过期"
+    decay_factor: 1.0
+    notes: "事实不变"
+  - type: "新闻事件"
+    valid_period: "1 个月"
+    decay_factor: 0.5
+    notes: "事件可能发展"
+  - type: "人物信息"
+    valid_period: "1 年"
+    decay_factor: 0.8
+    notes: "可能变化"
+
+routing_rules:
+  - trigger: ["GDP", "经济数据", "统计数据", "statistics"]
+    priority_sources: ["World Bank", "IMF", "Statista"]
+    fallback: ["BBC", "NYT"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["疫情", "健康", "疾病", "health"]
+    priority_sources: ["WHO", "CDC"]
+    fallback: ["Reuters", "BBC"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["谣言", "辟谣", "fact check", "是真的吗"]
+    priority_sources: ["Snopes", "FactCheck.org", "PolitiFact"]
+    fallback: ["Reuters", "AP News"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["政策", "法规", "法律"]
+    priority_sources: ["中国政府网", "政府门户"]
+    fallback: ["新华社", "BBC"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["历史事件", "history", "什么时候发生"]
+    priority_sources: ["Britannica", "Wikipedia"]
+    fallback: ["BBC", "NYT"]
+    min_tier: T2
+    action: "cross_verify"
+
+domain_knowledge:
+  terminology:
+    - "GDP: 国内生产总值"
+    - "CPI: 消费者物价指数"
+    - "PMI: 采购经理指数"
+    - "GDP per capita: 人均 GDP"
+    - "mortality rate: 死亡率"
+    - "incidence rate: 发病率"
+  conventions:
+    - "统计数据必须标注年份和来源"
+    - "政策引用必须标注文号"
+    - "医学信息必须引用权威机构"
+    - "历史事件必须标注时间"
+  common_pitfalls:
+    - "混淆名义 GDP 和购买力平价 GDP"
+    - "使用过时数据未标注日期"
+    - "将媒体报道当作官方数据"
+    - "忽略数据口径差异"
+    - "混淆相关性和因果性"
+  quality_signals:
+    - "官方发布 > 媒体报道 > 社交媒体"
+    - "有原始数据来源的优先"
+    - "近期数据优先"
+
+conflict_policy:
+  same_tier: "呈现各方数据，标注口径差异"
+  different_tier: "官方数据 > 权威媒体 > 百科 > 社交媒体"
+  data_conflict: "标注不同来源的数据和口径"
+  user_override: "用户指定来源覆盖所有 DAR 规则"

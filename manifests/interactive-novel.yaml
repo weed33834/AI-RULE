@@ -57,6 +57,7 @@ enables_capabilities:
   - state-machine
   - npc-simulation
   - adaptive-difficulty
+  - dar
 
 forbids_capabilities:
   - engineering

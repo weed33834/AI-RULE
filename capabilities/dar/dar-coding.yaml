@@ -1,0 +1,248 @@
+# DAR: coding（软件开发）
+# 整合各类开发工具、进阶学习站点、资源平台及常用查询资料库
+
+source_registry:
+  T1:
+    # 编程语言官方文档
+    - name: "Python Docs"
+      url: "https://docs.python.org/3/"
+      type: "官方文档"
+    - name: "Node.js Docs"
+      url: "https://nodejs.org/docs/"
+      type: "官方文档"
+    - name: "Rust Docs"
+      url: "https://doc.rust-lang.org/"
+      type: "官方文档"
+    - name: "Go Docs"
+      url: "https://go.dev/doc/"
+      type: "官方文档"
+    - name: "Java Docs"
+      url: "https://docs.oracle.com/en/java/"
+      type: "官方文档"
+    # 框架官方文档
+    - name: "Django Docs"
+      url: "https://docs.djangoproject.com/"
+      type: "框架文档"
+    - name: "FastAPI Docs"
+      url: "https://fastapi.tiangolo.com/"
+      type: "框架文档"
+    - name: "React Docs"
+      url: "https://react.dev/"
+      type: "框架文档"
+    - name: "Next.js Docs"
+      url: "https://nextjs.org/docs"
+      type: "框架文档"
+    - name: "Vue.js Docs"
+      url: "https://vuejs.org/guide/"
+      type: "框架文档"
+    - name: "Spring Docs"
+      url: "https://docs.spring.io/spring-framework/reference/"
+      type: "框架文档"
+    # 包仓库
+    - name: "PyPI"
+      url: "https://pypi.org/"
+      type: "包仓库"
+    - name: "npm"
+      url: "https://www.npmjs.com/"
+      type: "包仓库"
+    - name: "crates.io"
+      url: "https://crates.io/"
+      type: "包仓库"
+    - name: "Maven Central"
+      url: "https://central.sonatype.com/"
+      type: "包仓库"
+    # 代码托管
+    - name: "GitHub"
+      url: "https://github.com/"
+      type: "代码托管"
+    - name: "GitLab"
+      url: "https://gitlab.com/"
+      type: "代码托管"
+    # Web 标准
+    - name: "MDN Web Docs"
+      url: "https://developer.mozilla.org/"
+      type: "Web 标准"
+    - name: "W3C"
+      url: "https://www.w3.org/"
+      type: "Web 标准"
+    - name: "WHATWG"
+      url: "https://whatwg.org/"
+      type: "Web 标准"
+    # 安全漏洞库
+    - name: "CVE"
+      url: "https://cve.mitre.org/"
+      type: "漏洞库"
+    - name: "NVD"
+      url: "https://nvd.nist.gov/"
+      type: "漏洞库"
+    - name: "Snyk Vulnerability DB"
+      url: "https://security.snyk.io/"
+      type: "漏洞库"
+    - name: "GitHub Security Advisories"
+      url: "https://github.com/advisories"
+      type: "漏洞库"
+  T2:
+    # 技术社区/学习平台
+    - name: "Stack Overflow"
+      url: "https://stackoverflow.com/"
+      type: "技术社区"
+    - name: "DevDocs"
+      url: "https://devdocs.io/"
+      type: "文档聚合"
+    - name: "Real Python"
+      url: "https://realpython.com/"
+      type: "教程"
+    - name: "CSS-Tricks"
+      url: "https://css-tricks.com/"
+      type: "教程"
+    - name: "Martin Fowler"
+      url: "https://martinfowler.com/"
+      type: "架构"
+    # DevOps 文档
+    - name: "Docker Docs"
+      url: "https://docs.docker.com/"
+      type: "DevOps 文档"
+    - name: "Kubernetes Docs"
+      url: "https://kubernetes.io/docs/"
+      type: "DevOps 文档"
+    - name: "Ansible Docs"
+      url: "https://docs.ansible.com/"
+      type: "DevOps 文档"
+    - name: "Terraform Docs"
+      url: "https://developer.hashicorp.com/terraform/docs"
+      type: "DevOps 文档"
+    # 云平台文档
+    - name: "AWS Docs"
+      url: "https://docs.aws.amazon.com/"
+      type: "云文档"
+    - name: "Azure Docs"
+      url: "https://learn.microsoft.com/azure/"
+      type: "云文档"
+    - name: "GCP Docs"
+      url: "https://cloud.google.com/docs"
+      type: "云文档"
+  T3:
+    - name: "Reddit /r/programming"
+      url: "https://www.reddit.com/r/programming/"
+      type: "社区讨论"
+    - name: "Hacker News"
+      url: "https://news.ycombinator.com/"
+      type: "社区讨论"
+    - name: "Dev.to"
+      url: "https://dev.to/"
+      type: "技术博客"
+    - name: "Medium"
+      url: "https://medium.com/"
+      type: "技术博客"
+
+scoring_protocol:
+  weights:
+    relevance: 0.40
+    credibility: 0.30
+    freshness: 0.25
+    consensus: 0.05
+  notes: "开发领域时效性权重高（API 变更频繁），共识性权重低（社区讨论质量参差）"
+
+freshness_table:
+  - type: "API/SDK 版本"
+    valid_period: "1-2 年"
+    decay_factor: 0.7
+    notes: "检查版本兼容性"
+  - type: "框架版本"
+    valid_period: "2 年"
+    decay_factor: 0.8
+    notes: "检查是否有 breaking change"
+  - type: "安全漏洞"
+    valid_period: "3 个月"
+    decay_factor: 0.3
+    notes: "必须查最新状态"
+  - type: "包/库版本"
+    valid_period: "1 年"
+    decay_factor: 0.6
+    notes: "检查最新版本"
+  - type: "语言语法"
+    valid_period: "5 年"
+    decay_factor: 0.9
+    notes: "语法相对稳定"
+  - type: "设计模式"
+    valid_period: "10 年"
+    decay_factor: 1.0
+    notes: "设计模式稳定"
+
+routing_rules:
+  - trigger: ["API 用法", "API usage", "how to use"]
+    priority_sources: ["官方文档", "MDN"]
+    fallback: ["Stack Overflow", "Dev.to"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["安装", "install", "pip install", "npm install"]
+    priority_sources: ["PyPI", "npm", "crates.io", "Maven Central"]
+    fallback: ["Stack Overflow"]
+    min_tier: T1
+    action: "check_latest_version"
+  - trigger: ["安全漏洞", "CVE", "vulnerability", "security"]
+    priority_sources: ["CVE", "NVD", "Snyk", "GitHub Security Advisories"]
+    fallback: ["Stack Overflow"]
+    min_tier: T1
+    action: "must_verify"
+  - trigger: ["部署", "deploy", "docker", "kubernetes"]
+    priority_sources: ["Docker Docs", "Kubernetes Docs", "AWS/Azure/GCP Docs"]
+    fallback: ["Dev.to", "Medium"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["错误信息", "error message", "报错"]
+    priority_sources: ["官方文档", "Stack Overflow"]
+    fallback: ["GitHub Issues", "Reddit"]
+    min_tier: T2
+    action: "check_version"
+  - trigger: ["性能优化", "performance", "benchmark"]
+    priority_sources: ["官方文档", "Martin Fowler"]
+    fallback: ["Stack Overflow", "Dev.to"]
+    min_tier: T2
+    action: "multi_source"
+  - trigger: ["设计模式", "design pattern", "架构"]
+    priority_sources: ["Martin Fowler", "官方文档"]
+    fallback: ["Stack Overflow", "Dev.to"]
+    min_tier: T2
+    action: "prefer_authoritative"
+  - trigger: ["包对比", "library comparison", "vs"]
+    priority_sources: ["PyPI", "npm", "GitHub"]
+    fallback: ["Stack Overflow", "Reddit"]
+    min_tier: T2
+    action: "multi_source"
+
+domain_knowledge:
+  terminology:
+    - "breaking change: 破坏性变更"
+    - "LTS: 长期支持版本"
+    - "semver: 语义化版本号 (major.minor.patch)"
+    - "deprecation: 弃用，即将移除"
+    - "polyfill: 兼容性填充代码"
+    - "tree shaking: 未使用代码剔除"
+    - "SSR/CSR/SSG: 服务端渲染/客户端渲染/静态站点生成"
+    - "CI/CD: 持续集成/持续部署"
+    - "CVE: 通用漏洞披露"
+    - "CWE: 通用弱点枚举"
+  conventions:
+    - "代码示例必须标注语言版本（如 Python 3.12+）"
+    - "API 示例必须标注包版本（如 fastapi>=0.100）"
+    - "安全相关建议必须引用 CVE 编号"
+    - "废弃 API 必须标注替代方案"
+  common_pitfalls:
+    - "使用已废弃的 API——检查文档中的 deprecated 标记"
+    - "版本不兼容——标注最低版本要求"
+    - "混淆同步/异步 API——明确标注 async/await"
+    - "忽略安全漏洞——必须检查 CVE/NVD"
+    - "使用社区代码片段未验证——必须理解后再使用"
+    - "参考过时教程——检查发布日期和版本号"
+  quality_signals:
+    - "官方文档 > 社区教程"
+    - "近期更新（1 年内）的文档优先"
+    - "GitHub Stars >1000 的项目更可靠"
+    - "有 CI/CD 的项目质量更高"
+
+conflict_policy:
+  same_tier: "优先最新版本/最新文档"
+  different_tier: "官方文档 > 社区回答 > 博客 > 社交媒体"
+  version_conflict: "优先目标版本对应的文档"
+  user_override: "用户指定来源覆盖所有 DAR 规则"

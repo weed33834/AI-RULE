@@ -4,8 +4,8 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-234+-orange)
-![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
+![Files](https://img.shields.io/badge/files-245+-orange)
+![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
 > 6つの独立ルール体系を一つのリポジトリに統合：コア層＋単一プロファイル＋機能パック。
@@ -69,10 +69,10 @@ AI-RULE/
 │   ├── profile-router.md        # プロファイル選択と機能パックホワイトリスト
 │   └── language-mediation.md    # 言語仲介プロトコル
 ├── profiles/                    # 6つの独立ルールセット
-├── capabilities/                # 13のオンデマンド機能パック
+├── capabilities/                # 14のオンデマンド機能パック（dar/ドメインレジストリ含む）
 ├── manifests/                   # プロファイル別アセンブリマニフェスト
 ├── scripts/sync_rules.py        # ツールエントリファイル生成
-└── tests/                       # 5テストスイート（40チェック、全通過）
+└── tests/                       # 6テストスイート（51チェック、全通過）
 ```
 
 ## 言語メカニズム
@@ -120,7 +120,7 @@ P0: core/ セキュリティ、権限、真実性、MCPレッドライン
 ## 検証
 
 ```bash
-pytest tests/                        # 5スイート、40チェック、全通過
+pytest tests/                        # 6スイート、51チェック、全通過
 ```
 
 ## リポジトリ

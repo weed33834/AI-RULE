@@ -4,8 +4,8 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-234+-orange)
-![Tests](https://img.shields.io/badge/tests-40%20passing-brightgreen)
+![Files](https://img.shields.io/badge/files-245+-orange)
+![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
 > 6 套独立规则体系的单仓整合：核心层 + 单一主 Profile + 能力包。
@@ -102,42 +102,42 @@ python scripts/sync_rules.py --profile novel --tool all
 - **来源**：badhope/AI
 - **适用**：Python/FastAPI 开发、Bug 修复、重构、测试、代码审查
 - **核心能力**：Git SOP、依赖管理、PowerShell 语法、MCP 红线、工程卫生
-- **可叠加能力包**：research、testing、review、agent-governance
+- **可叠加能力包**：research、testing、review、agent-governance、dar
 - **互斥**：novel、interactive-novel
 
 ### conversation（通用对话）
 - **来源**：badhope/universal
 - **适用**：通用问答、调研、方案对比、信息检索
 - **核心能力**：真实性协议、深度搜索、反降智、澄清协议、推理深度控制
-- **可叠加能力包**：research
+- **可叠加能力包**：research、dar
 - **互斥**：novel、interactive-novel、agent-builder
 
 ### novel（小说创作）
 - **来源**：badhope/novel
 - **适用**：小说写作、章节创作、角色/世界观维护
 - **核心能力**：创作种子确认、去 AI 文学味、角色一致性、伏笔追踪、故事知识图谱、三层修订
-- **可叠加能力包**：research、worldbuilding、creative
+- **可叠加能力包**：research、worldbuilding、creative、dar
 - **互斥**：coding、conversation、interactive-novel、agent-builder
 
 ### interactive-novel（互动小说游戏）
 - **来源**：badhope/interactive-novel
 - **适用**：互动小说游戏、分支叙事、状态机驱动
 - **核心能力**：游戏种子、状态机、NPC 自主性、自适应难度、存档/读档、回合制
-- **可叠加能力包**：creative、research、state-machine、npc-simulation、adaptive-difficulty
+- **可叠加能力包**：creative、research、state-machine、npc-simulation、adaptive-difficulty、dar
 - **互斥**：coding、conversation、novel、agent-builder
 
 ### paper（学术论文写作）
 - **来源**：badhope/paper
 - **适用**：学术论文写作、文献综述、投稿、审稿回复
 - **核心能力**：学术诚信协议、引用验证流程、文献综述方法论、论文结构框架（IMRaD/Review/Position/Case Study）、研究问题提炼、方法论设计、数据呈现、去AI学术味、模拟同行评审、修订信回复
-- **可叠加能力包**：research
+- **可叠加能力包**：research、dar
 - **互斥**：novel、interactive-novel
 
 ### agent-builder（智能体构建）
 - **来源**：badhope/AgentCreater
 - **适用**：设计/评估/部署智能体，产出 config、工具定义、测试用例
 - **核心能力**：角色四层模型、CTCO 提示词结构、工具副作用分级、记忆系统、评估框架、可执行模板
-- **可叠加能力包**：research、agent-governance、engineering、testing
+- **可叠加能力包**：research、agent-governance、engineering、testing、dar
 - **互斥**：conversation、novel、interactive-novel
 
 ## 仓库结构
@@ -157,15 +157,15 @@ AI-RULE/
 │   ├── interactive-novel/ (31 文件)
 │   ├── paper/           ( 22 文件)
 │   └── agent-builder/   ( 70 文件)   # 合计 183 文件
-├── capabilities/                # 13 个按需能力包（capabilities/*.md）
+├── capabilities/                # 14 个按需能力包（capabilities/*.md + dar/）
 ├── manifests/                   # 每个 Profile 的装配清单
 ├── adapters/                    # 可选工具追加片段（扩展点，sync_rules.py 检测，不存在时跳过）
 ├── provenance/                  # 生成溯源记录（JSON，已 gitignore）
 ├── scripts/sync_rules.py        # 按 Profile 生成各工具入口
-└── tests/                       # 5 套测试（40 项检查，全部通过）
+└── tests/                       # 6 套测试（51 项检查，全部通过）
 ```
 
-> 真实统计：6 个 Profile 合计 **183** 个文件；`capabilities/` 13 个能力包；`core/` 4 个文件；仓库总文件 **234**（不含 `.git`）。
+> 真实统计：6 个 Profile 合计 **183** 个文件；`capabilities/` 14 个能力包；`core/` 5 个文件；仓库总文件 **245**（不含 `.git`）。
 
 ## 语言机制
 
@@ -214,11 +214,11 @@ python scripts/sync_rules.py --profile coding --tool all
 ## 验证测试
 
 ```bash
-pytest tests/                        # 5 套测试，40 项检查，全部通过
+pytest tests/                        # 6 套测试，51 项检查，全部通过
 # 或单文件运行：pytest tests/test_audit.py
 ```
 
-全部 40 项检查通过（测试为 pytest 函数风格，需先安装 pytest）。
+全部 51 项检查通过（测试为 pytest 函数风格，需先安装 pytest）。
 
 ## 能力包
 
@@ -239,6 +239,7 @@ pytest tests/                        # 5 套测试，40 项检查，全部通过
 | `agent-governance` | 智能体评估、观测、安全对齐 |
 | `orchestration` | 多智能体编排 |
 | `novel-chapter-deliverable-mode` | 小说章节交付模式 |
+| `dar` | 域权威注册表——权威源名录、打分公式、检索路由 |
 
 详见 `capabilities/README.md`。
 

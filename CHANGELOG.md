@@ -2,6 +2,27 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，版本号参考语义化版本。
 
+## [1.3.0] — 2026-07-19
+
+### 新增
+
+- **DAR（Domain Authority Registry，域权威注册表）**：新增模块化注册表体系，为每个领域预置权威源名录、打分规则、检索通道和领域知识，让搜索行为更有指向性，避免无意义的全网乱搜。
+  - `core/dar-spec.md`：DAR 统一规范——T1-T4 四档分级、打分公式（α×相关性 + β×可信度 + γ×时效 + δ×共识）、时效表、路由规则、冲突策略、动态调整机制。
+  - `capabilities/dar/`：6 个领域配置（paper/coding/conversation/novel/interactive-novel/agent-builder），每个包含 source_registry、scoring_weights、freshness_table、routing_rules、domain_knowledge、conflict_policy。
+  - **paper 顶刊名录**：Nature、Science、PNAS、Cell、Lancet、JAMA、BMJ、IEEE TPAMI、JMLR 等顶刊 + Google Scholar、Semantic Scholar、arXiv、PubMed、DBLP、CrossRef、Retraction Watch 等索引验证工具。
+  - **coding 资源平台**：Python/Node.js/Rust/Go 官方文档 + PyPI/npm/crates.io 包仓库 + CVE/NVD/Snyk 漏洞库 + AWS/Azure/GCP 云文档 + Docker/K8s/Terraform 工具文档。
+  - **统一来源分级**：将此前 A-E 五档（conversation）统一为 DAR T1-T4 四档，跨领域可比。
+- **DAR 评估框架**：`tests/dar-evaluation/` 包含 5 个复杂企业级测试场景（每个 ≥200 字，覆盖多节点联动）和 6 维评估框架（Source Quality / Citation Fidelity / Routing Accuracy / Conflict Handling / Freshness Awareness / Domain Knowledge）。
+- **DAR 测试**：`tests/test_dar.py`，11 项结构验证测试。
+
+### 变更
+
+- `core/profile-router.md`：能力包白名单所有 Profile 加入 `dar`。
+- `deep-search.md`：查询设计阶段加入 DAR 路由规则引用；结果分析阶段加入 DAR 打分公式引用。
+- `truth-protocol.md`：CoV 验证流程加入 DAR T1-T4 分级引用。
+- `source-credibility.md`：来源分级从 A-E 五档统一为 DAR T1-T4 四档。
+- 6 个 manifest：`enables_capabilities` 加入 `dar`。
+
 ## [1.2.0] — 2026-07-18
 
 ### 新增

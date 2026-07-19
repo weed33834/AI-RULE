@@ -1,0 +1,145 @@
+# DAR: interactive-novel（互动小说游戏）
+
+source_registry:
+  T1:
+    # 引擎官方文档
+    - name: "Unity Docs"
+      url: "https://docs.unity3d.com/"
+      type: "引擎文档"
+    - name: "Unreal Engine Docs"
+      url: "https://docs.unrealengine.com/"
+      type: "引擎文档"
+    - name: "Godot Docs"
+      url: "https://docs.godotengine.org/"
+      type: "引擎文档"
+    - name: "Ren'Py Docs"
+      url: "https://www.renpy.org/doc/html/"
+      type: "视觉小说引擎"
+    - name: "Twine Docs"
+      url: "https://twinery.org/"
+      type: "互动叙事引擎"
+    - name: "Ink (Inkle) Docs"
+      url: "https://github.com/inkle/ink"
+      type: "叙事脚本语言"
+  T2:
+    # 游戏设计资源
+    - name: "Game Designing"
+      url: "https://www.gamedesigning.org/"
+      type: "游戏设计"
+    - name: "Gamasutra (Game Developer)"
+      url: "https://www.gamedeveloper.com/"
+      type: "游戏开发"
+    - name: "GDC Vault"
+      url: "https://www.gdcvault.com/"
+      type: "游戏开发演讲"
+    - name: "Game Writing Resource"
+      url: "https://www.gamewriting.org/"
+      type: "游戏叙事写作"
+    - name: "Interactive Narrative"
+      url: "https://www.interactivenarrative.net/"
+      type: "互动叙事研究"
+    - name: "Game AI Pro"
+      url: "http://www.gameaipro.com/"
+      type: "游戏 AI"
+    - name: "Game Dev Patterns"
+      url: "https://gameprogrammingpatterns.com/"
+      type: "游戏编程模式"
+  T3:
+    - name: "RPG.NET"
+      url: "https://www.rpg.net/"
+      type: "社区讨论"
+    - name: "itch.io devlogs"
+      url: "https://itch.io/"
+      type: "开发日志"
+
+scoring_protocol:
+  weights:
+    relevance: 0.35
+    credibility: 0.25
+    freshness: 0.20
+    consensus: 0.20
+  notes: "互动小说游戏引擎版本更新快，时效性权重较高"
+
+freshness_table:
+  - type: "引擎 API"
+    valid_period: "2 年"
+    decay_factor: 0.7
+    notes: "检查版本兼容性"
+  - type: "设计模式"
+    valid_period: "5 年"
+    decay_factor: 0.9
+    notes: "设计模式相对稳定"
+  - type: "叙事理论"
+    valid_period: "10 年"
+    decay_factor: 1.0
+    notes: "理论稳定"
+  - type: "工具版本"
+    valid_period: "1 年"
+    decay_factor: 0.6
+    notes: "检查最新版本"
+
+routing_rules:
+  - trigger: ["Unity", "Unity3D", "unity"]
+    priority_sources: ["Unity Docs"]
+    fallback: ["Game Developer", "Stack Overflow"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["Unreal", "UE5", "UE4"]
+    priority_sources: ["Unreal Engine Docs"]
+    fallback: ["Game Developer"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["Ren'Py", "renpy", "视觉小说"]
+    priority_sources: ["Ren'Py Docs"]
+    fallback: [" itch.io devlogs"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["分支叙事", "branching narrative", "Twine", " Ink"]
+    priority_sources: ["Twine Docs", "Ink Docs"]
+    fallback: ["Interactive Narrative"]
+    min_tier: T1
+    action: "prefer_official"
+  - trigger: ["游戏叙事", "game writing", "叙事设计"]
+    priority_sources: ["Game Writing Resource", "GDC Vault"]
+    fallback: ["Game Developer", "Interactive Narrative"]
+    min_tier: T2
+    action: "multi_source"
+  - trigger: ["游戏 AI", "game AI", "NPC AI"]
+    priority_sources: ["Game AI Pro", "Unity Docs"]
+    fallback: ["Game Developer"]
+    min_tier: T2
+    action: "multi_source"
+
+domain_knowledge:
+  terminology:
+    - "branching narrative: 分支叙事"
+    - "state machine: 状态机"
+    - "visual novel: 视觉小说"
+    - "interactive fiction (IF): 互动小说"
+    - "dialogue tree: 对话树"
+    - "save/load: 存档/读档"
+    - "NPC: 非玩家角色"
+    - "quest: 任务"
+    - "playthrough: 通关流程"
+    - "ending: 结局（true/good/bad ending）"
+  conventions:
+    - "分支必须有合理解释，不能突兀"
+    - "存档点设计需考虑玩家体验"
+    - "NPC 对话需符合角色设定"
+    - "结局数量需与叙事复杂度匹配"
+  common_pitfalls:
+    - "分支过多导致内容稀释"
+    - "状态机死锁——玩家无法继续"
+    - "NPC 反应不符合设定"
+    - "存档/读档逻辑错误"
+    - "结局缺乏差异感"
+  quality_signals:
+    - "有详细文档的引擎优先"
+    - "近期更新的工具优先"
+    - "有社区支持的项目更可靠"
+
+conflict_policy:
+  same_tier: "优先最新版本文档"
+  different_tier: "引擎官方文档 > 游戏设计资源 > 社区讨论"
+  version_conflict: "优先目标引擎版本对应的文档"
+  user_override: "用户指定来源覆盖所有 DAR 规则"
