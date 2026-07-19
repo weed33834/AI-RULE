@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Simple DAR test runner - tests remaining models."""
 
-import json, time, urllib.request, urllib.error, sys
+import json, time, urllib.request, urllib.error, sys, os
 
-BACKUP_API = "https://api.hcnsec.cn/v1"
-BACKUP_KEY = "sk-j4TEjjV0fKgqvliSXc8jko2EHzBmXnazsVaGCUa0sxSmZAH7"
+# API keys read from environment variables — see SECURITY.md
+BACKUP_API = os.environ.get("BACKUP_API_URL", "https://api.hcnsec.cn/v1")
+BACKUP_KEY = os.environ.get("BACKUP_API_KEY", "")
 
 MODELS_TO_TEST = ["Kimi-K2.6", "MiniMax-M3", "Qwen3.5-397B-A17B", "step-3.7-flash", "Spark-X2-Flash", "sensenova-u1-fast", "DeepSeek-V4-Flash", "glm-4.7"]
 

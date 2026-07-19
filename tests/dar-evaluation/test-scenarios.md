@@ -160,7 +160,9 @@ Conventions: specify framework versions, full model names. Pitfalls: deprecated 
 
 | 渠道 | 地址 | 密钥 | 可用模型 |
 |------|------|------|---------|
-| 主接口 | https://api.587.lol/v1 | 任意值 | moonweaver-4.8 |
-| 备用接口 | https://api.hcnsec.cn/v1 | sk-j4TEjj...（已配置） | 25 个文本模型 |
+| 主接口 | api.587.lol/v1 | 任意值（环境变量） | moonweaver-4.8 |
+| 备用接口 | api.hcnsec.cn/v1 | 环境变量读取 | 26 个文本模型 |
+| 第三接口 | cli.999554.xyz/v1 | 环境变量读取 | 待激活 |
 
-> 注：主接口穷尽所有调试方案后仅 1 个模型可用，按预案切换至备用接口完成全覆盖测试。
+> 注：所有 API 密钥通过环境变量注入，源代码中不硬编码任何凭证（见 `SECURITY.md`）。
+> 主接口穷尽所有调试方案后仅 1 个模型可用，按预案切换至备用接口完成全覆盖测试。

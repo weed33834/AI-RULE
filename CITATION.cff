@@ -8,11 +8,11 @@ authors:
 repository-code: "https://gitcode.com/badhope/AI-RULE"
 url: "https://github.com/weed33834/AI-RULE"
 abstract: >-
-  A single repository integrating 5 independent AI rule systems (coding,
-  conversation, novel, interactive-novel, agent-builder) with a shared core
-  layer, 13 composable capability packs, and multi-tool sync (Claude Code,
-  Gemini, Cursor, GitHub Copilot, Trae). Incorporates research-backed prompt
-  engineering and safety guardrails.
+  A single repository integrating 6 independent AI rule systems (coding,
+  conversation, novel, interactive-novel, paper, agent-builder) with a shared
+  core layer, 14 composable capability packs (incl. DAR domain authority
+  registry), and multi-tool sync (Claude Code, Gemini, Cursor, GitHub Copilot,
+  Trae). Incorporates research-backed prompt engineering and safety guardrails.
 keywords:
   - prompt-engineering
   - ai-agents
@@ -21,9 +21,10 @@ keywords:
   - ai-safety
   - prompt-patterns
   - ai-alignment
+  - domain-authority-registry
 license: MIT
-version: "1.1.0"
-date-released: "2026-07-17"
+version: "1.3.1"
+date-released: "2026-07-19"
 preferred-citation:
   type: software
   title: "Rule Hub — Unified AI Collaboration Rules"
@@ -31,6 +32,6 @@ preferred-citation:
     - alias: badhope
   repository-code: "https://gitcode.com/badhope/AI-RULE"
   url: "https://github.com/weed33834/AI-RULE"
-  version: "1.1.0"
-  date-released: "2026-07-17"
+  version: "1.3.1"
+  date-released: "2026-07-19"
   license: MIT

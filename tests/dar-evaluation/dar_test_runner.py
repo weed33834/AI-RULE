@@ -14,12 +14,23 @@ import urllib.error
 from datetime import datetime
 
 # ============ API Configuration ============
-PRIMARY_API = "https://api.587.lol/v1"
-PRIMARY_KEY = "test123"
+# NOTE: API keys are read from environment variables. Never hardcode credentials.
+# See SECURITY.md — this repo has a zero-tolerance policy for hardcoded secrets.
+#
+# Export before running:
+#   export PRIMARY_API_URL="https://api.587.lol/v1"
+#   export PRIMARY_API_KEY="any-value"
+#   export BACKUP_API_URL="https://api.hcnsec.cn/v1"
+#   export BACKUP_API_KEY="sk-..."
+#   export TERTIARY_API_URL="https://cli.999554.xyz/v1"
+#   export TERTIARY_API_KEY="sk-..."
+
+PRIMARY_API = os.environ.get("PRIMARY_API_URL", "https://api.587.lol/v1")
+PRIMARY_KEY = os.environ.get("PRIMARY_API_KEY", "")
 PRIMARY_MODELS = ["moonweaver-4.8"]
 
-BACKUP_API = "https://api.hcnsec.cn/v1"
-BACKUP_KEY = "sk-j4TEjjV0fKgqvliSXc8jko2EHzBmXnazsVaGCUa0sxSmZAH7"
+BACKUP_API = os.environ.get("BACKUP_API_URL", "https://api.hcnsec.cn/v1")
+BACKUP_KEY = os.environ.get("BACKUP_API_KEY", "")
 # Text models only (skip image/audio/router models)
 BACKUP_MODELS = [
     "DeepSeek-V4-Pro",
