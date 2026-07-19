@@ -246,3 +246,25 @@ conflict_policy:
   different_tier: "官方文档 > 社区回答 > 博客 > 社交媒体"
   version_conflict: "优先目标版本对应的文档"
   user_override: "用户指定来源覆盖所有 DAR 规则"
+
+# ── Adaptive Prefix Templates (v4) ──────────────────────────
+# Based on v1/v2/v3 A/B testing (see tests/dar-evaluation/).
+# standard  = compressed prefix, best for capable models (70B+ / commercial API)
+# extended  = verbose prefix, best for small models (<70B) or explicit guidance
+# Selection criteria: see core/dar-spec.md §11
+prefix_templates:
+  standard: |
+    [DAR] coding/security 优先源：CVE/NVD/Snyk/GitHub Advisory/官方文档。关键术语：CVE/CVSS/CWE/semver。指引：引用CVE编号、标注包版本、检查NVD安全公告。
+    要求：①事实附URL+日期 ②来源冲突时呈现分歧 ③数据标注年份，>12月降权。
+  extended: |
+    [DAR Routing] Priority sources (T1): CVE (cve.mitre.org), NVD (nvd.nist.gov), Snyk, GitHub Security Advisories, official docs, PyPI/npm.
+    [DAR Scoring] Score = 0.40×Relevance + 0.30×Credibility + 0.25×Freshness + 0.05×Consensus. T1 weight ×1.0, T3 ×0.5, T4 ×0.2.
+    [DAR Terms] CVE, CVSS, CWE, breaking change, semver. Cite CVE numbers, specify versions.
+  selection_guide:
+    default: standard
+    small_model_heuristic: "params < 70B or context_window < 8K → extended"
+    rationale: >
+      v1/v2/v3 A/B testing (3 models × 30 cases × 3 rounds) showed:
+      large models score +0.5~+0.8 higher with standard (compressed) prefix;
+      small models score +6.1 higher with extended (verbose) prefix.
+      See tests/dar-evaluation/v2-optimization-design.md for full data.

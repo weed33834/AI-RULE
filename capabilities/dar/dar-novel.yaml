@@ -157,3 +157,25 @@ conflict_policy:
   different_tier: "权威词典 > 百科 > 社区"
   etymology_conflict: "OED 优先，其次 Etymonline"
   user_override: "用户指定来源覆盖所有 DAR 规则"
+
+# ── Adaptive Prefix Templates (v4) ──────────────────────────
+# Based on v1/v2/v3 A/B testing (see tests/dar-evaluation/).
+# standard  = compressed prefix, best for capable models (70B+ / commercial API)
+# extended  = verbose prefix, best for small models (<70B) or explicit guidance
+# Selection criteria: see core/dar-spec.md §11
+prefix_templates:
+  standard: |
+    [DAR] novel/creative writing 优先源：Merriam-Webster/OED/Etymonline/Behind the Name/GeoNames。关键术语：etymology/anachronism/neologism/denotation。指引：查词源确认时代准确性、查人名库确认年代适宜性。
+    要求：①事实附URL+日期 ②来源冲突时呈现分歧 ③语言用法标注时代背景。
+  extended: |
+    [DAR Routing] Priority sources (T1): Merriam-Webster, OED, Cambridge Dictionary, Etymonline, Behind the Name, GeoNames, Purdue OWL.
+    [DAR Scoring] Score = 0.35×Relevance + 0.20×Credibility + 0.05×Freshness + 0.40×Consensus. Consensus weighted highest.
+    [DAR Terms] etymology, denotation, connotation, archaism, neologism, anachronism. Check word etymology for period accuracy.
+  selection_guide:
+    default: standard
+    small_model_heuristic: "params < 70B or context_window < 8K → extended"
+    rationale: >
+      v1/v2/v3 A/B testing (3 models × 30 cases × 3 rounds) showed:
+      large models score +0.5~+0.8 higher with standard (compressed) prefix;
+      small models score +6.1 higher with extended (verbose) prefix.
+      See tests/dar-evaluation/v2-optimization-design.md for full data.

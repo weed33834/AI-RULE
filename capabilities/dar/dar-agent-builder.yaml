@@ -163,3 +163,25 @@ conflict_policy:
   version_conflict: "优先目标版本对应的文档"
   benchmark_conflict: "多个 benchmark 结果一起呈现"
   user_override: "用户指定来源覆盖所有 DAR 规则"
+
+# ── Adaptive Prefix Templates (v4) ──────────────────────────
+# Based on v1/v2/v3 A/B testing (see tests/dar-evaluation/).
+# standard  = compressed prefix, best for capable models (70B+ / commercial API)
+# extended  = verbose prefix, best for small models (<70B) or explicit guidance
+# Selection criteria: see core/dar-spec.md §11
+prefix_templates:
+  standard: |
+    [DAR] AI agent 优先源：Hugging Face/Papers with Code/LangChain/LMSYS Arena。关键术语：LLM/RAG/ReAct/Elo/tool calling。指引：标注框架版本、使用完整模型名、区分pass@k与pass^k。
+    要求：①事实附URL+日期 ②来源冲突时呈现分歧 ③benchmark 标注日期，>3月降权。
+  extended: |
+    [DAR Routing] Priority sources (T1): Hugging Face, Papers with Code, LangChain Docs, OpenAI/Anthropic Docs, MCP Spec, Open LLM Leaderboard, LMSYS Chatbot Arena (lmarena.ai).
+    [DAR Scoring] Score = 0.35×Relevance + 0.30×Credibility + 0.25×Freshness + 0.10×Consensus. Freshness weighted high.
+    [DAR Terms] LLM, RAG, ReAct, CoT, tool calling, embedding, Elo. Specify framework versions, full model names.
+  selection_guide:
+    default: standard
+    small_model_heuristic: "params < 70B or context_window < 8K → extended"
+    rationale: >
+      v1/v2/v3 A/B testing (3 models × 30 cases × 3 rounds) showed:
+      large models score +0.5~+0.8 higher with standard (compressed) prefix;
+      small models score +6.1 higher with extended (verbose) prefix.
+      See tests/dar-evaluation/v2-optimization-design.md for full data.

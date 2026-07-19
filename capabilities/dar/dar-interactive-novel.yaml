@@ -143,3 +143,25 @@ conflict_policy:
   different_tier: "引擎官方文档 > 游戏设计资源 > 社区讨论"
   version_conflict: "优先目标引擎版本对应的文档"
   user_override: "用户指定来源覆盖所有 DAR 规则"
+
+# ── Adaptive Prefix Templates (v4) ──────────────────────────
+# Based on v1/v2/v3 A/B testing (see tests/dar-evaluation/).
+# standard  = compressed prefix, best for capable models (70B+ / commercial API)
+# extended  = verbose prefix, best for small models (<70B) or explicit guidance
+# Selection criteria: see core/dar-spec.md §11
+prefix_templates:
+  standard: |
+    [DAR] interactive fiction/game narrative 优先源：Twine Docs/Ren'Py Docs/Ink Docs/GDC talks/IGDA。关键术语：branching narrative/dialogue tree/choice cone/state machine。指引：标注引擎版本、区分线性/分支/网状叙事结构。
+    要求：①事实附URL+日期 ②来源冲突时呈现分歧 ③引擎特性标注版本号。
+  extended: |
+    [DAR Routing] Priority sources (T1): Twine Docs, Ren'Py Docs, Ink (Inkle) Docs, Unity Docs, Unreal Docs, GDC Vault, IGDA, Narrative Design Toolkit.
+    [DAR Scoring] Score = 0.35×Relevance + 0.25×Credibility + 0.15×Freshness + 0.25×Consensus.
+    [DAR Terms] branching narrative, dialogue tree, choice cone, state machine, affinity system, flag tracking. Specify engine versions.
+  selection_guide:
+    default: standard
+    small_model_heuristic: "params < 70B or context_window < 8K → extended"
+    rationale: >
+      v1/v2/v3 A/B testing (3 models × 30 cases × 3 rounds) showed:
+      large models score +0.5~+0.8 higher with standard (compressed) prefix;
+      small models score +6.1 higher with extended (verbose) prefix.
+      See tests/dar-evaluation/v2-optimization-design.md for full data.

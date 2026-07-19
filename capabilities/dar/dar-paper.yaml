@@ -216,3 +216,25 @@ conflict_policy:
   different_tier: "优先高级别来源（T1 > T2 > T3）"
   time_conflict: "优先最新发表，除非是经典/公理"
   user_override: "用户指定来源覆盖所有 DAR 规则"
+
+# ── Adaptive Prefix Templates (v4) ──────────────────────────
+# Based on v1/v2/v3 A/B testing (see tests/dar-evaluation/).
+# standard  = compressed prefix, best for capable models (70B+ / commercial API)
+# extended  = verbose prefix, best for small models (<70B) or explicit guidance
+# Selection criteria: see core/dar-spec.md §11
+prefix_templates:
+  standard: |
+    [DAR] academic paper 优先源：Google Scholar/Semantic Scholar/arXiv/PubMed/CrossRef/Retraction Watch。关键术语：DOI/h-index/IF/peer review/Q1。指引：通过CrossRef验证DOI、检查Retraction Watch撤稿记录。
+    要求：①事实附URL+日期 ②来源冲突时呈现分歧 ③研究标注年份，>5年降权。
+  extended: |
+    [DAR Routing] Priority sources (T1): Google Scholar, Semantic Scholar, arXiv, PubMed, DBLP, CrossRef (doi.org), Retraction Watch, ORCID.
+    [DAR Scoring] Score = 0.30×Relevance + 0.40×Credibility + 0.15×Freshness + 0.15×Consensus. Credibility weighted highest. Check Retraction Watch.
+    [DAR Terms] h-index, IF, Q1/Q2/Q3/Q4, DOI, ORCID, peer review. Verify DOIs via CrossRef.
+  selection_guide:
+    default: standard
+    small_model_heuristic: "params < 70B or context_window < 8K → extended"
+    rationale: >
+      v1/v2/v3 A/B testing (3 models × 30 cases × 3 rounds) showed:
+      large models score +0.5~+0.8 higher with standard (compressed) prefix;
+      small models score +6.1 higher with extended (verbose) prefix.
+      See tests/dar-evaluation/v2-optimization-design.md for full data.

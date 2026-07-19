@@ -158,3 +158,25 @@ conflict_policy:
   different_tier: "官方数据 > 权威媒体 > 百科 > 社交媒体"
   data_conflict: "标注不同来源的数据和口径"
   user_override: "用户指定来源覆盖所有 DAR 规则"
+
+# ── Adaptive Prefix Templates (v4) ──────────────────────────
+# Based on v1/v2/v3 A/B testing (see tests/dar-evaluation/).
+# standard  = compressed prefix, best for capable models (70B+ / commercial API)
+# extended  = verbose prefix, best for small models (<70B) or explicit guidance
+# Selection criteria: see core/dar-spec.md §11
+prefix_templates:
+  standard: |
+    [DAR] 通用对话/事实核查 优先源：World Bank/IMF/WHO/CDC/政府门户/Snopes。关键术语：GDP(名义/PPP)/CPI/PMI/事实核查。指引：标注数据年份和来源、区分名义GDP与PPP、区分相关性与因果性。
+    要求：①事实附URL+日期 ②来源冲突时呈现分歧 ③数据标注年份，>12月降权。
+  extended: |
+    [DAR 路由] 优先源（T1）：World Bank (data.worldbank.org)、IMF、WHO、CDC、政府门户。事实核查：Snopes、FactCheck.org。
+    [DAR 打分] Score = 0.45×相关性 + 0.25×可信度 + 0.10×时效 + 0.20×共识。
+    [DAR 术语] GDP（名义/PPP）、CPI、PMI。标注年份和来源，区分名义GDP和PPP。
+  selection_guide:
+    default: standard
+    small_model_heuristic: "params < 70B or context_window < 8K → extended"
+    rationale: >
+      v1/v2/v3 A/B testing (3 models × 30 cases × 3 rounds) showed:
+      large models score +0.5~+0.8 higher with standard (compressed) prefix;
+      small models score +6.1 higher with extended (verbose) prefix.
+      See tests/dar-evaluation/v2-optimization-design.md for full data.

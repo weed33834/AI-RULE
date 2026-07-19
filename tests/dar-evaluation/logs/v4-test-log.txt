@@ -1,0 +1,54 @@
+Loaded 90 v2 scores for comparison
+======================================================================
+DAR v4 Validation Test (Adaptive Prefix)
+Models: 2 | Cases: 10 | Total calls: 20
+======================================================================
+
+────────────────────────────────────────────────────────────
+Model: Qwen3.5-397B-A17B (large) → prefix_mode: standard
+────────────────────────────────────────────────────────────
+  [1/20] A-E-C v4(sta)... (12s) v4=19/20 (v2=20 diff=-1)
+  [2/20] A-M-P v4(sta)... (39s) v4=20/20 (v2=14 diff=+6)
+  [3/20] D-E-C v4(sta)... (27s) v4=18/20 (v2=17 diff=+1)
+  [4/20] D-H-P v4(sta)... (32s) v4=18/20 (v2=19 diff=-1)
+  [5/20] B-E-C v4(sta)... (20s) v4=11/20 (v2=13 diff=-2)
+  [6/20] B-M-P v4(sta)... (32s) v4=20/20 (v2=20 diff=+0)
+  [7/20] C-E-C v4(sta)... (34s) v4=18/20 (v2=19 diff=-1)
+  [8/20] C-M-P v4(sta)... (29s) v4=16/20 (v2=19 diff=-3)
+  [9/20] E-E-C v4(sta)... (9s) v4=16/20 (v2=18 diff=-2)
+  [10/20] E-M-C v4(sta)... (14s) v4=20/20 (v2=18 diff=+2)
+────────────────────────────────────────────────────────────
+Model: moonweaver-4.8 (small) → prefix_mode: extended
+────────────────────────────────────────────────────────────
+  [11/20] A-E-C v4(ext)... (4s) v4=12/20 (v2=11 diff=+1)
+  [12/20] A-M-P v4(ext)... (26s) v4=18/20 (v2=0 diff=+18)
+  [13/20] D-E-C v4(ext)... (21s) v4=10/20 (v2=16 diff=-6)
+  [14/20] D-H-P v4(ext)... (64s) v4=15/20 (v2=15 diff=+0)
+  [15/20] B-E-C v4(ext)... (16s) v4=2/20 (v2=8 diff=-6)
+  [16/20] B-M-P v4(ext)... (36s) v4=18/20 (v2=0 diff=+18)
+  [17/20] C-E-C v4(ext)... (24s) v4=20/20 (v2=3 diff=+17)
+  [18/20] C-M-P v4(ext)... (29s) v4=17/20 (v2=2 diff=+15)
+  [19/20] E-E-C v4(ext)... (27s) v4=13/20 (v2=9 diff=+4)
+  [20/20] E-M-C v4(ext)... (14s) v4=17/20 (v2=17 diff=+0)
+
+======================================================================
+SUMMARY: v4 (adaptive) vs v2
+======================================================================
+
+Qwen3.5-397B-A17B (standard):
+  v2 avg = 17.7 | v4 avg = 17.6 | diff = -0.1
+  vs v2: Positive=3 | Neutral=1 | Negative=6
+
+moonweaver-4.8 (extended):
+  v2 avg = 8.1 | v4 avg = 14.2 | diff = +6.1
+  vs v2: Positive=6 | Neutral=2 | Negative=2
+
+──────────────────────────────────────────────────
+Per-scenario (v4 vs v2, all models):
+  agent-builder        v2=16.8 v4=15.2 diff=-1.5 ❌
+  coding               v2=11.2 v4=17.2 diff=+6.0 ✅
+  conversation         v2=15.5 v4=16.5 diff=+1.0 ✅
+  novel                v2=10.8 v4=17.8 diff=+7.0 ✅
+  paper                v2=10.2 v4=12.8 diff=+2.5 ✅
+
+✅ v4 validation test complete! Results saved to dar-v4-results.json
