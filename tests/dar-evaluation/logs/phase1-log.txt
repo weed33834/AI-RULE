@@ -1,0 +1,56 @@
+======================================================================
+Phase 1: Primary API (api.587.lol) — moonweaver-4.8
+======================================================================
+
+======================================================================
+Phase 2: Backup API (api.hcnsec.cn) — multiple models
+======================================================================
+
+Total models: 9
+Total scenarios: 6
+Total API calls: 108 (baseline + enhanced)
+Estimated time: ~5 min
+
+
+────────────────────────────────────────────────────────────
+Model: moonweaver-4.8 (primary API)
+────────────────────────────────────────────────────────────
+  [1/108] S1-CVE baseline... (7.8s) score=7/30
+  [2/108] S1-CVE enhanced... (24.2s) score=21/30
+  [3/108] S2-GDP baseline... (18.3s) score=15/30
+  [4/108] S2-GDP enhanced... (20.0s) score=12/30
+  [5/108] S3-ACADEMIC baseline... (64.2s) score=22/30
+  [6/108] S3-ACADEMIC enhanced... (53.6s) score=3/30
+  [7/108] S4-NOVEL baseline... (60.0s) score=11/30
+  [8/108] S4-NOVEL enhanced... (17.7s) score=14/30
+  [9/108] S5-JP baseline... (73.2s) score=11/30
+  [10/108] S5-JP enhanced... (26.7s) score=11/30
+  [11/108] S6-AGENT baseline... (28.5s) score=20/30
+  [12/108] S6-AGENT enhanced... (34.9s) score=18/30
+
+────────────────────────────────────────────────────────────
+Model: DeepSeek-V4-Pro (backup API)
+────────────────────────────────────────────────────────────
+  [13/108] S1-CVE baseline... (5.2s) score=11/30
+  [14/108] S1-CVE enhanced... (23.8s) score=11/30
+  [15/108] S2-GDP baseline... (108.9s) score=19/30
+  [16/108] S2-GDP enhanced... (16.1s) score=8/30
+  [17/108] S3-ACADEMIC baseline... (19.9s) score=22/30
+  [18/108] S3-ACADEMIC enhanced... (36.9s) score=25/30
+  [19/108] S4-NOVEL baseline... (32.4s) score=14/30
+  [20/108] S4-NOVEL enhanced... (30.9s) score=21/30
+  [21/108] S5-JP baseline... (70.2s) score=12/30
+  [22/108] S5-JP enhanced... (25.9s) score=16/30
+  [23/108] S6-AGENT baseline... (48.6s) score=17/30
+  [24/108] S6-AGENT enhanced... (5.0s) score=10/30
+
+────────────────────────────────────────────────────────────
+Model: glm-5.2 (backup API)
+────────────────────────────────────────────────────────────
+  [25/108] S1-CVE baseline... (120.1s) score=2/30
+  [26/108] S1-CVE enhanced... (120.1s) score=3/30
+  [27/108] S2-GDP baseline... (120.2s) score=2/30
+  [28/108] S2-GDP enhanced... (120.1s) score=3/30
+  [29/108] S3-ACADEMIC baseline... (120.2s) score=2/30
+  [30/108] S3-ACADEMIC enhanced... (120.1s) score=3/30
+  [31/108] S4-NOVEL baseline... 

@@ -223,6 +223,92 @@ pytest tests/                        # 6 suites, 51 checks, all passing
 # Or run individually: pytest tests/test_audit.py
 ```
 
+## DAR Multi-Model Evaluation Results
+
+> 10 models tested across 6 scenarios (120 API calls), objectively comparing **baseline** (no DAR) vs **enhanced** (with DAR routing/scoring/domain-knowledge prompts).
+> Full report: [`tests/dar-evaluation/multi-model-report.md`](tests/dar-evaluation/multi-model-report.md) · Raw data: [`tests/dar-evaluation/full-test-results.json`](tests/dar-evaluation/full-test-results.json)
+
+### Test Scope
+
+| Dimension | Coverage |
+|-----------|----------|
+| Models tested | 10 (1 primary API + 9 backup API) |
+| Scenarios | 6 (coding / conversation / paper / novel / agent-builder) |
+| Languages | English · 中文 · 日本語 |
+| Total API calls | 120 (baseline + enhanced) |
+| Valid results | 60 |
+| Scoring | 6 dimensions × 0–5 = /30 per scenario |
+
+### Model Availability & Summary
+
+| Model | API | Status | Baseline | Enhanced | Δ |
+|-------|-----|--------|----------|----------|---|
+| **Qwen3.5-397B-A17B** | backup | ✅ Available | 18.3 | 20.5 | **+2.2** |
+| DeepSeek-V4-Pro | backup | ✅ Available | 15.8 | 15.2 | -0.7 |
+| moonweaver-4.8 | primary | ✅ Available | 14.3 | 13.2 | -1.2 |
+| DeepSeek-V4-Flash | backup | ⚠ Partial | 7.0 | 4.5 | -2.5 |
+| glm-4.7 | backup | ⚠ Partial | 7.5 | 5.0 | -2.5 |
+| step-3.7-flash | backup | ⚠ Low quality | 2.8 | 2.0 | -0.8 |
+| glm-5.2 | backup | ❌ Timeout | — | — | — |
+| Kimi-K2.6 | backup | ❌ Timeout | — | — | — |
+| MiniMax-M3 | backup | ❌ Timeout | — | — | — |
+| Spark-X2-Flash | backup | ❌ Auth fail | — | — | — |
+| sensenova-u1-fast | backup | ❌ Not found | — | — | — |
+
+### Score Comparison — 3 Effective Models
+
+```mermaid
+xychart-beta
+    title "DAR Enhancement: Baseline vs Enhanced (avg score /30)"
+    x-axis ["Qwen3.5-397B", "DeepSeek-V4-Pro", "moonweaver-4.8"]
+    y-axis "Average Score" 0 --> 25
+    bar [18.3, 15.8, 14.3]
+    bar [20.5, 15.2, 13.2]
+```
+
+### DAR Improvement Heat Map
+
+| Scenario | moonweaver-4.8 | DeepSeek-V4-Pro | Qwen3.5-397B-A17B |
+|----------|:--------------:|:---------------:|:-----------------:|
+| S1-CVE (coding) | **+14** 🟢 | 0 ⚪ | +1 🟢 |
+| S2-GDP (中文) | -3 🔴 | -11 🔴 | **+2** 🟢 |
+| S3-ACADEMIC | -19 🔴 | +3 🟢 | **+5** 🟢 |
+| S4-NOVEL | +3 🟢 | **+7** 🟢 | **+11** 🟢 |
+| S5-JP (日本語) | 0 ⚪ | **+4** 🟢 | -2 🔴 |
+| S6-AGENT | -2 🔴 | -7 🔴 | -4 🔴 |
+
+> 🟢 = DAR improvement · ⚪ = no change · 🔴 = DAR regression
+
+### Six-Dimension Analysis
+
+```mermaid
+xychart-beta
+    title "DAR Impact by Dimension (avg delta, 3 effective models)"
+    x-axis ["Routing Acc.", "Source Qual.", "Domain Know.", "Citation Fid.", "Conflict", "Freshness"]
+    y-axis "Score Delta" -0.5 --> 1.0
+    bar [0.72, 0.28, 0.22, -0.44, -0.33, -0.33]
+```
+
+**DAR improves**: Routing Accuracy (+0.72, core value), Source Quality (+0.28), Domain Knowledge (+0.22)
+
+**DAR does not improve**: Citation Fidelity (-0.44), Conflict Handling (-0.33), Freshness Awareness (-0.33)
+
+### Key Findings
+
+1. **DAR excels in domain-specific scenarios** — S4-NOVEL (+11) and S1-CVE (+14) where models lack specialized source knowledge (Etymonline, NVD)
+2. **DAR's routing rules are its greatest value** — Routing Accuracy improved +0.72, far exceeding other dimensions
+3. **Qwen3.5-397B-A17B is the most DAR-compatible model** — 4/6 scenarios improved, avg +2.2
+4. **Long DAR prompts can hurt small models** — moonweaver-4.8 returned empty on S3-ACADEMIC (−19)
+5. **DAR adds noise when baseline is already strong** — S6-AGENT regressed across all models
+
+### Optimization Roadmap
+
+1. Compress DAR prompt prefix from 200–400 words to <100 words
+2. Provide a lite DAR (routing only) for smaller models
+3. Append "all factual claims must cite URL + date" to strengthen Citation Fidelity
+4. Skip DAR enhancement when baseline score already exceeds 20/30
+5. Refine Chinese DAR prompt wording to avoid disrupting model comprehension
+
 ## Capability Packs
 
 Capability packs are composable, on-demand work methods. They don't define agent identity — the profile does. Packs only provide methodology.

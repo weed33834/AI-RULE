@@ -1,0 +1,62 @@
+Loaded 12 existing results (filtered out glm-5.2 timeouts)
+Testing 8 models × 6 scenarios × 2 = 96 calls
+
+──────────────────────────────────────────────────
+Model: Kimi-K2.6
+──────────────────────────────────────────────────
+  ⚠ UNAVAILABLE: [Error] The read operation timed out
+──────────────────────────────────────────────────
+Model: MiniMax-M3
+──────────────────────────────────────────────────
+  S1-CVE base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+  S2-GDP base... (43s) 14/30 → enh(103s) 2/30 diff=-12
+  S3-ACADEMIC base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+  S4-NOVEL base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+  S5-JP base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+  S6-AGENT base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+──────────────────────────────────────────────────
+Model: Qwen3.5-397B-A17B
+──────────────────────────────────────────────────
+  S1-CVE base... (10s) 20/30 → enh(23s) 21/30 diff=+1
+  S2-GDP base... (16s) 15/30 → enh(31s) 17/30 diff=+2
+  S3-ACADEMIC base... (24s) 21/30 → enh(51s) 26/30 diff=+5
+  S4-NOVEL base... (20s) 10/30 → enh(39s) 21/30 diff=+11
+  S5-JP base... (31s) 20/30 → enh(63s) 18/30 diff=-2
+  S6-AGENT base... (33s) 24/30 → enh(58s) 20/30 diff=-4
+──────────────────────────────────────────────────
+Model: step-3.7-flash
+──────────────────────────────────────────────────
+  S1-CVE base... (13s) 7/30 → enh(28s) 2/30 diff=-5
+  S2-GDP base... (17s) 2/30 → enh(34s) 2/30 diff=+0
+  S3-ACADEMIC base... (17s) 2/30 → enh(32s) 2/30 diff=+0
+  S4-NOVEL base... (17s) 2/30 → enh(33s) 2/30 diff=+0
+  S5-JP base... (16s) 2/30 → enh(34s) 2/30 diff=+0
+  S6-AGENT base... (15s) 2/30 → enh(28s) 2/30 diff=+0
+──────────────────────────────────────────────────
+Model: Spark-X2-Flash
+──────────────────────────────────────────────────
+  ⚠ UNAVAILABLE: [HTTP 429] {"error":{"message":"authorization failed","type":"invalid_request_error","param":"","cod
+──────────────────────────────────────────────────
+Model: sensenova-u1-fast
+──────────────────────────────────────────────────
+  ⚠ UNAVAILABLE: [HTTP 404] {"error":{"message":"model is not found","type":"not_found_error","param":"","code":"5"}}
+──────────────────────────────────────────────────
+Model: DeepSeek-V4-Flash
+──────────────────────────────────────────────────
+  S1-CVE base... (25s) 20/30 → enh(86s) 2/30 diff=-18
+  S2-GDP base... (34s) 14/30 → enh(53s) 14/30 diff=+0
+  S3-ACADEMIC base... (60s) 2/30 → enh(63s) 5/30 diff=+3
+  S4-NOVEL base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+  S5-JP base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+  S6-AGENT base... (60s) 2/30 → enh(120s) 2/30 diff=+0
+──────────────────────────────────────────────────
+Model: glm-4.7
+──────────────────────────────────────────────────
+  S1-CVE base... (18s) 20/30 → enh(19s) 5/30 diff=-15
+  S2-GDP base... (0s) 5/30 → enh(1s) 5/30 diff=+0
+  S3-ACADEMIC base... (0s) 5/30 → enh(1s) 5/30 diff=+0
+  S4-NOVEL base... (0s) 5/30 → enh(1s) 5/30 diff=+0
+  S5-JP base... (0s) 5/30 → enh(1s) 5/30 diff=+0
+  S6-AGENT base... (0s) 5/30 → enh(1s) 5/30 diff=+0
+
+✅ Done! Total results: 60

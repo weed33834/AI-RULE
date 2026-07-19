@@ -2,6 +2,22 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，版本号参考语义化版本。
 
+## [1.3.1] — 2026-07-19
+
+### 新增
+
+- **DAR 多模型实测评估**：10 个模型 × 6 场景（120 次 API 调用）的全覆盖测试，客观对比基准（无 DAR）vs 增强（含 DAR 提示词）。
+  - `tests/dar-evaluation/multi-model-report.md`：完整评估报告——模型可用性、逐场景得分对比、六维度分析、关键发现、优化建议。
+  - `tests/dar-evaluation/full-test-results.json`：60 条测试结果原始数据（含每次 API 调用的完整响应、评分、耗时）。
+  - `tests/dar-evaluation/test-scenarios.md`：6 个测试场景题目清单 + DAR 增强提示词 + 6 维评分标准。
+  - `tests/dar-evaluation/dar_test_runner.py`、`dar_test3.py`：测试执行脚本。
+  - `tests/dar-evaluation/logs/`：3 个阶段的详细运行日志（phase1/2/3）。
+  - 覆盖多语种（English/中文/日本語）、全领域（coding/conversation/paper/novel/agent-builder）。
+
+### 变更
+
+- `README.md`、`README_CN.md`：新增「DAR Multi-Model Evaluation Results」章节，含 Mermaid 图表（基准 vs 增强对比、六维度影响）、热力图、核心发现、优化路线。
+
 ## [1.3.0] — 2026-07-19
 
 ### 新增

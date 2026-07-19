@@ -1,0 +1,12 @@
+Loaded 12 existing results
+Testing 8 new models × 6 scenarios × 2 = 96 calls
+
+────────────────────────────────────────────────────────────
+Model: Kimi-K2.6 (backup API)
+────────────────────────────────────────────────────────────
+  ⚠ Model unavailable: [Error] The read operation timed out
+
+────────────────────────────────────────────────────────────
+Model: MiniMax-M3 (backup API)
+────────────────────────────────────────────────────────────
+  [13/120] S1-CVE baseline... 
