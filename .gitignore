@@ -25,10 +25,18 @@ __pycache__/
 
 # 跨工具生成文件（由 sync_rules.py 按 profile 生成，不入库）
 # 克隆后运行: python scripts/sync_rules.py --profile <id> --tool <tool>
+AGENTS.md
 CLAUDE.md
 GEMINI.md
 .cursor/rules/
 .github/copilot-instructions.md
 .github/instructions/
 .trae/rules/
+.windsurfrules
+.clinerules/
+.continue/rules/
+.amazonq/rules/
+best_practices.md
+.lingma/rules/
+.comate/rules/
 provenance/

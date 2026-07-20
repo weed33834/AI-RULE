@@ -15,7 +15,7 @@
 
 ## このリポジトリについて
 
-本リポジトリは **AIコラボレーションルールの唯一の正ソース** であり、特定プロジェクトの業務コードではありません。5つの独立ルールリポジトリ（coding / conversation / novel / interactive-novel / agent-builder）を統合し、シーン別に分離ロードすることで、「捏造禁止」と「小説には創作が必要」といった領域制約の衝突を回避します。
+本リポジトリは **AIコラボレーションルールの唯一の正ソース** であり、特定プロジェクトの業務コードではありません。6つの独立ルールリポジトリ（coding / conversation / novel / interactive-novel / agent-builder / paper）を統合し、シーン別に分離ロードすることで、「捏造禁止」と「小説には創作が必要」といった領域制約の衝突を回避します。
 
 | プロファイル | 由来 | 用途 |
 |---|---|---|
@@ -24,6 +24,7 @@
 | `novel` | badhope/novel | 小説執筆、章作成、キャラクター・世界構築 |
 | `interactive-novel` | badhope/interactive-novel | インタラクティブフィクション、分岐叙事、状態機械 |
 | `agent-builder` | badhope/AgentCreater | AIエージェントの設計、評価、デプロイ |
+| `paper` | badhope/paper | 論文執筆、文献レビュー、引用検証 |
 
 ## クイックスタート
 
@@ -36,7 +37,31 @@ python scripts/sync_rules.py --list
 
 # coding プロファイルの Claude Code エントリを生成
 python scripts/sync_rules.py --profile coding --tool claude-code
+
+# AGENTS.md を生成（Codex CLI / OpenCode / Aider など 20+ ツールが読み取り）
+python scripts/sync_rules.py --profile coding --tool agents-md
+
+# novel プロファイルの全 13 プラットフォームエントリを生成
+python scripts/sync_rules.py --profile novel --tool all
 ```
+
+### 対応プラットフォーム（13）
+
+| カテゴリ | Tool ID | 出力ファイル | 備考 |
+|----------|---------|-------------|------|
+| クロスツール標準 | `agents-md` | `AGENTS.md` | Codex CLI、OpenCode、Aider、Zed、Warp、Junie、Devin、Google Jules 等 |
+| 既存 | `claude-code` | `CLAUDE.md` | Claude Code |
+| 既存 | `gemini` | `GEMINI.md` | Gemini CLI |
+| 既存 | `cursor` | `.cursor/rules/project.mdc` | Cursor（frontmatter 付き） |
+| 既存 | `copilot` | `.github/copilot-instructions.md` | GitHub Copilot |
+| 既存 | `trae` | `.trae/rules/project_rules.md` | Trae IDE |
+| 海外 | `windsurf` | `.windsurfrules` | Windsurf（12K 文字制限） |
+| 海外 | `cline` | `.clinerules/project.md` | Cline / Kilo Code |
+| 海外 | `continue` | `.continue/rules/project.md` | Continue.dev |
+| 海外 | `amazon-q` | `.amazonq/rules/project.md` | Amazon Q Developer |
+| 海外 | `qodo` | `best_practices.md` | Qodo（旧 Codium） |
+| 中国 | `lingma` | `.lingma/rules/project.md` | 通義霊碼（10K 文字制限） |
+| 中国 | `comate` | `.comate/rules/project.mdr` | 文心快碼（.mdr 形式） |
 
 生成されたエントリファイル（例：`CLAUDE.md`）をプロジェクトルートに配置するか、サブモジュールとして参照してください。
 
@@ -86,13 +111,23 @@ AI-RULE/
 
 ## 対応AIツール
 
-| ツール | 出力ファイル |
-|---|---|
-| Claude Code | `CLAUDE.md` |
-| Gemini | `GEMINI.md` |
-| Cursor | `.cursor/rules/project.mdc` |
-| GitHub Copilot | `.github/copilot-instructions.md` |
-| Trae | `.trae/rules/project_rules.md` |
+同期スクリプトは以下 13 プラットフォームのルールエントリを生成します：
+
+| カテゴリ | ツール | 出力ファイル |
+|----------|--------|-------------|
+| クロスツール標準 | AGENTS.md | `AGENTS.md`（Codex CLI、OpenCode、Aider 等 20+ ツール） |
+| 既存 | Claude Code | `CLAUDE.md` |
+| 既存 | Gemini | `GEMINI.md` |
+| 既存 | Cursor | `.cursor/rules/project.mdc` |
+| 既存 | GitHub Copilot | `.github/copilot-instructions.md` |
+| 既存 | Trae | `.trae/rules/project_rules.md` |
+| 海外 | Windsurf | `.windsurfrules` |
+| 海外 | Cline / Kilo Code | `.clinerules/project.md` |
+| 海外 | Continue.dev | `.continue/rules/project.md` |
+| 海外 | Amazon Q Developer | `.amazonq/rules/project.md` |
+| 海外 | Qodo（旧 Codium） | `best_practices.md` |
+| 中国 | 通義霊碼 | `.lingma/rules/project.md` |
+| 中国 | 文心快碼 | `.comate/rules/project.mdr` |
 
 ## 研究主導の最適化
 

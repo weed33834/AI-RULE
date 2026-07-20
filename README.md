@@ -48,9 +48,30 @@ python scripts/sync_rules.py --list
 # Generate Claude Code entry for the coding profile
 python scripts/sync_rules.py --profile coding --tool claude-code
 
-# Generate all tool entries for the novel profile
+# Generate AGENTS.md (cross-tool standard, read by Codex CLI, OpenCode, Aider, etc.)
+python scripts/sync_rules.py --profile coding --tool agents-md
+
+# Generate all 13 tool entries for the novel profile
 python scripts/sync_rules.py --profile novel --tool all
 ```
+
+### Supported Platforms (13)
+
+| Category | Tool ID | Output File | Notes |
+|----------|---------|-------------|-------|
+| Cross-tool standard | `agents-md` | `AGENTS.md` | Read by Codex CLI, OpenCode, Aider, Zed, Warp, Junie, Devin, Google Jules (20+) |
+| Existing | `claude-code` | `CLAUDE.md` | Claude Code |
+| Existing | `gemini` | `GEMINI.md` | Gemini CLI |
+| Existing | `cursor` | `.cursor/rules/project.mdc` | Cursor (with frontmatter) |
+| Existing | `copilot` | `.github/copilot-instructions.md` | GitHub Copilot |
+| Existing | `trae` | `.trae/rules/project_rules.md` | Trae IDE |
+| International | `windsurf` | `.windsurfrules` | Windsurf (12K char limit) |
+| International | `cline` | `.clinerules/project.md` | Cline / Kilo Code |
+| International | `continue` | `.continue/rules/project.md` | Continue.dev |
+| International | `amazon-q` | `.amazonq/rules/project.md` | Amazon Q Developer |
+| International | `qodo` | `best_practices.md` | Qodo (formerly Codium) |
+| China | `lingma` | `.lingma/rules/project.md` | 通义灵码 (10K char limit) |
+| China | `comate` | `.comate/rules/project.mdr` | 文心快码 (.mdr format) |
 
 ### 3. Use in Your Project
 
@@ -183,21 +204,29 @@ See `core/language-mediation.md` for details.
 
 ## Supported AI Tools
 
-The sync script generates rule entries for:
+The sync script generates rule entries for 13 platforms:
 
-| Tool | Output File |
-|---|---|
-| Claude Code | `CLAUDE.md` |
-| Gemini | `GEMINI.md` |
-| Cursor | `.cursor/rules/project.mdc` |
-| GitHub Copilot | `.github/copilot-instructions.md` |
-| Trae | `.trae/rules/project_rules.md` |
+| Category | Tool | Output File |
+|----------|------|-------------|
+| Cross-tool standard | AGENTS.md | `AGENTS.md` (Codex CLI, OpenCode, Aider, etc. 20+ tools) |
+| Existing | Claude Code | `CLAUDE.md` |
+| Existing | Gemini | `GEMINI.md` |
+| Existing | Cursor | `.cursor/rules/project.mdc` |
+| Existing | GitHub Copilot | `.github/copilot-instructions.md` |
+| Existing | Trae | `.trae/rules/project_rules.md` |
+| International | Windsurf | `.windsurfrules` |
+| International | Cline / Kilo Code | `.clinerules/project.md` |
+| International | Continue.dev | `.continue/rules/project.md` |
+| International | Amazon Q Developer | `.amazonq/rules/project.md` |
+| International | Qodo (formerly Codium) | `best_practices.md` |
+| China | Tongyi Lingma (通义灵码) | `.lingma/rules/project.md` |
+| China | Comate (文心快码) | `.comate/rules/project.mdr` |
 
 ```bash
 # Single tool
 python scripts/sync_rules.py --profile coding --tool claude-code
 
-# All tools
+# All 13 platforms
 python scripts/sync_rules.py --profile coding --tool all
 ```
 

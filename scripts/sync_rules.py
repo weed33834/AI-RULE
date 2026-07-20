@@ -20,12 +20,31 @@ CORE_DIR = REPO_ROOT / "core"
 ADAPTERS_DIR = REPO_ROOT / "adapters"
 
 # 工具到生成路径的映射
+# 按类别分组：跨工具标准 / 国际平台 / 国内平台
 TOOL_OUTPUT = {
+    # ── 跨工具标准（AGENTS.md 被 20+ 平台原生读取）──
+    "agents-md": "AGENTS.md",          # Codex CLI, OpenCode, Aider, Zed, Warp, Junie, Devin, Google Jules 等
+    # ── 已有平台 ──
     "claude-code": "CLAUDE.md",
     "gemini": "GEMINI.md",
     "cursor": ".cursor/rules/project.mdc",
     "copilot": ".github/copilot-instructions.md",
     "trae": ".trae/rules/project_rules.md",
+    # ── 国际平台 ──
+    "windsurf": ".windsurfrules",                  # 纯 Markdown，12K 字符限制
+    "cline": ".clinerules/project.md",              # Markdown，也读 AGENTS.md
+    "continue": ".continue/rules/project.md",       # Markdown
+    "amazon-q": ".amazonq/rules/project.md",        # Markdown
+    "qodo": "best_practices.md",                    # Markdown，项目根
+    # ── 国内平台 ──
+    "lingma": ".lingma/rules/project.md",           # 通义灵码，10K 字符限制
+    "comate": ".comate/rules/project.mdr",          # 文心快码，.mdr 后缀
+}
+
+# 平台字符限制（超出时在 adapters/ 中提示分片）
+TOOL_CHAR_LIMIT = {
+    "windsurf": 12000,
+    "lingma": 10000,
 }
 
 
@@ -206,14 +225,32 @@ def write_tool_file(tool: str, profile_id: str, ruleset: str) -> Path:
             content = content + f"\n\n# === ADAPTER OVERRIDE ({tool}) ===\n" + cand.read_text(encoding="utf-8")
             break
 
-    # Cursor .mdc 需要额外 frontmatter
-    if tool == "cursor":
-        header = f"---\ndescription: {profile_id} profile rules\nalwaysApply: true\n---\n\n"
-        out_path.write_text(header + content, encoding="utf-8")
-    else:
-        out_path.write_text(content, encoding="utf-8")
+    # 字符限制提示：超限的平台在文件末尾追加警告
+    char_limit = TOOL_CHAR_LIMIT.get(tool)
+    if char_limit and len(content) > char_limit:
+        warning = (
+            f"\n\n<!-- ⚠ WARNING: This file is {len(content)} chars, "
+            f"exceeds {tool}'s {char_limit}-char limit. "
+            f"The tool may truncate or ignore content beyond the limit. "
+            f"Consider splitting rules into multiple files or using a shorter profile. -->\n"
+        )
+        content = content + warning
 
-    write_provenance(tool, profile_id, content)
+    # 平台专属格式处理
+    # cursor 的 frontmatter 不计入溯源 hash（因不含实质规则内容）
+    final_content = content
+    if tool == "cursor":
+        # Cursor .mdc 需要额外 frontmatter
+        header = f"---\ndescription: {profile_id} profile rules\nalwaysApply: true\n---\n\n"
+        final_content = header + content
+    elif tool == "comate":
+        # 文心快码 .mdr 文件：内容为 Markdown，无 frontmatter
+        pass
+    # 其他平台：纯 Markdown，无 frontmatter
+
+    out_path.write_text(final_content, encoding="utf-8")
+
+    write_provenance(tool, profile_id, final_content)
     return out_path
 
 

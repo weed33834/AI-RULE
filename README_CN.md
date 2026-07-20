@@ -50,9 +50,30 @@ python scripts/sync_rules.py --list
 # 为 coding Profile 生成 Claude Code 入口
 python scripts/sync_rules.py --profile coding --tool claude-code
 
-# 为 novel Profile 生成所有工具入口
+# 生成 AGENTS.md（跨工具标准，Codex CLI / OpenCode / Aider 等直接读取）
+python scripts/sync_rules.py --profile coding --tool agents-md
+
+# 为 novel Profile 生成全部 13 个平台入口
 python scripts/sync_rules.py --profile novel --tool all
 ```
+
+### 支持平台（13 个）
+
+| 类别 | Tool ID | 输出文件 | 说明 |
+|------|---------|----------|------|
+| 跨工具标准 | `agents-md` | `AGENTS.md` | Codex CLI、OpenCode、Aider、Zed、Warp、Junie、Devin、Google Jules 等 20+ 平台原生读取 |
+| 已有平台 | `claude-code` | `CLAUDE.md` | Claude Code |
+| 已有平台 | `gemini` | `GEMINI.md` | Gemini CLI |
+| 已有平台 | `cursor` | `.cursor/rules/project.mdc` | Cursor（带 frontmatter） |
+| 已有平台 | `copilot` | `.github/copilot-instructions.md` | GitHub Copilot |
+| 已有平台 | `trae` | `.trae/rules/project_rules.md` | Trae IDE |
+| 国际平台 | `windsurf` | `.windsurfrules` | Windsurf（12K 字符限制） |
+| 国际平台 | `cline` | `.clinerules/project.md` | Cline / Kilo Code |
+| 国际平台 | `continue` | `.continue/rules/project.md` | Continue.dev |
+| 国际平台 | `amazon-q` | `.amazonq/rules/project.md` | Amazon Q Developer |
+| 国际平台 | `qodo` | `best_practices.md` | Qodo（原 Codium） |
+| 国内平台 | `lingma` | `.lingma/rules/project.md` | 通义灵码（10K 字符限制） |
+| 国内平台 | `comate` | `.comate/rules/project.mdr` | 文心快码（.mdr 格式） |
 
 ### 3. 在目标项目使用
 
@@ -178,21 +199,29 @@ AI-RULE/
 
 ## 支持的 AI 工具
 
-同步脚本可为以下工具生成规则入口：
+同步脚本可为以下 13 个平台生成规则入口：
 
-| 工具 | 输出文件 |
-|---|---|
-| Claude Code | `CLAUDE.md` |
-| Gemini | `GEMINI.md` |
-| Cursor | `.cursor/rules/project.mdc` |
-| GitHub Copilot | `.github/copilot-instructions.md` |
-| Trae | `.trae/rules/project_rules.md` |
+| 类别 | 工具 | 输出文件 |
+|------|------|----------|
+| 跨工具标准 | AGENTS.md | `AGENTS.md`（Codex CLI、OpenCode、Aider 等 20+ 平台） |
+| 已有 | Claude Code | `CLAUDE.md` |
+| 已有 | Gemini | `GEMINI.md` |
+| 已有 | Cursor | `.cursor/rules/project.mdc` |
+| 已有 | GitHub Copilot | `.github/copilot-instructions.md` |
+| 已有 | Trae | `.trae/rules/project_rules.md` |
+| 国际 | Windsurf | `.windsurfrules` |
+| 国际 | Cline / Kilo Code | `.clinerules/project.md` |
+| 国际 | Continue.dev | `.continue/rules/project.md` |
+| 国际 | Amazon Q Developer | `.amazonq/rules/project.md` |
+| 国际 | Qodo（原 Codium） | `best_practices.md` |
+| 国内 | 通义灵码 | `.lingma/rules/project.md` |
+| 国内 | 文心快码 | `.comate/rules/project.mdr` |
 
 ```bash
 # 单工具
 python scripts/sync_rules.py --profile coding --tool claude-code
 
-# 全部工具
+# 全部 13 个平台
 python scripts/sync_rules.py --profile coding --tool all
 ```
 

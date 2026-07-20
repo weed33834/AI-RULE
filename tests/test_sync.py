@@ -11,7 +11,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from sync_rules import (
     parse_manifest, build_ruleset, write_tool_file,
-    list_profiles, TOOL_OUTPUT, parse_includes, parse_list_field,
+    list_profiles, TOOL_OUTPUT, TOOL_CHAR_LIMIT, parse_includes, parse_list_field,
 )
 
 PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
@@ -65,12 +65,12 @@ def test_header_present():
 
 
 def test_all_tools_output():
-    """5 个工具均能生成"""
+    """全部工具均能生成"""
     rs = build_ruleset("conversation")
     for tool in TOOL_OUTPUT:
         out = write_tool_file(tool, "conversation", rs)
         assert out.exists(), f"{tool} 生成失败"
-    print("[PASS] 5 个工具均能生成")
+    print(f"[PASS] {len(TOOL_OUTPUT)} 个工具均能生成")
 
 
 def test_cursor_frontmatter():
@@ -81,6 +81,54 @@ def test_cursor_frontmatter():
     assert content.startswith("---"), "cursor 缺 frontmatter"
     assert "alwaysApply: true" in content, "cursor 缺 alwaysApply"
     print("[PASS] cursor frontmatter 正确")
+
+
+def test_agents_md_output():
+    """AGENTS.md 跨工具标准输出正确"""
+    rs = build_ruleset("coding")
+    out = write_tool_file("agents-md", "coding", rs)
+    content = out.read_text(encoding="utf-8")
+    assert not content.startswith("---"), "AGENTS.md 不应有 frontmatter"
+    assert "CORE LAYER" in content, "AGENTS.md 缺 CORE LAYER"
+    assert out.name == "AGENTS.md", f"文件名应为 AGENTS.md，实际: {out.name}"
+    print("[PASS] AGENTS.md 输出正确")
+
+
+def test_comate_mdr_extension():
+    """文心快码输出 .mdr 后缀文件"""
+    rs = build_ruleset("coding")
+    out = write_tool_file("comate", "coding", rs)
+    assert out.suffix == ".mdr", f"comate 文件后缀应为 .mdr，实际: {out.suffix}"
+    print("[PASS] comate .mdr 后缀正确")
+
+
+def test_char_limit_warning():
+    """字符超限平台会追加警告"""
+    rs = build_ruleset("coding")  # coding profile 通常 >10K 字符
+    for tool in TOOL_CHAR_LIMIT:
+        limit = TOOL_CHAR_LIMIT[tool]
+        out = write_tool_file(tool, "coding", rs)
+        content = out.read_text(encoding="utf-8")
+        if len(content) > limit:
+            assert "WARNING" in content or "exceeds" in content, \
+                f"{tool} 超限但未追加警告 (content={len(content)}, limit={limit})"
+    print("[PASS] 字符超限警告正确")
+
+
+def test_adapter_override():
+    """adapters/<tool>.md 适配器覆盖层生效"""
+    rs = build_ruleset("coding")
+    # windsurf 有 adapters/windsurf.md
+    out = write_tool_file("windsurf", "coding", rs)
+    content = out.read_text(encoding="utf-8")
+    assert "ADAPTER OVERRIDE" in content, "windsurf 未叠加 adapter 内容"
+    assert "Windsurf" in content, "windsurf adapter 内容缺失"
+    # lingma 有 adapters/lingma.md
+    out = write_tool_file("lingma", "coding", rs)
+    content = out.read_text(encoding="utf-8")
+    assert "ADAPTER OVERRIDE" in content, "lingma 未叠加 adapter 内容"
+    assert "通义灵码" in content, "lingma adapter 内容缺失"
+    print("[PASS] adapter 覆盖层生效")
 
 
 def test_drift_overwritten():
@@ -141,6 +189,10 @@ def run_all():
         test_header_present,
         test_all_tools_output,
         test_cursor_frontmatter,
+        test_agents_md_output,
+        test_comate_mdr_extension,
+        test_char_limit_warning,
+        test_adapter_override,
         test_drift_overwritten,
         test_parse_list_field,
         test_parse_includes,
