@@ -136,8 +136,8 @@ def read_file(path: Path) -> str:
     return p.read_text(encoding="utf-8")
 
 
-def expand_refs(text: str, base_dir: Path = None) -> str:
-    """展开 @path 引用为内联内容，按 base_dir 解析相对路径"""
+def expand_refs(text: str, base_dir: Path = None, loaded_paths: set = None) -> str:
+    """展开 @path 引用为内联内容，按 base_dir 解析相对路径。loaded_paths 追踪已内联文件路径。"""
     search_base = base_dir if base_dir else REPO_ROOT
 
     def resolve_ref(ref: str) -> Path:
@@ -160,18 +160,29 @@ def expand_refs(text: str, base_dir: Path = None) -> str:
         ref = m.group(1)
         p = resolve_ref(ref)
         if p:
+            if loaded_paths is not None:
+                loaded_paths.add(str(p.resolve()))
             inner = p.read_text(encoding="utf-8")
-            # 递归展开内嵌引用，保持 base_dir
-            inner = expand_refs(inner, p.parent)
+            inner = expand_refs(inner, p.parent, loaded_paths)
             return f"\n{inner}\n"
         return f"> [unresolved ref] {ref}\n"
-    return re.sub(r"@([\w/.-]+\.md)", replacer, text)
+    return re.sub(r"@@?([\w/.-]+\.md)", replacer, text)
 
 
 def build_ruleset(profile_id: str) -> str:
     """装配 core + profile 的完整规则集"""
     manifest = parse_manifest(profile_id)
     parts = []
+    loaded_paths: set = set()
+
+    def _resolve_path(rel: str) -> Path:
+        return (REPO_ROOT / rel).resolve()
+
+    def _load_and_track(rel: str, base_dir: Path) -> str:
+        p = _resolve_path(rel)
+        content = expand_refs(read_file(Path(rel)), base_dir, loaded_paths)
+        loaded_paths.add(str(p))
+        return content
 
     # 生成头
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -181,33 +192,54 @@ def build_ruleset(profile_id: str) -> str:
     # core 层
     parts.append("# === CORE LAYER ===\n")
     for core_file in manifest["includes"].get("core", []):
-        core_path = REPO_ROOT / core_file
+        core_path = _resolve_path(core_file)
         parts.append(f"\n## [core] {core_file}\n")
-        parts.append(expand_refs(read_file(Path(core_file)), core_path.parent))
+        parts.append(_load_and_track(core_file, core_path.parent))
 
     # profile 层
     parts.append("\n# === PROFILE LAYER ===\n")
     for prof_file in manifest["includes"].get("profile", []):
-        prof_path = REPO_ROOT / prof_file
+        prof_path = _resolve_path(prof_file)
         parts.append(f"\n## [profile] {prof_file}\n")
-        parts.append(expand_refs(read_file(Path(prof_file)), prof_path.parent))
+        parts.append(_load_and_track(prof_file, prof_path.parent))
 
-    # skills 层
+    # skills 层（跳过已在 profile 层内联展开的文件）
     parts.append("\n# === SKILLS LAYER ===\n")
     for skill_file in manifest["includes"].get("skills", []):
-        skill_path = REPO_ROOT / skill_file
+        skill_path = _resolve_path(skill_file)
+        if str(skill_path) in loaded_paths:
+            parts.append(f"> [already loaded inline] {skill_file}\n")
+            continue
         parts.append(f"\n## [skill] {skill_file}\n")
-        parts.append(expand_refs(read_file(Path(skill_file)), skill_path.parent))
+        parts.append(_load_and_track(skill_file, skill_path.parent))
 
-    # capabilities 层：加载本 Profile 白名单启用的能力包（核心机制，此前未落地）
+    # capabilities 层：加载本 Profile 白名单启用的能力包
     parts.append("\n# === CAPABILITIES LAYER ===\n")
     for cap in manifest.get("enables_capabilities", []):
-        cap_path = REPO_ROOT / "capabilities" / f"{cap}.md"
+        cap_path = _resolve_path(f"capabilities/{cap}.md")
         if not cap_path.exists():
             parts.append(f"> [missing capability] {cap}\n")
             continue
         parts.append(f"\n## [capability] {cap}\n")
-        parts.append(expand_refs(cap_path.read_text(encoding="utf-8"), cap_path.parent))
+        parts.append(_load_and_track(f"capabilities/{cap}.md", cap_path.parent))
+
+    # templates 层（按需注入模板文件列表，目录则列出子文件）
+    templates = manifest.get("includes", {}).get("templates", [])
+    if templates:
+        parts.append("\n# === TEMPLATES LAYER ===\n")
+        for tmpl in templates:
+            tmpl_path = _resolve_path(tmpl)
+            if not tmpl_path.exists():
+                parts.append(f"> [missing template] {tmpl}\n")
+            elif tmpl_path.is_dir():
+                parts.append(f"\n## [template-dir] {tmpl}\n")
+                for f in sorted(tmpl_path.rglob("*")):
+                    if f.is_file() and f.suffix in (".md", ".txt", ".yaml", ".yml", ".json"):
+                        rel_f = str(f.relative_to(REPO_ROOT)).replace("\\", "/")
+                        parts.append(f"- [{f.name}]({rel_f})\n")
+            else:
+                parts.append(f"\n## [template] {tmpl}\n")
+                parts.append(_load_and_track(tmpl, tmpl_path.parent))
 
     return "\n".join(parts)
 
@@ -283,6 +315,8 @@ def main():
     parser.add_argument("--tool", type=str, default="claude-code",
                         choices=list(TOOL_OUTPUT.keys()) + ["all"],
                         help="目标工具")
+    parser.add_argument("--force", action="store_true",
+                        help="强制重新生成，跳过 manifest 存在性检查")
     args = parser.parse_args()
 
     if args.list:
@@ -295,7 +329,7 @@ def main():
         print("error: 必须指定 --profile，或用 --list 查看", file=sys.stderr)
         sys.exit(1)
 
-    if args.profile not in list_profiles():
+    if args.profile not in list_profiles() and not args.force:
         print(f"error: 未知 profile '{args.profile}'，可用: {list_profiles()}", file=sys.stderr)
         sys.exit(1)
 

@@ -45,7 +45,7 @@ enables_capabilities:
   - dar
 ```
 
-加载后，DAR 配置会自动嵌入该 Profile 的深度搜索流程（`deep-search.md`）和真实性协议（`truth-protocol.md`）。
+加载后，DAR 聚合配置（含全部 6 域的路由规则与源名录）会嵌入该 Profile 的规则集，供深度搜索和真实性验证参考。
 
 ## 自适应前缀 (v4)
 
