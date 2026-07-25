@@ -9,6 +9,12 @@ profile:
   mutually_exclusive_with:
     - novel
     - interactive-novel
+  agent_mode:
+    default: project
+    allowed:
+      - task
+      - project
+      - autonomous
 
 includes:
   core:
@@ -16,6 +22,8 @@ includes:
     - core/interaction.md
     - core/profile-router.md
     - core/language-mediation.md
+    - core/attention-budget.md
+    - core/agent-modes.md
   profile:
     - profiles/coding/AGENTS.md
     - profiles/coding/docs/prompts/architect-subagent.md

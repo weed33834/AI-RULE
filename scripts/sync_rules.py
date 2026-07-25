@@ -86,6 +86,7 @@ def parse_manifest(profile_id: str) -> dict:
     result["enables_capabilities"] = parse_list_field(text, "enables_capabilities")
     result["forbids_capabilities"] = parse_list_field(text, "forbids_capabilities")
     result["mutually_exclusive_with"] = parse_list_field(text, "mutually_exclusive_with")
+    result["agent_mode"] = parse_nested_field(text, "agent_mode")
     return result
 
 
@@ -134,6 +135,32 @@ def parse_list_field(text: str, field: str) -> list:
     return items
 
 
+def parse_nested_field(text: str, field: str) -> dict:
+    """解析嵌套的键值对字段（如 agent_mode: default: ... allowed: [...]）"""
+    result = {}
+    in_field = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith(f"{field}:"):
+            in_field = True
+            continue
+        if not in_field:
+            continue
+        if not line.startswith(" ") and stripped:
+            in_field = False
+            continue
+        m = re.match(r"(\w+):\s*(.*)$", stripped)
+        if m:
+            key, val = m.group(1), m.group(2).strip()
+            if val:
+                result[key] = val
+            else:
+                result[key] = []
+        elif stripped.startswith("- ") and isinstance(result.get("allowed", None), list):
+            result["allowed"].append(stripped[2:].strip())
+    return result
+
+
 def read_file(path: Path) -> str:
     p = REPO_ROOT / path if not path.is_absolute() else path
     if not p.exists():
@@ -174,10 +201,12 @@ def expand_refs(text: str, base_dir: Path = None, loaded_paths: set = None) -> s
     return re.sub(r"@@?([\w/.-]+\.md)", replacer, text)
 
 
-def build_ruleset(profile_id: str, cache: bool = False) -> str:
+def build_ruleset(profile_id: str, cache: bool = False, rt: str = "STANDARD", mode: str = None) -> str:
     """装配 core + profile 的完整规则集。
     
     cache=True 时在 FA 段末尾注入 Anthropic cache_control breakpoint 标记。
+    rt: 推理深度标记，QUICK / STANDARD / DEEP。
+    mode: 指定 Agent 模式（task/project/autonomous），覆盖 manifest 中的默认 mode。
     """
     manifest = parse_manifest(profile_id)
     parts = []
@@ -196,6 +225,10 @@ def build_ruleset(profile_id: str, cache: bool = False) -> str:
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     src_hash = hashlib.sha256(f"{profile_id}".encode()).hexdigest()[:12]
     parts.append(f"<!-- 由 sync_rules.py 自动生成 | profile: {profile_id} | generated: {ts} | profile_hash: {src_hash} | 禁止手工编辑 -->\n")
+
+    # RT 标记注入
+    adopted_mode = mode or manifest.get("agent_mode", {}).get("default", "task")
+    parts.append(f"<!-- RT:{rt} MODE:{adopted_mode} -->\n")
 
     # core 层
     parts.append("# === CORE LAYER ===\n")
@@ -349,6 +382,12 @@ def main():
                         help="生成带 cache_control 标记的优化版本")
     parser.add_argument("--validate", action="store_true",
                         help="同步前先运行规则冲突检测")
+    parser.add_argument("--rt", type=str, default="STANDARD",
+                        choices=["QUICK", "STANDARD", "DEEP"],
+                        help="推理深度标记：QUICK / STANDARD / DEEP（默认 STANDARD）")
+    parser.add_argument("--mode", type=str, default=None,
+                        choices=["task", "project", "autonomous"],
+                        help="覆盖 manifest 中的默认 Agent 模式")
     args = parser.parse_args()
 
     if args.list:
@@ -380,10 +419,10 @@ def main():
             print("规则冲突检测发现 BLOCKER，中止同步。使用 --no-validate 跳过。", file=sys.stderr)
             sys.exit(1)
 
-    ruleset = build_ruleset(args.profile, cache=args.cache)
+    ruleset = build_ruleset(args.profile, cache=args.cache, rt=args.rt, mode=args.mode)
     tools = list(TOOL_OUTPUT.keys()) if args.tool == "all" else [args.tool]
 
-    print(f"装配 profile={args.profile}{' [cache]' if args.cache else ''}")
+    print(f"装配 profile={args.profile}{' [cache]' if args.cache else ''} [RT:{args.rt}] [MODE:{args.mode or 'default'}]")
     print(f"规则集大小: {len(ruleset)} 字符")
     for tool in tools:
         out_path = write_tool_file(tool, args.profile, ruleset)

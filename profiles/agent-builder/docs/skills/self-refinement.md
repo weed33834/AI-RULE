@@ -202,6 +202,61 @@ Extended Thinking（生成前）→ 草稿 → Self-Refinement（生成后）→
 
 ---
 
+## Reflexion 记忆存储规范（I8 Upgrade）
+
+> Reflexion 反思记录是情景记忆的子类型，由 `scripts/inject_memory.py` 在每次会话启动时检索注入。完整格式定义见 `memory/reflections/schema.md`。
+
+### 存储路径
+
+```
+memory/reflections/<profile>_<yyyy-mm>.jsonl
+```
+
+按月分片，每个 Profile 独立存储。示例：`memory/reflections/coding_2026-07.jsonl`。
+
+### 写入时机
+
+1. Agent 在 Autonomous / Project 模式下遇到 P0/P1 级别错误并成功修正后，自动生成反思记录。
+2. 用户明确要求"记住这个教训"时生成。
+
+### 记录格式（JSONL）
+
+每行一条 JSON，核心字段：
+
+```json
+{
+  "id": "ref_YYYYMMDD_NNN",
+  "trigger": {"type": "error_correction", "description": "..."},
+  "before": {"approach": "...", "failure": "..."},
+  "after": {"approach": "...", "result": "..."},
+  "lesson": {"pattern": "...", "rule": "...", "severity": "P1", "applies_to": [...]},
+  "metadata": {"tags": [...]}
+}
+```
+
+### 注入约束
+
+- 每次新会话最多注入 5 条反思记录。
+- 按当前 Profile + Agent 模式 + 标签匹配检索。
+- 注入格式为 Markdown，每条 ≤ 200 token。
+- 以系统提示词附录形式注入，位于 Profile 规则之后、用户输入之前。
+
+### 与 Reflexion 循环的关系
+
+Reflexion 循环（§1）是"运行时自我纠偏"，Reflexion 记忆是本节的"跨会话教训复用"。两者的关系：
+
+```
+Reflexion 循环（当前会话）
+    ↓ 修正成功
+Reflexion 记忆写入（JSONL）
+    ↓ 下次会话启动
+inject_memory.py 检索注入
+    ↓
+AI 携带历史教训执行新任务
+```
+
+---
+
 ## 常见陷阱 / Common Pitfalls
 
 ### 1. 自检流于形式 / Self-Check as Theater

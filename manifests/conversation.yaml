@@ -10,6 +10,11 @@ profile:
     - novel
     - interactive-novel
     - agent-builder
+  agent_mode:
+    default: task
+    allowed:
+      - task
+      - project
 
 includes:
   core:
@@ -17,6 +22,8 @@ includes:
     - core/interaction.md
     - core/profile-router.md
     - core/language-mediation.md
+    - core/attention-budget.md
+    - core/agent-modes.md
   profile:
     - profiles/conversation/AGENTS.md
     - profiles/conversation/docs/prompts/system-prompt.md

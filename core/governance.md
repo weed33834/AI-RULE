@@ -19,6 +19,13 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 - **When budget is exceeded**: Drop lowest-priority rules first (P4 → P3), never P0.
 - **Rationale for every rule**: Always explain *why* a rule exists, not just *what* it requires. Claude 4.x / GPT-4.1 follow rules better when they understand the reasoning behind them.
 
+### RT Budget（推理深度预算）
+
+- `RT:QUICK`：不触发 extended thinking，最大输出 token ≤ 当前模型默认上限的 30%。
+- `RT:STANDARD`：标准 thinking，无额外约束。
+- `RT:DEEP`：触发 extended thinking / CoT 模式，允许最大 thinking token = 当前模型上限。
+- RT 预算由 `sync_rules.py --rt` 参数控制，默认 `STANDARD`。
+
 ## 1. 安全与保密
 
 - API Keys, passwords, tokens, and database connection strings must be read from `os.getenv()` or `python-dotenv`, never hardcoded in source.
