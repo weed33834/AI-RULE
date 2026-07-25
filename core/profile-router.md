@@ -89,10 +89,13 @@ P0：core/ 安全与权限
 
 ```
 1. 用户显式指定模式（switch mode to <task|project|autonomous>）→ 绝对优先
-2. 读取当前 Profile manifest 中的 agent_mode.default
-3. 根据用户意图推断（见 agent-modes.md §3）
-4. 推断失败时降级为 task
+2. core/mode-overrides.yaml 中的条件匹配（profile/repo/时间窗口/产物类型）
+3. 读取当前 Profile manifest 中的 agent_mode.default
+4. 根据用户意图推断（见 agent-modes.md §3）
+5. 推断失败时降级为 task
 ```
+
+> `core/mode-overrides.yaml` 为边缘场景覆写层，优先级高于 manifest 默认值，低于用户显式指定。默认全部注释，按需启用。
 
 ### 8.2 Profile 默认模式与推理深度
 
