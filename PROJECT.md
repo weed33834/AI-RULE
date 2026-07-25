@@ -109,6 +109,11 @@ P0：core/ 安全、权限、真实性、MCP 红线、失败熔断
 ## 验证
 
 ```bash
+# 规则冲突形式化检测（6 Profile，0 BLOCKER 标准）
+python scripts/validate_rules.py                    # 全量
+python scripts/validate_rules.py --profile coding   # 单 Profile
+
+# 同步脚本测试
 python tests/test_sync.py            # 同步脚本测试
 python tests/test_profile_router.py  # Profile 选择测试
 python tests/test_structure.py       # 结构验证测试
@@ -128,6 +133,10 @@ python tests/test_scenarios.py       # 复杂场景测试
 | `manifests/*.yaml` | 各 Profile 装配清单 |
 | `profiles/<id>/AGENTS.md` | 各领域规则 |
 | `capabilities/*.md` | 能力包定义 |
-| `scripts/sync_rules.py` | 跨工具同步脚本 |
+| `core/attention-budget.md` | 注意预算分级与 ABA 协议 |
+| `core/mcp-integration.md` | MCP 集成使用说明 |
+| `scripts/sync_rules.py` | 跨工具同步脚本（支持 --validate / --cache） |
+| `scripts/validate_rules.py` | 规则冲突形式化验证 |
+| `scripts/generate_mcp_config.py` | MCP 配置自动生成 |
 | `tests/*.py` | 5 套验证测试 |
 | `README.md` | 用户使用指南 |

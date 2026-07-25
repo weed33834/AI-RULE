@@ -4,12 +4,14 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-245+-orange)
+![Files](https://img.shields.io/badge/files-260+-orange)
 ![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
 > One repository that integrates 6 independent rule systems: a shared core layer, one active profile, and on-demand capability packs.
 > Clone once, pick a profile, and sync to any AI tool's rule file.
+
+**一句话使用**：`git clone` → `python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code` → 把生成的文件复制到项目根目录。
 
 ---
 
@@ -45,14 +47,31 @@ cd AI-RULE
 # List available profiles
 python scripts/sync_rules.py --list
 
-# Generate Claude Code entry for the coding profile
-python scripts/sync_rules.py --profile coding --tool claude-code
+# Generate Claude Code entry with validation and cache (recommended)
+python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code
 
 # Generate AGENTS.md (cross-tool standard, read by Codex CLI, OpenCode, Aider, etc.)
 python scripts/sync_rules.py --profile coding --tool agents-md
 
 # Generate all 13 tool entries for the novel profile
 python scripts/sync_rules.py --profile novel --tool all
+```
+
+#### Validate Rules for Conflicts
+
+```bash
+# Check all profiles for rule conflicts (0 BLOCKER required)
+python scripts/validate_rules.py
+
+# Check a single profile
+python scripts/validate_rules.py --profile coding
+```
+
+#### Generate MCP Configurations
+
+```bash
+# Generate MCP JSON for all DAR-enabled profiles
+python scripts/generate_mcp_config.py
 ```
 
 ### Supported Platforms (13)
@@ -179,6 +198,8 @@ AI-RULE/
 │   ├── interaction.md           # Clarification, intent normalization, output spec
 │   ├── profile-router.md        # Profile selection and capability pack whitelist
 │   ├── language-mediation.md    # Language mediation protocol (English reasoning, user-language output)
+│   ├── attention-budget.md      # Instruction budget tiers and ABA protocol
+│   ├── mcp-integration.md       # MCP integration and configuration guide
 │   └── dar-spec.md              # DAR (Domain Authority Registry) unified spec
 ├── profiles/                    # 6 independent rule sets
 │   ├── coding/          ( 13 files)
@@ -187,9 +208,12 @@ AI-RULE/
 │   ├── interactive-novel/ (31 files)
 │   ├── paper/           ( 22 files)
 │   └── agent-builder/   ( 70 files)
-├── capabilities/                # 14 on-demand capability packs (incl. dar/ domain registry)
+├── capabilities/                # 14 on-demand capability packs (incl. dar/ + MCP JSON configs)
 ├── manifests/                   # Per-profile assembly manifests
-├── scripts/sync_rules.py        # Generate tool entry files per profile
+├── scripts/
+│   ├── sync_rules.py            # Generate tool entry files (--validate / --cache)
+│   ├── validate_rules.py        # Formal rule conflict validation (SMT-based)
+│   └── generate_mcp_config.py   # Auto-generate MCP JSON configurations
 └── tests/                       # 6 test suites (51 checks, all passing)
 ```
 
@@ -248,6 +272,11 @@ See `profiles/agent-builder/docs/skills/` for full documentation.
 ## Verification
 
 ```bash
+# Rule conflict validation (6 profiles, 0 BLOCKER standard)
+python scripts/validate_rules.py                    # All profiles
+python scripts/validate_rules.py --profile coding   # Single profile
+
+# Test suites
 pytest tests/                        # 6 suites, 51 checks, all passing
 # Or run individually: pytest tests/test_audit.py
 ```
