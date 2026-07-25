@@ -133,10 +133,14 @@ python tests/test_scenarios.py       # 复杂场景测试
 | `manifests/*.yaml` | 各 Profile 装配清单 |
 | `profiles/<id>/AGENTS.md` | 各领域规则 |
 | `capabilities/*.md` | 能力包定义 |
-| `core/attention-budget.md` | 注意预算分级与 ABA 协议 |
+| `core/attention-budget.md` | 注意预算分级、ABA 协议与 RT 推理深度标记 |
+| `core/agent-modes.md` | Task/Project/Autonomous 三模式定义 |
+| `core/mode-overrides.yaml` | 边缘场景模式覆写配置 |
 | `core/mcp-integration.md` | MCP 集成使用说明 |
 | `scripts/sync_rules.py` | 跨工具同步脚本（支持 --validate / --cache） |
 | `scripts/validate_rules.py` | 规则冲突形式化验证 |
 | `scripts/generate_mcp_config.py` | MCP 配置自动生成 |
+| `scripts/build_dar_md.py` | DAR 聚合生成 dar.md |
+| `scripts/inject_memory.py` | Reflexion 记忆注入 |
 | `tests/*.py` | 5 套验证测试 |
 | `README.md` | 用户使用指南 |

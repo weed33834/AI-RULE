@@ -138,6 +138,7 @@
 | T1 | [Google Scholar](https://scholar.google.com/) | 索引 |
 | T1 | [Semantic Scholar](https://www.semanticscholar.org/) | 索引 |
 | T1 | [arXiv](https://arxiv.org/) | 预印本 |
+| T1 | [JCR (Journal Citation Reports)](https://jcr.clarivate.com/) | 期刊评价 |
 | T1 | [PubMed](https://pubmed.ncbi.nlm.nih.gov/) | 索引 |
 | T1 | [DBLP](https://dblp.org/) | 索引 |
 | T1 | [SSRN](https://www.ssrn.com/) | 预印本 |
