@@ -16,7 +16,11 @@
 
 ## 多语言 README
 
-`README.md`（英文，默认）、`README_CN.md`（中文）、`README_JA.md`（日文）内容需保持一致。改动其中一份的说明性内容时，请同步另外两份；若暂时只改英文，在 PR 描述里注明「CN/JA 待补」。
+`README.md`（英文，默认）、`README.zh.md`（中文）、`README.ja.md`（日文）内容需保持一致。改动其中一份的说明性内容时，请同步另外两份；若暂时只改英文，在 PR 描述里注明「zh/ja 待补」。
+
+## Runtime Skills 与 MCP 工具
+
+`skills/` 目录下的 runtime skills（7 个）和 `mcp/` 目录下的 MCP 工具（4 个）是运维时可加载的资源，不在 sync_rules.py 的同步范围内。修改这些文件后直接提交即可，无需重跑同步脚本。新增文件需同步更新 `scripts/inject_rules.py` 中的清单。
 
 ## 提交规范
 
