@@ -4,7 +4,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-260+-orange)
+![Files](https://img.shields.io/badge/files-380+-orange)
 ![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
@@ -138,6 +138,7 @@ python scripts/generate_mcp_config.py
 - **来源**：badhope/AI
 - **适用**：Python/FastAPI 开发、Bug 修复、重构、测试、代码审查
 - **核心能力**：Git SOP、依赖管理、PowerShell 语法、MCP 红线、工程卫生
+- **运行时技能**：7 个可执行技能（git-sop、workflow-five-roles、skill-acquisition、deep-search-first、frontend-design、backend-scaffold、fullstack-deploy）
 - **可叠加能力包**：research、testing、review、agent-governance、dar
 - **互斥**：novel、interactive-novel
 
@@ -199,6 +200,8 @@ AI-RULE/
 │   ├── profile-router.md        # Profile 选择与能力包白名单
 │   ├── language-mediation.md    # 语言中介协议（英语推理、用户语言输出）
 │   ├── attention-budget.md      # 注意预算分级与 ABA 协议
+│   ├── agent-modes.md           # Task / Project / Autonomous 三模式定义
+│   ├── mode-overrides.yaml      # 边缘场景模式覆写配置
 │   ├── mcp-integration.md       # MCP 集成与配置指南
 │   └── dar-spec.md              # DAR（域权威注册表）统一规范
 ├── profiles/                    # 6 套独立规则
@@ -210,10 +213,14 @@ AI-RULE/
 │   └── agent-builder/   ( 70 文件)
 ├── capabilities/                # 14 个按需能力包（含 dar/ + MCP JSON 配置）
 ├── manifests/                   # 每个 Profile 的装配清单
+├── skills/                      # coding Profile 的 7 个运行时技能（git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy）
+├── mcp/                         # 4 个 MCP 工具实现（validate_codebase / review_code / git_precommit_check / generate_tests）
 ├── scripts/
 │   ├── sync_rules.py            # 按 Profile 生成各工具入口（--validate / --cache）
 │   ├── validate_rules.py        # 规则冲突形式化验证（SMT 驱动）
-│   └── generate_mcp_config.py   # 自动生成 MCP JSON 配置
+│   ├── generate_mcp_config.py   # 自动生成 MCP JSON 配置
+│   ├── inject_rules.py          # 将运行时规则注入 Marvis 上下文
+│   └── rule_injection_guide.md  # 规则注入使用指南
 └── tests/                       # 6 套测试（51 项检查，全部通过）
 ```
 
@@ -389,6 +396,27 @@ xychart-beta
 | `dar` | 域权威注册表——权威源名录、打分、路由 |
 
 详见 `capabilities/README.md`。
+
+## 运行时技能（coding Profile）
+
+`skills/` 目录包含 coding Profile 的 7 个可执行运行时技能。与能力包（提供方法）不同，运行时技能被注入 Marvis AI 运行时并自主执行：
+
+| 技能 | 用途 |
+|---|---|
+| `git-sop` | Conventional Commits、细粒度提交、send2trash |
+| `workflow-five-roles` | 架构师 → 工程师 → 审查官 → 验证员 → 交付 |
+| `skill-acquisition` | 5 层库/工具选择协议 |
+| `deep-search-first` | 编码前先联网搜索新框架/API |
+| `frontend-design` | 生成 UI 前参考优秀开源设计仓库 |
+| `backend-scaffold` | FastAPI + httpx + pendulum + pydantic + polars 技术栈 |
+| `fullstack-deploy` | CI/CD、Docker、环境验证 |
+
+注入 Marvis 运行时：
+```bash
+python scripts/inject_rules.py --profile coding
+```
+
+`mcp/` 目录提供 4 个 MCP 工具实现：`validate_codebase.py`、`review_code.py`、`git_precommit_check.py`、`generate_tests.py`。
 
 ## 规则优先级
 

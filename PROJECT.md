@@ -137,10 +137,14 @@ python tests/test_scenarios.py       # 复杂场景测试
 | `core/agent-modes.md` | Task/Project/Autonomous 三模式定义 |
 | `core/mode-overrides.yaml` | 边缘场景模式覆写配置 |
 | `core/mcp-integration.md` | MCP 集成使用说明 |
+| `skills/` | 7 个 coding Profile 运行时技能（git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy） |
+| `mcp/` | 4 个 MCP 工具实现（validate_codebase / review_code / git_precommit_check / generate_tests） |
 | `scripts/sync_rules.py` | 跨工具同步脚本（支持 --validate / --cache） |
 | `scripts/validate_rules.py` | 规则冲突形式化验证 |
 | `scripts/generate_mcp_config.py` | MCP 配置自动生成 |
 | `scripts/build_dar_md.py` | DAR 聚合生成 dar.md |
 | `scripts/inject_memory.py` | Reflexion 记忆注入 |
+| `scripts/inject_rules.py` | 运行时规则注入 Marvis 上下文 |
+| `scripts/rule_injection_guide.md` | 规则注入使用指南 |
 | `tests/*.py` | 5 套验证测试 |
 | `README.md` | 用户使用指南 |

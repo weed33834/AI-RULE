@@ -4,7 +4,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-260+-orange)
+![Files](https://img.shields.io/badge/files-380+-orange)
 ![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
@@ -138,6 +138,7 @@ Load the <profile-id> Profile from Rule Hub.
 - **Origin**: badhope/AI
 - **Scope**: Python/FastAPI development, bug fixes, refactoring, testing, code review
 - **Core capabilities**: Git SOP, dependency management, PowerShell syntax, MCP red lines, engineering hygiene
+- **Runtime skills**: 7 executable skills (git-sop, workflow-five-roles, skill-acquisition, deep-search-first, frontend-design, backend-scaffold, fullstack-deploy)
 - **Capability packs**: research, testing, review, agent-governance, dar
 - **Mutually exclusive with**: novel, interactive-novel
 
@@ -199,6 +200,8 @@ AI-RULE/
 │   ├── profile-router.md        # Profile selection and capability pack whitelist
 │   ├── language-mediation.md    # Language mediation protocol (English reasoning, user-language output)
 │   ├── attention-budget.md      # Instruction budget tiers and ABA protocol
+│   ├── agent-modes.md           # Task / Project / Autonomous mode definitions
+│   ├── mode-overrides.yaml      # Edge-case mode override configuration
 │   ├── mcp-integration.md       # MCP integration and configuration guide
 │   └── dar-spec.md              # DAR (Domain Authority Registry) unified spec
 ├── profiles/                    # 6 independent rule sets
@@ -210,10 +213,14 @@ AI-RULE/
 │   └── agent-builder/   ( 70 files)
 ├── capabilities/                # 14 on-demand capability packs (incl. dar/ + MCP JSON configs)
 ├── manifests/                   # Per-profile assembly manifests
+├── skills/                      # 7 runtime skills for coding profile (git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy)
+├── mcp/                         # 4 MCP tool implementations (validate_codebase / review_code / git_precommit_check / generate_tests)
 ├── scripts/
 │   ├── sync_rules.py            # Generate tool entry files (--validate / --cache)
 │   ├── validate_rules.py        # Formal rule conflict validation (SMT-based)
-│   └── generate_mcp_config.py   # Auto-generate MCP JSON configurations
+│   ├── generate_mcp_config.py   # Auto-generate MCP JSON configurations
+│   ├── inject_rules.py          # Inject runtime rules into Marvis context
+│   └── rule_injection_guide.md  # Rule injection usage guide
 └── tests/                       # 6 test suites (51 checks, all passing)
 ```
 
@@ -389,6 +396,27 @@ Capability packs are composable, on-demand work methods. They do not define agen
 | `dar` | Domain Authority Registry — authoritative source lists, scoring, routing |
 
 See `capabilities/README.md`.
+
+## Runtime Skills (coding Profile)
+
+The `skills/` directory contains 7 executable runtime skills for the coding profile. Unlike capability packs (which provide methodology), runtime skills are injected into the Marvis AI runtime and execute autonomously:
+
+| Skill | Purpose |
+|---|---|
+| `git-sop` | Conventional Commits, granular commits, send2trash |
+| `workflow-five-roles` | Architect → Engineer → Critic → Verifier → Final |
+| `skill-acquisition` | 5-tier library/tool selection protocol |
+| `deep-search-first` | Web search before coding for new frameworks/APIs |
+| `frontend-design` | Reference open-source design repositories before generating UI |
+| `backend-scaffold` | FastAPI + httpx + pendulum + pydantic + polars stack |
+| `fullstack-deploy` | CI/CD, Docker, environment validation |
+
+Inject into Marvis runtime:
+```bash
+python scripts/inject_rules.py --profile coding
+```
+
+The `mcp/` directory provides 4 MCP tool implementations: `validate_codebase.py`, `review_code.py`, `git_precommit_check.py`, `generate_tests.py`.
 
 ## Rule Priority
 

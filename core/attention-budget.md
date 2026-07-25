@@ -60,3 +60,30 @@ FA 标记的段必须在 ANCHOR REPRISE 中也出现（首尾锚定效应），
 
 FA 段天然适合放在 Anthropic cache_control breakpoint 之后的前 4 个 breakpoint 中。
 sync_rules.py 的 `--cache` 模式自动处理此映射。
+
+
+## Agent 可执行指令
+
+以下指令供 Agent 在运行时解析和执行，非文档性描述。
+
+### ABA 压缩指令
+
+当上下文窗口用量超过 70% 时：
+1. 扫描所有 `ABA:CP` 标记的段，压缩为要点列表（每段 1-2 句）
+2. `ABA:HP` 段保留关键句，删除示例和详细说明
+3. `ABA:FA` 段完整保留，不得压缩
+4. 压缩后重新计算窗口用量，若仍超 85%，请求用户清理对话
+
+### RT 推理控制指令
+
+读取 `<!-- RT:QUICK/STANDARD/DEEP MODE:xxx -->` 标记后：
+- RT:QUICK → thinking/reasoning_content 不超过 20 tokens，禁止展开分析
+- RT:STANDARD → thinking 正常使用，每步 1-2 句
+- RT:DEEP → thinking 充分展开，允许 CoT、多方案对比、自我质疑
+
+### 模式切换指令
+
+读取 MODE 标记后：
+- task → 只输出用户要求的单一产出，拒绝功能蔓延
+- project → 先输出计划概览再执行，每阶段确认后继续
+- autonomous → 主动检查关联文件、发现隐藏问题、在回复末尾列出"⚠️ 待办建议"

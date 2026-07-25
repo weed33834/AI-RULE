@@ -4,7 +4,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-260+-orange)
+![Files](https://img.shields.io/badge/files-380+-orange)
 ![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
@@ -138,6 +138,7 @@ Rule Hub から <profile-id> Profile をロードしてください。
 - **由来**：badhope/AI
 - **対象**：Python/FastAPI 開発、バグ修正、リファクタリング、テスト、コードレビュー
 - **核心能力**：Git SOP、依存関係管理、PowerShell 構文、MCP レッドライン、エンジニアリング衛生
+- **ランタイムスキル**：7 つの実行可能スキル（git-sop、workflow-five-roles、skill-acquisition、deep-search-first、frontend-design、backend-scaffold、fullstack-deploy）
 - **機能パック**：research、testing、review、agent-governance、dar
 - **排他**：novel、interactive-novel
 
@@ -199,6 +200,8 @@ AI-RULE/
 │   ├── profile-router.md        # プロファイル選択と機能パックホワイトリスト
 │   ├── language-mediation.md    # 言語仲介プロトコル（英語推論、ユーザー言語出力）
 │   ├── attention-budget.md      # 命令予算の階層と ABA プロトコル
+│   ├── agent-modes.md           # Task / Project / Autonomous モード定義
+│   ├── mode-overrides.yaml      # エッジケース用モード上書き設定
 │   ├── mcp-integration.md       # MCP 統合と設定ガイド
 │   └── dar-spec.md              # DAR（Domain Authority Registry）統一仕様
 ├── profiles/                    # 6 つの独立ルールセット
@@ -210,10 +213,14 @@ AI-RULE/
 │   └── agent-builder/   ( 70 ファイル)
 ├── capabilities/                # 14 のオンデマンド機能パック（dar/ + MCP JSON 設定含む）
 ├── manifests/                   # プロファイル別アセンブリマニフェスト
+├── skills/                      # coding プロファイルの 7 つのランタイムスキル（git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy）
+├── mcp/                         # 4 つの MCP ツール実装（validate_codebase / review_code / git_precommit_check / generate_tests）
 ├── scripts/
 │   ├── sync_rules.py            # プロファイル別にツールエントリを生成（--validate / --cache）
 │   ├── validate_rules.py        # ルール競合の形式的検証（SMT 駆動）
-│   └── generate_mcp_config.py   # MCP JSON 設定の自動生成
+│   ├── generate_mcp_config.py   # MCP JSON 設定の自動生成
+│   ├── inject_rules.py          # ランタイムルールを Marvis コンテキストに注入
+│   └── rule_injection_guide.md  # ルール注入ガイド
 └── tests/                       # 6 テストスイート（51 チェック、全通過）
 ```
 
@@ -389,6 +396,27 @@ xychart-beta
 | `dar` | ドメイン権威レジストリ — 権威ソース一覧、スコアリング、ルーティング |
 
 詳細は `capabilities/README.md` を参照。
+
+## ランタイムスキル（coding プロファイル）
+
+`skills/` ディレクトリには coding プロファイルの 7 つの実行可能ランタイムスキルが含まれています。機能パック（メソッド提供）とは異なり、ランタイムスキルは Marvis AI ランタイムに注入され自律実行されます：
+
+| スキル | 用途 |
+|---|---|
+| `git-sop` | Conventional Commits、細粒度コミット、send2trash |
+| `workflow-five-roles` | アーキテクト → エンジニア → 批評 → 検証 → 納品 |
+| `skill-acquisition` | 5 層ライブラリ・ツール選択プロトコル |
+| `deep-search-first` | コーディング前に新フレームワーク/API を検索 |
+| `frontend-design` | UI 生成前に優れた OSS デザインを参照 |
+| `backend-scaffold` | FastAPI + httpx + pendulum + pydantic + polars スタック |
+| `fullstack-deploy` | CI/CD、Docker、環境検証 |
+
+Marvis ランタイムに注入：
+```bash
+python scripts/inject_rules.py --profile coding
+```
+
+`mcp/` ディレクトリには 4 つの MCP ツール実装があります：`validate_codebase.py`、`review_code.py`、`git_precommit_check.py`、`generate_tests.py`。
 
 ## ルール優先度
 

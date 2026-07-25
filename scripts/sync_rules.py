@@ -230,6 +230,27 @@ def build_ruleset(profile_id: str, cache: bool = False, rt: str = "STANDARD", mo
     adopted_mode = mode or manifest.get("agent_mode", {}).get("default", "task")
     parts.append(f"<!-- RT:{rt} MODE:{adopted_mode} -->\n")
 
+    # BOOTSTRAP: 自检加载 — 强制 Agent 在执行任何任务前先读取核心约束文件
+    parts.append("\n# === BOOTSTRAP: SELF-CHECK ===\n")
+    parts.append("<!-- ABA:FA - 自检块：永不压缩，永不丢弃。Agent 必须在执行任何任务前完成此自检。 -->\n")
+    parts.append(f"""**执行前强制自检（不可跳过）**：
+1. 读取并理解 `core/governance.md` 中的 P0/P1 约束。违反 P0 会直接导致产出不可用。
+2. 读取 `core/attention-budget.md`，确认当前 ABA 标记含义（FA=永不压缩, HP=可摘要, CP=可压缩）。
+3. 确认当前 RT 推理深度标记：`RT:QUICK`=轻量推理不触发 thinking，`RT:STANDARD`=常规推理，`RT:DEEP`=深度推理+CoT。
+4. 确认当前 Agent 模式：`task`=单步执行，`project`=多步计划+执行，`autonomous`=自主探索+纠偏。
+5. 自检通过后输出一行确认：`>>> 规则自检完成 | RT:{rt} | MODE:{adopted_mode} | P0约束:见 governance.md <<<`
+
+**推理深度行为准则**：
+- RT:QUICK → 不做深入规划，直接输出结果，不展开 thinking
+- RT:STANDARD → 先规划后执行，简短内部推理
+- RT:DEEP → 详细拆解、多方案对比、自检纠偏、CoT 展开
+
+**模式行为准则**：
+- task → 只做用户要求的一件事，不主动扩展范围
+- project → 制定计划、分步执行、每步验证
+- autonomous → 主动发现关联问题、自行纠偏、输出完整方案
+""")
+
     # core 层
     parts.append("# === CORE LAYER ===\n")
     parts.append("<!-- ABA:FA - core layer: governance + interaction. Never compress, never discard. -->\n")

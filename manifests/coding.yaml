@@ -38,6 +38,17 @@ includes:
     - profiles/coding/docs/skills/powershell-tips.md
     - profiles/coding/docs/skills/mcp-registry.md
     - profiles/coding/docs/skills/tool-skill-mcp.md
+  runtime_skills:
+    - skills/git-sop.md
+    - skills/workflow-five-roles.md
+    - skills/skill-acquisition.md
+    - skills/deep-search-first.md
+    - skills/frontend-design.md
+    - skills/backend-scaffold.md
+    - skills/fullstack-deploy.md
+rule_injection:
+  script: scripts/inject_rules.py
+  guide: scripts/rule_injection_guide.md
 
 enables_capabilities:
   - research
