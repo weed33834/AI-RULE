@@ -2,6 +2,10 @@
 
 > 本文件是所有 Profile 共享的 P0 硬约束。任何 Profile 不得覆盖此层规则。
 > 冲突时优先级：P0 安全/权限 > P1 用户明确确认 > P2 主 Profile > P3 能力包 > P4 默认行为。
+>
+> **I-HIERARCHY ANCHOR**: 本文件中 `<!-- P0:ANCHOR -->...<!-- /P0 -->` 包裹的规则块在 sync 时会被复制到规则集末尾，利用首尾锚定效应强化模型对 System Prompt 的遵从度（Anthropic Instruction Hierarchy, Wallace et al. 2025）。
+
+<!-- P0:ANCHOR-START -->
 
 ## Instruction Budget
 
@@ -98,3 +102,5 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
   // Rationale: Hand-edits to generated files are silently overwritten on the next sync, creating hard-to-trace regressions.
 - 生成文件头部必须带来源、生成时间、输入哈希与"禁止手工编辑"标记。
   // Rationale: Provenance headers make it obvious which file is generated and which is the source, preventing accidental edits.
+
+<!-- /P0:ANCHOR-END -->

@@ -1,0 +1,32 @@
+{
+  "name": "research",
+  "version": "1.0.0",
+  "description": "Research capability: 深度搜索、论文分析、方法论审查、证据等级评估",
+  "tools": [
+    {
+      "name": "deep_search",
+      "description": "执行多轮联网检索，返回结构化文献列表（含来源/摘要/证据等级）",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "研究问题" },
+          "max_papers": { "type": "integer", "default": 10, "description": "最大返回论文数" },
+          "min_evidence_level": { "type": "string", "enum": ["meta-analysis", "rct", "observational", "case-study", "opinion"], "default": "observational", "description": "最低证据等级" }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "methodology_audit",
+      "description": "审查研究方法的因果关系链、样本量、效应量，标记方法论空白",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "paper_id": { "type": "string", "description": "论文标识符或 URL" }
+        },
+        "required": ["paper_id"]
+      }
+    }
+  ],
+  "resources": ["evidence_levels", "methodology_checklist", "causal_chain_audit"]
+}

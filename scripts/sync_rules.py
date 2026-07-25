@@ -4,7 +4,9 @@
 用法:
     python scripts/sync_rules.py --list
     python scripts/sync_rules.py --profile coding --tool claude-code
-    python scripts/sync_rules.py --profile novel --tool all
+    python scripts/sync_rules.py --profile coding --tool all
+    python scripts/sync_rules.py --profile coding --tool all --cache
+    python scripts/sync_rules.py --profile coding --tool all --validate
 """
 import argparse
 import hashlib
@@ -18,6 +20,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 MANIFEST_DIR = REPO_ROOT / "manifests"
 CORE_DIR = REPO_ROOT / "core"
 ADAPTERS_DIR = REPO_ROOT / "adapters"
+
+# Instruction Hierarchy 锚定标记正则
+ANCHOR_RE = re.compile(r"<!--\s*(P[01]):ANCHOR-START\s*-->(.*?)<!--\s*/\1:ANCHOR-END\s*-->", re.DOTALL)
 
 # 工具到生成路径的映射
 # 按类别分组：跨工具标准 / 国际平台 / 国内平台
@@ -169,8 +174,11 @@ def expand_refs(text: str, base_dir: Path = None, loaded_paths: set = None) -> s
     return re.sub(r"@@?([\w/.-]+\.md)", replacer, text)
 
 
-def build_ruleset(profile_id: str) -> str:
-    """装配 core + profile 的完整规则集"""
+def build_ruleset(profile_id: str, cache: bool = False) -> str:
+    """装配 core + profile 的完整规则集。
+    
+    cache=True 时在 FA 段末尾注入 Anthropic cache_control breakpoint 标记。
+    """
     manifest = parse_manifest(profile_id)
     parts = []
     loaded_paths: set = set()
@@ -191,13 +199,20 @@ def build_ruleset(profile_id: str) -> str:
 
     # core 层
     parts.append("# === CORE LAYER ===\n")
+    parts.append("<!-- ABA:FA - core layer: governance + interaction. Never compress, never discard. -->\n")
     for core_file in manifest["includes"].get("core", []):
         core_path = _resolve_path(core_file)
         parts.append(f"\n## [core] {core_file}\n")
         parts.append(_load_and_track(core_file, core_path.parent))
 
+    if cache:
+        # Anthropic Prompt Caching: FA 层末尾注入 cache_control breakpoint
+        # 命中后成本降至 1/10，有效期 5 分钟
+        parts.append("\n<!-- cache_control: {\"type\": \"ephemeral\"} - FA segment cacheable across sessions -->\n")
+
     # profile 层
     parts.append("\n# === PROFILE LAYER ===\n")
+    parts.append("<!-- ABA:HP - Profile core constraints: summarizable, not discardable -->\n")
     for prof_file in manifest["includes"].get("profile", []):
         prof_path = _resolve_path(prof_file)
         parts.append(f"\n## [profile] {prof_file}\n")
@@ -205,6 +220,7 @@ def build_ruleset(profile_id: str) -> str:
 
     # skills 层（跳过已在 profile 层内联展开的文件）
     parts.append("\n# === SKILLS LAYER ===\n")
+    parts.append("<!-- ABA:CP - Skills and detailed examples: compressible when context is long -->\n")
     for skill_file in manifest["includes"].get("skills", []):
         skill_path = _resolve_path(skill_file)
         if str(skill_path) in loaded_paths:
@@ -215,6 +231,7 @@ def build_ruleset(profile_id: str) -> str:
 
     # capabilities 层：加载本 Profile 白名单启用的能力包
     parts.append("\n# === CAPABILITIES LAYER ===\n")
+    parts.append("<!-- ABA:HP - Capability packages: core constraints are HP, examples are CP -->\n")
     for cap in manifest.get("enables_capabilities", []):
         cap_path = _resolve_path(f"capabilities/{cap}.md")
         if not cap_path.exists():
@@ -227,6 +244,7 @@ def build_ruleset(profile_id: str) -> str:
     templates = manifest.get("includes", {}).get("templates", [])
     if templates:
         parts.append("\n# === TEMPLATES LAYER ===\n")
+        parts.append("<!-- ABA:CP - Template listings: compressible -->\n")
         for tmpl in templates:
             tmpl_path = _resolve_path(tmpl)
             if not tmpl_path.exists():
@@ -240,6 +258,16 @@ def build_ruleset(profile_id: str) -> str:
             else:
                 parts.append(f"\n## [template] {tmpl}\n")
                 parts.append(_load_and_track(tmpl, tmpl_path.parent))
+
+    # I-Hierarchy 锚定复制：提取 P0/P1 锚定内容，复制到末尾强化首尾锚定效应
+    full_ruleset = "\n".join(parts)
+    anchors = ANCHOR_RE.findall(full_ruleset)
+    if anchors:
+        parts.append("\n# === ANCHOR REPRISE (I-Hierarchy) ===\n")
+        parts.append("<!-- P0/P1 rules repeated at end for primacy+recency anchoring per Anthropic Instruction Hierarchy (Wallace et al. 2025) -->\n")
+        for level, content in anchors:
+            parts.append(f"\n## [anchor-reprise {level}]\n")
+            parts.append(content.strip())
 
     return "\n".join(parts)
 
@@ -317,6 +345,10 @@ def main():
                         help="目标工具")
     parser.add_argument("--force", action="store_true",
                         help="强制重新生成，跳过 manifest 存在性检查")
+    parser.add_argument("--cache", action="store_true",
+                        help="生成带 cache_control 标记的优化版本")
+    parser.add_argument("--validate", action="store_true",
+                        help="同步前先运行规则冲突检测")
     args = parser.parse_args()
 
     if args.list:
@@ -333,10 +365,25 @@ def main():
         print(f"error: 未知 profile '{args.profile}'，可用: {list_profiles()}", file=sys.stderr)
         sys.exit(1)
 
-    ruleset = build_ruleset(args.profile)
+    # 规则冲突检测
+    if args.validate:
+        import subprocess
+        validate_script = REPO_ROOT / "scripts" / "validate_rules.py"
+        print(f"规则冲突检测: {args.profile}")
+        result = subprocess.run(
+            [sys.executable, str(validate_script), "--profile", args.profile],
+            capture_output=True, cwd=str(REPO_ROOT)
+        )
+        out_text = (result.stdout or b"").decode("utf-8", errors="replace")
+        print(out_text, end="")
+        if result.returncode != 0:
+            print("规则冲突检测发现 BLOCKER，中止同步。使用 --no-validate 跳过。", file=sys.stderr)
+            sys.exit(1)
+
+    ruleset = build_ruleset(args.profile, cache=args.cache)
     tools = list(TOOL_OUTPUT.keys()) if args.tool == "all" else [args.tool]
 
-    print(f"装配 profile={args.profile}")
+    print(f"装配 profile={args.profile}{' [cache]' if args.cache else ''}")
     print(f"规则集大小: {len(ruleset)} 字符")
     for tool in tools:
         out_path = write_tool_file(tool, args.profile, ruleset)
