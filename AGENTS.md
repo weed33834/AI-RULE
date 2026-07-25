@@ -1,6 +1,28 @@
-<!-- 由 sync_rules.py 自动生成 | profile: agent-builder | generated: 2026-07-25 10:57:39 | profile_hash: 5709cb590880 | 禁止手工编辑 -->
+<!-- 由 sync_rules.py 自动生成 | profile: agent-builder | generated: 2026-07-25 23:53:59 | profile_hash: 5709cb590880 | 禁止手工编辑 -->
 
 <!-- RT:STANDARD MODE:project -->
+
+
+# === BOOTSTRAP: SELF-CHECK ===
+
+<!-- ABA:FA - 自检块：永不压缩，永不丢弃。Agent 必须在执行任何任务前完成此自检。 -->
+
+**执行前强制自检（不可跳过）**：
+1. 读取并理解 `core/governance.md` 中的 P0/P1 约束。违反 P0 会直接导致产出不可用。
+2. 读取 `core/attention-budget.md`，确认当前 ABA 标记含义（FA=永不压缩, HP=可摘要, CP=可压缩）。
+3. 确认当前 RT 推理深度标记：`RT:QUICK`=轻量推理不触发 thinking，`RT:STANDARD`=常规推理，`RT:DEEP`=深度推理+CoT。
+4. 确认当前 Agent 模式：`task`=单步执行，`project`=多步计划+执行，`autonomous`=自主探索+纠偏。
+5. 自检通过后输出一行确认：`>>> 规则自检完成 | RT:STANDARD | MODE:project | P0约束:见 governance.md <<<`
+
+**推理深度行为准则**：
+- RT:QUICK → 不做深入规划，直接输出结果，不展开 thinking
+- RT:STANDARD → 先规划后执行，简短内部推理
+- RT:DEEP → 详细拆解、多方案对比、自检纠偏、CoT 展开
+
+**模式行为准则**：
+- task → 只做用户要求的一件事，不主动扩展范围
+- project → 制定计划、分步执行、每步验证
+- autonomous → 主动发现关联问题、自行纠偏、输出完整方案
 
 # === CORE LAYER ===
 
@@ -285,10 +307,13 @@ P0：core/ 安全与权限
 
 ```
 1. 用户显式指定模式（switch mode to <task|project|autonomous>）→ 绝对优先
-2. 读取当前 Profile manifest 中的 agent_mode.default
-3. 根据用户意图推断（见 agent-modes.md §3）
-4. 推断失败时降级为 task
+2. core/mode-overrides.yaml 中的条件匹配（profile/repo/时间窗口/产物类型）
+3. 读取当前 Profile manifest 中的 agent_mode.default
+4. 根据用户意图推断（见 agent-modes.md §3）
+5. 推断失败时降级为 task
 ```
+
+> `core/mode-overrides.yaml` 为边缘场景覆写层，优先级高于 manifest 默认值，低于用户显式指定。默认全部注释，按需启用。
 
 ### 8.2 Profile 默认模式与推理深度
 
@@ -456,6 +481,33 @@ FA 标记的段必须在 ANCHOR REPRISE 中也出现（首尾锚定效应），
 
 FA 段天然适合放在 Anthropic cache_control breakpoint 之后的前 4 个 breakpoint 中。
 sync_rules.py 的 `--cache` 模式自动处理此映射。
+
+
+## Agent 可执行指令
+
+以下指令供 Agent 在运行时解析和执行，非文档性描述。
+
+### ABA 压缩指令
+
+当上下文窗口用量超过 70% 时：
+1. 扫描所有 `ABA:CP` 标记的段，压缩为要点列表（每段 1-2 句）
+2. `ABA:HP` 段保留关键句，删除示例和详细说明
+3. `ABA:FA` 段完整保留，不得压缩
+4. 压缩后重新计算窗口用量，若仍超 85%，请求用户清理对话
+
+### RT 推理控制指令
+
+读取 `<!-- RT:QUICK/STANDARD/DEEP MODE:xxx -->` 标记后：
+- RT:QUICK → thinking/reasoning_content 不超过 20 tokens，禁止展开分析
+- RT:STANDARD → thinking 正常使用，每步 1-2 句
+- RT:DEEP → thinking 充分展开，允许 CoT、多方案对比、自我质疑
+
+### 模式切换指令
+
+读取 MODE 标记后：
+- task → 只输出用户要求的单一产出，拒绝功能蔓延
+- project → 先输出计划概览再执行，每阶段确认后继续
+- autonomous → 主动检查关联文件、发现隐藏问题、在回复末尾列出"⚠️ 待办建议"
 
 
 ## [core] core/agent-modes.md
@@ -15017,7 +15069,7 @@ When adding or modifying rules, the following files may need cascade updates —
 |---------|----------------|---------|
 | 新增 §X 规则 | system-prompt.md XML 段 | 新规则是否需要镜像到 XML 段？ |
 | 新增 §X 规则 | 子智能体 .md 文件 | 哪些子智能体需要引用新规则？ |
-| 新增 §X 规则 | README.md / README_CN.md / README_JA.md | 章节数量是否需要更新？描述是否需要添加？ |
+| 新增 §X 规则 | README.md / README.zh.md / README.ja.md | 章节数量是否需要更新？描述是否需要添加？ |
 | 新增 §X 规则 | PR_TEMPLATE.md | 是否需要添加新规则的 checklist 项？ |
 | 新增 §X 规则 | CONTRIBUTING.md | 规则范围是否需要更新？ |
 | 新增 §X 规则 | CHANGELOG.md | 是否记录了变更？ |
@@ -22421,7 +22473,7 @@ When adding or modifying rules, the following files may need cascade updates —
 |---------|----------------|---------|
 | 新增 §X 规则 | system-prompt.md XML 段 | 新规则是否需要镜像到 XML 段？ |
 | 新增 §X 规则 | 子智能体 .md 文件 | 哪些子智能体需要引用新规则？ |
-| 新增 §X 规则 | README.md / README_CN.md / README_JA.md | 章节数量是否需要更新？描述是否需要添加？ |
+| 新增 §X 规则 | README.md / README.zh.md / README.ja.md | 章节数量是否需要更新？描述是否需要添加？ |
 | 新增 §X 规则 | PR_TEMPLATE.md | 是否需要添加新规则的 checklist 项？ |
 | 新增 §X 规则 | CONTRIBUTING.md | 规则范围是否需要更新？ |
 | 新增 §X 规则 | CHANGELOG.md | 是否记录了变更？ |
@@ -30690,6 +30742,7 @@ Agent A → (交接) → Agent B → (交接) → Agent C
 | T1 | [Google Scholar](https://scholar.google.com/) | 索引 |
 | T1 | [Semantic Scholar](https://www.semanticscholar.org/) | 索引 |
 | T1 | [arXiv](https://arxiv.org/) | 预印本 |
+| T1 | [JCR (Journal Citation Reports)](https://jcr.clarivate.com/) | 期刊评价 |
 | T1 | [PubMed](https://pubmed.ncbi.nlm.nih.gov/) | 索引 |
 | T1 | [DBLP](https://dblp.org/) | 索引 |
 | T1 | [SSRN](https://www.ssrn.com/) | 预印本 |

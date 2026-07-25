@@ -415,7 +415,7 @@ When adding or modifying rules, the following files may need cascade updates —
 |---------|----------------|---------|
 | 新增 §X 规则 | system-prompt.md XML 段 | 新规则是否需要镜像到 XML 段？ |
 | 新增 §X 规则 | 子智能体 .md 文件 | 哪些子智能体需要引用新规则？ |
-| 新增 §X 规则 | README.md / README_CN.md / README_JA.md | 章节数量是否需要更新？描述是否需要添加？ |
+| 新增 §X 规则 | README.md / README.zh.md / README.ja.md | 章节数量是否需要更新？描述是否需要添加？ |
 | 新增 §X 规则 | PR_TEMPLATE.md | 是否需要添加新规则的 checklist 项？ |
 | 新增 §X 规则 | CONTRIBUTING.md | 规则范围是否需要更新？ |
 | 新增 §X 规则 | CHANGELOG.md | 是否记录了变更？ |

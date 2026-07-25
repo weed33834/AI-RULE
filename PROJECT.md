@@ -146,5 +146,5 @@ python tests/test_scenarios.py       # 复杂场景测试
 | `scripts/inject_memory.py` | Reflexion 记忆注入 |
 | `scripts/inject_rules.py` | 运行时规则注入 Marvis 上下文 |
 | `scripts/rule_injection_guide.md` | 规则注入使用指南 |
-| `tests/*.py` | 5 套验证测试 |
+| `tests/*.py` | 6 套验证测试 + 共享 fixtures |
 | `README.md` | 用户使用指南 |
