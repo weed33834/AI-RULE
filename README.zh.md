@@ -4,12 +4,14 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-245+-orange)
+![Files](https://img.shields.io/badge/files-260+-orange)
 ![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
 > 一个仓库整合 6 套独立的规则体系：共享核心层 + 单一主 Profile + 按需能力包。
 > 克隆一次，选定 Profile，同步生成任意 AI 工具的规则文件。
+
+**一句话使用**：`git clone` → `python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code` → 把生成的文件复制到项目根目录。
 
 ---
 
@@ -45,14 +47,31 @@ cd AI-RULE
 # 列出可用 Profile
 python scripts/sync_rules.py --list
 
-# 为 coding Profile 生成 Claude Code 入口
-python scripts/sync_rules.py --profile coding --tool claude-code
+# 为 coding Profile 生成 Claude Code 入口（推荐：附加验证与缓存）
+python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code
 
 # 生成 AGENTS.md（跨工具标准，Codex CLI、OpenCode、Aider 等读取）
 python scripts/sync_rules.py --profile coding --tool agents-md
 
 # 为 novel Profile 生成全部 13 个平台入口
 python scripts/sync_rules.py --profile novel --tool all
+```
+
+#### 规则冲突验证
+
+```bash
+# 检查所有 Profile 的规则冲突（要求 0 BLOCKER）
+python scripts/validate_rules.py
+
+# 检查单个 Profile
+python scripts/validate_rules.py --profile coding
+```
+
+#### 生成 MCP 配置
+
+```bash
+# 为所有 DAR 启用的 Profile 生成 MCP JSON
+python scripts/generate_mcp_config.py
 ```
 
 ### 支持平台（13 个）
@@ -179,6 +198,8 @@ AI-RULE/
 │   ├── interaction.md           # 澄清、意图归一化、输出规范
 │   ├── profile-router.md        # Profile 选择与能力包白名单
 │   ├── language-mediation.md    # 语言中介协议（英语推理、用户语言输出）
+│   ├── attention-budget.md      # 注意预算分级与 ABA 协议
+│   ├── mcp-integration.md       # MCP 集成与配置指南
 │   └── dar-spec.md              # DAR（域权威注册表）统一规范
 ├── profiles/                    # 6 套独立规则
 │   ├── coding/          ( 13 文件)
@@ -187,9 +208,12 @@ AI-RULE/
 │   ├── interactive-novel/ (31 文件)
 │   ├── paper/           ( 22 文件)
 │   └── agent-builder/   ( 70 文件)
-├── capabilities/                # 14 个按需能力包（含 dar/ 域注册表）
+├── capabilities/                # 14 个按需能力包（含 dar/ + MCP JSON 配置）
 ├── manifests/                   # 每个 Profile 的装配清单
-├── scripts/sync_rules.py        # 按 Profile 生成各工具入口
+├── scripts/
+│   ├── sync_rules.py            # 按 Profile 生成各工具入口（--validate / --cache）
+│   ├── validate_rules.py        # 规则冲突形式化验证（SMT 驱动）
+│   └── generate_mcp_config.py   # 自动生成 MCP JSON 配置
 └── tests/                       # 6 套测试（51 项检查，全部通过）
 ```
 
@@ -248,6 +272,11 @@ python scripts/sync_rules.py --profile coding --tool all
 ## 验证
 
 ```bash
+# 规则冲突验证（6 个 Profile，0 BLOCKER 标准）
+python scripts/validate_rules.py                    # 全部 Profile
+python scripts/validate_rules.py --profile coding   # 单个 Profile
+
+# 测试套件
 pytest tests/                        # 6 套测试，51 项检查，全部通过
 # 或单文件运行：pytest tests/test_audit.py
 ```

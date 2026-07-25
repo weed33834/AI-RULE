@@ -4,12 +4,14 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-245+-orange)
+![Files](https://img.shields.io/badge/files-260+-orange)
 ![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
 > 1 つのリポジトリに 6 つの独立ルール体系を統合：共有コア層 + 単一プロファイル + オンデマンド機能パック。
 > 一度クローンし、プロファイルを選択、任意の AI ツールのルールファイルへ同期生成。
+
+**一言使い方**：`git clone` → `python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code` → 生成ファイルをプロジェクトルートにコピー。
 
 ---
 
@@ -45,14 +47,31 @@ cd AI-RULE
 # 利用可能なプロファイル一覧
 python scripts/sync_rules.py --list
 
-# coding プロファイルの Claude Code エントリを生成
-python scripts/sync_rules.py --profile coding --tool claude-code
+# coding プロファイルの Claude Code エントリを生成（推奨：バリデーション＋キャッシュ付き）
+python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code
 
 # AGENTS.md を生成（クロスツール標準、Codex CLI、OpenCode、Aider 等が読み取り）
 python scripts/sync_rules.py --profile coding --tool agents-md
 
 # novel プロファイルの全 13 プラットフォームエントリを生成
 python scripts/sync_rules.py --profile novel --tool all
+```
+
+#### ルール競合の検証
+
+```bash
+# 全プロファイルのルール競合をチェック（0 BLOCKER 必須）
+python scripts/validate_rules.py
+
+# 単一プロファイルのチェック
+python scripts/validate_rules.py --profile coding
+```
+
+#### MCP 設定の生成
+
+```bash
+# すべての DAR 対応プロファイルの MCP JSON を生成
+python scripts/generate_mcp_config.py
 ```
 
 ### 対応プラットフォーム（13）
@@ -179,6 +198,8 @@ AI-RULE/
 │   ├── interaction.md           # 確認、意図正規化、出力仕様
 │   ├── profile-router.md        # プロファイル選択と機能パックホワイトリスト
 │   ├── language-mediation.md    # 言語仲介プロトコル（英語推論、ユーザー言語出力）
+│   ├── attention-budget.md      # 命令予算の階層と ABA プロトコル
+│   ├── mcp-integration.md       # MCP 統合と設定ガイド
 │   └── dar-spec.md              # DAR（Domain Authority Registry）統一仕様
 ├── profiles/                    # 6 つの独立ルールセット
 │   ├── coding/          ( 13 ファイル)
@@ -187,9 +208,12 @@ AI-RULE/
 │   ├── interactive-novel/ (31 ファイル)
 │   ├── paper/           ( 22 ファイル)
 │   └── agent-builder/   ( 70 ファイル)
-├── capabilities/                # 14 のオンデマンド機能パック（dar/ ドメインレジストリ含む）
+├── capabilities/                # 14 のオンデマンド機能パック（dar/ + MCP JSON 設定含む）
 ├── manifests/                   # プロファイル別アセンブリマニフェスト
-├── scripts/sync_rules.py        # プロファイル別にツールエントリを生成
+├── scripts/
+│   ├── sync_rules.py            # プロファイル別にツールエントリを生成（--validate / --cache）
+│   ├── validate_rules.py        # ルール競合の形式的検証（SMT 駆動）
+│   └── generate_mcp_config.py   # MCP JSON 設定の自動生成
 └── tests/                       # 6 テストスイート（51 チェック、全通過）
 ```
 
@@ -248,6 +272,11 @@ python scripts/sync_rules.py --profile coding --tool all
 ## 検証
 
 ```bash
+# ルール競合検証（6 プロファイル、0 BLOCKER 標準）
+python scripts/validate_rules.py                    # 全プロファイル
+python scripts/validate_rules.py --profile coding   # 単一プロファイル
+
+# テストスイート
 pytest tests/                        # 6 スイート、51 チェック、全通過
 # 個別実行も可：pytest tests/test_audit.py
 ```

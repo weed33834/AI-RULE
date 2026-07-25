@@ -5,22 +5,24 @@
 
 ## 能力包清单
 
-| ID | 适用场景 | 输入 | 输出 |
-|---|---|---|---|
-| `research` | 需要事实支撑、数据验证、最新信息 | 问题、搜索深度 | 带来源标注的结论、置信度 |
-| `testing` | 需要编写或验证测试 | 代码、接口、验收标准 | 测试用例、覆盖率、通过报告 |
-| `review` | 代码或内容审查 | 待审文件、审查维度 | 问题清单、严重度、修复建议 |
-| `engineering` | 工程实现、架构落地 | 需求、技术栈 | 代码、配置、部署方案 |
-| `creative` | 创意生成、文风、修订 | 主题、约束、样本 | 创意文本、修订稿 |
-| `worldbuilding` | 世界观、角色、时间线维护 | 设定素材、历史节点 | 一致性校验后的设定集 |
-| `state-machine` | 状态机治理、分支可达性 | 状态迁移表、不变量 | 合法迁移序列、冲突报告 |
-| `npc-simulation` | NPC 自主性、记忆、关系 | NPC 设定、玩家行为 | NPC 状态更新、反应 |
-| `adaptive-difficulty` | 难度自适应 | 玩家表现、难度曲线 | 难度参数调整 |
-| `game-engine` | 游戏回合、存档、命令 | 玩家输入、当前状态 | 下一状态、可选分支 |
-| `agent-governance` | 智能体评估、观测、安全对齐 | Agent 配置、日志 | 评估报告、风险项 |
-| `orchestration` | 多智能体编排、委派 | 子任务、委派条件 | 编排图、上下文边界 |
-| `novel-chapter-deliverable-mode` | 小说章节交付模式 | 大纲、人物设定 | 章节稿件、修订记录 |
-| `dar` | 域权威注册表——权威源名录、打分公式、检索路由 | 问题、领域 | 排序后的权威源、打分结果 |
+| ID | 适用场景 | 输入 | 输出 | MCP 配置 |
+|---|---|---|---|---|
+| `research` | 需要事实支撑、数据验证、最新信息 | 问题、搜索深度 | 带来源标注的结论、置信度 | [research.mcp.json](research.mcp.json) |
+| `testing` | 需要编写或验证测试 | 代码、接口、验收标准 | 测试用例、覆盖率、通过报告 | [testing.mcp.json](testing.mcp.json) |
+| `review` | 代码或内容审查 | 待审文件、审查维度 | 问题清单、严重度、修复建议 | [review.mcp.json](review.mcp.json) |
+| `engineering` | 工程实现、架构落地 | 需求、技术栈 | 代码、配置、部署方案 | [engineering.mcp.json](engineering.mcp.json) |
+| `creative` | 创意生成、文风、修订 | 主题、约束、样本 | 创意文本、修订稿 | — |
+| `worldbuilding` | 世界观、角色、时间线维护 | 设定素材、历史节点 | 一致性校验后的设定集 | — |
+| `state-machine` | 状态机治理、分支可达性 | 状态迁移表、不变量 | 合法迁移序列、冲突报告 | — |
+| `npc-simulation` | NPC 自主性、记忆、关系 | NPC 设定、玩家行为 | NPC 状态更新、反应 | — |
+| `adaptive-difficulty` | 难度自适应 | 玩家表现、难度曲线 | 难度参数调整 | — |
+| `game-engine` | 游戏回合、存档、命令 | 玩家输入、当前状态 | 下一状态、可选分支 | — |
+| `agent-governance` | 智能体评估、观测、安全对齐 | Agent 配置、日志 | 评估报告、风险项 | — |
+| `orchestration` | 多智能体编排、委派 | 子任务、委派条件 | 编排图、上下文边界 | — |
+| `novel-chapter-deliverable-mode` | 小说章节交付模式 | 大纲、人物设定 | 章节稿件、修订记录 | — |
+| `dar` | 域权威注册表——权威源名录、打分公式、检索路由 | 问题、领域 | 排序后的权威源、打分结果 | [dar.mcp.json](dar.mcp.json) |
+
+> 带 MCP 配置的包可通过 `python scripts/generate_mcp_config.py` 一键生成 JSON 配置。
 
 ## 加载规则
 
