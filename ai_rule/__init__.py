@@ -1,0 +1,11 @@
+"""ai-rule: Rule Hub 分发层 + CLI 入口。"""
+from .core import (
+    REPO_ROOT, build_ruleset, write_tool_file, list_profiles,
+    TOOL_OUTPUT, TOOL_CHAR_LIMIT, SKELETON_BUDGET_BYTES,
+)
+
+__version__ = "2.0.0"
+__all__ = [
+    "REPO_ROOT", "build_ruleset", "write_tool_file", "list_profiles",
+    "TOOL_OUTPUT", "TOOL_CHAR_LIMIT", "SKELETON_BUDGET_BYTES",
+]

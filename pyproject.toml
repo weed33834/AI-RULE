@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-rule"
+version = "2.3.0"
+description = "Rule Hub — unified AI collaboration rules with skeleton + on-demand loading"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [{ name = "badhope" }]
+keywords = ["ai", "rules", "agents", "claude-code", "cursor", "trae", "copilot", "windsurf", "agents-md"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+]
+
+[project.urls]
+Homepage = "https://gitcode.com/badhope/AI-RULE"
+Repository = "https://gitcode.com/badhope/AI-RULE"
+
+[project.scripts]
+ai-rule = "ai_rule.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["ai_rule*"]
+
+# 规则源文件随包分发：setup.py 的 build_py/sdist 子类会在构建前把
+# 仓库根的 core/ profiles/ capabilities/ manifests/ adapters/ mcp.example.json
+# 同步到 ai_rule/_resources/，下面声明让 setuptools 把它们打进 wheel。
+[tool.setuptools.package-data]
+ai_rule = [
+    "_resources/**/*",
+    "_resources/*",
+]
+
+# 注：dev 模式（pip install -e .）下 _resources/ 不存在，
+# sync_rules._packaged_resources_root() 返回 None，自动回退到 dev 模式
+# （ai_rule/sync_rules.py 的 parent.parent = REPO_ROOT，那里有 manifests/）。

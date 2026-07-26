@@ -40,3 +40,15 @@ best_practices.md
 .lingma/rules/
 .comate/rules/
 provenance/
+
+# 限长平台分片目录（由 sync_rules.py 在 skeleton 模式自动分片生成）
+.windsurfrules.d/
+.clinerules.d/
+.lingma/rules.d/
+.comate/rules.d/
+
+# Python 构建产物（pip build / wheel）
+dist/
+build/
+*.whl
+*.egg-info/

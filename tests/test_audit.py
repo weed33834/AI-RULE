@@ -237,17 +237,20 @@ def test_single_profile_loading():
     print("\n=== 12. 单一 Profile 加载隔离 ===")
     for pid in PROFILES:
         ruleset = build_ruleset(pid)
-        # 检查其他 profile 的目录路径不应出现在规则集中
+        # PROFILE LAYER 段的截断点：
+        # - skeleton 模式下 PROFILE LAYER 之后是 ON-DEMAND INDEX（无 SKILLS LAYER）
+        # - full 模式下 PROFILE LAYER 之后是 SKILLS LAYER
+        # ON-DEMAND INDEX 段里的「跨 profile 复用」路径（如 DOMAIN_QUALITY_GATES
+        # 显式标注"(跨 profile 复用)"的 skill 引用）是有意保留的复用关系，
+        # 不属于 PROFILE LAYER 内联违规。
+        end_marker = "# === ON-DEMAND INDEX" if "# === ON-DEMAND INDEX" in ruleset else "# === SKILLS LAYER"
+        profile_section = extract_section(ruleset, "# === PROFILE LAYER", end_marker)
         for other in PROFILES:
             if other == pid:
                 continue
             other_path = f"profiles/{other}/"
-            if other_path in ruleset:
-                # 在 profile 层引用了别的 profile 目录——违规
-                profile_section = extract_section(ruleset, "PROFILE LAYER", "SKILLS LAYER")
-                if other_path in profile_section:
-                    err("跨 Profile 引用", f"{pid} 的 profile 层引用了 {other_path}")
-                # 在注释/header 里出现是允许的
+            if other_path in profile_section:
+                err("跨 Profile 引用", f"{pid} 的 profile 层引用了 {other_path}")
         ok("隔离检查", f"{pid}: 无跨 profile 加载（profile 层）")
 
 

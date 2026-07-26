@@ -94,6 +94,8 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 
 - `AGENTS.md` 为规则唯一源；`CLAUDE.md`、`GEMINI.md`、`.cursor/rules/*.mdc`、`.github/copilot-instructions.md`、`.trae/rules/project_rules.md` 均由 `scripts/sync_rules.py` 生成。
   // Rationale: A single source prevents drift; generated files stay consistent with the canonical rules.
+- `PROJECT.md` 为仓库导航入口：AI 进入仓库后应先读 `PROJECT.md`，再读 `AGENTS.md` 与各 `core/*.md`，最后按 Profile 加载领域规则。
+  // Rationale: A dedicated navigation file gives the AI a stable entry point describing what the repo is and how to load it, separate from the runtime rules in AGENTS.md.
 - Edit rules only in the source files, then regenerate. Generated files must not be hand-edited.
   // Rationale: Hand-edits to generated files are silently overwritten on the next sync, creating hard-to-trace regressions.
 - 生成文件头部必须带来源、生成时间、输入哈希与"禁止手工编辑"标记。
