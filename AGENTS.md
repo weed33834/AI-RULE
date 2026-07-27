@@ -1,4 +1,4 @@
-<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-07-26 13:31:07 | hash: 8198e411d84b | 禁止手工编辑 -->
+<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-07-27 08:39:03 | hash: 8198e411d84b | 禁止手工编辑 -->
 <!-- 源: core/*.md + profiles/<id>/{AGENTS.md,docs/} + capabilities/*.md + manifests/*.yaml | 生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->
 
 # === CORE LAYER (P0 红线，始终生效) ===

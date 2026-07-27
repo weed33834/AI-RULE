@@ -1,0 +1,31 @@
+{
+  "_comment": "Claude Code Hook 配置模板。复制到 ~/.claude/settings.json 或项目根目录 .claude/settings.json。",
+  "_setup": "1) 把 adapters/hooks/ 目录复制到你的项目根目录 2) 安装 Rule Hub: pip install ai-rule 或 git clone 后设置 AI_RULE_REPO 3) 修改下方 command 路径指向你的 adapters/hooks/claude-code/pre_tool_use.py 4) 重启 Claude Code",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "command": "python ./adapters/hooks/claude-code/pre_tool_use.py",
+        "type": "command"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "command": "python ./adapters/hooks/claude-code/post_tool_use.py",
+        "type": "command"
+      }
+    ],
+    "Stop": [
+      {
+        "command": "python ./adapters/hooks/claude-code/on_stop.py",
+        "type": "command"
+      }
+    ]
+  },
+  "_notes": [
+    "本配置启用 PreToolUse 硬拦截：硬编码密钥/MCP 自安装/.env 提交/git push 等会被直接 deny",
+    "PostToolUse 处理事后检查（如 EXTERNAL_DOTGIT_EXCLUDED 警告）",
+    "Stop hook 用于检查会话结束时的临时文件清理",
+    "若 hook 失败会自动降级为放行，不会阻塞 agent",
+    "查看所有拦截日志在 stderr"
+  ]
+}

@@ -1,0 +1,88 @@
+{
+  "_comment": "Trae 沙箱策略配置模板。Trae 自带沙箱（文件访问控制 + 高风险命令拦截），无开放 hook API。",
+  "_limitation": "Trae 不支持自定义 PreToolUse hook（与 Claude Code/Cursor 不同），只能配置平台内置沙箱策略。本文件配置后由 Trae 平台层执行，不调我们的 check.py。",
+  "_setup": "1) 把本文件复制到 .trae/sandbox-policy.json 2) 在 Trae IDE 设置 > 沙箱中启用 3) 重启 Trae",
+
+  "version": 1,
+  "mode": "strict",
+
+  "file_access_control": {
+    "description": "限制 agent 写入的文件路径范围",
+    "deny_paths": [
+      "AGENTS.md",
+      "CLAUDE.md",
+      "GEMINI.md",
+      ".cursor/rules/*.mdc",
+      ".github/copilot-instructions.md",
+      ".trae/rules/project_rules.md",
+      ".windsurfrules",
+      ".clinerules/project.md",
+      ".continue/rules/project.md",
+      ".amazonq/rules/project.md",
+      "best_practices.md",
+      ".lingma/rules/project.md",
+      ".comate/rules/project.mdr"
+    ],
+    "deny_paths_reason": "这些文件由 ai-rule 自动生成，手改会被下次同步覆盖（NO_EDIT_GENERATED_FILES）",
+    "deny_patterns": [
+      "**/.env",
+      "**/.env.local",
+      "**/.env.production",
+      "**/.env.development"
+    ],
+    "deny_patterns_reason": "禁止写入环境文件（ENV_FILE_BLOCKED）"
+  },
+
+  "command_blocklist": {
+    "description": "高风险命令直接拦截（与 DESTRUCTIVE_OP_REQUIRES_CONFIRM 等价）",
+    "block_patterns": [
+      "rm\\s+-rf?\\s+(/|~|\\*|\\$|\\.\\.)",
+      "git\\s+push\\s+.*(--force|-f)\\b",
+      "git\\s+push\\s+-f\\b",
+      "git\\s+reset\\s+--hard",
+      "git\\s+clean\\s+-fd",
+      "git\\s+branch\\s+-D\\s+\\w",
+      "git\\s+push\\s+.*--delete",
+      "DROP\\s+(TABLE|DATABASE|SCHEMA)",
+      "TRUNCATE\\s+TABLE"
+    ],
+    "block_mcp_install": [
+      "npm\\s+install\\b.*(\\bmcp\\b|modelcontextprotocol|mcp[-_])",
+      "npx\\s+.*(\\bmcp\\b|modelcontextprotocol|mcp[-_])",
+      "pip\\s+install\\b.*\\bmcp\\b",
+      "uvx\\s+.*\\bmcp\\b",
+      "claude\\s+mcp\\s+add",
+      "go\\s+install\\b.*\\bmcp\\b"
+    ],
+    "block_mcp_install_reason": "MCP_NO_AUTO_INSTALL: AI 禁止自行下载/安装/启动/配置 MCP"
+  },
+
+  "command_confirm_list": {
+    "description": "需要用户确认的命令（与 GIT_NO_AUTO_PUSH / DESTRUCTIVE_OP_REQUIRES_CONFIRM 等价）",
+    "confirm_patterns": [
+      "git\\s+push\\b(?!.*--dry-run)",
+      "git\\s+commit\\b"
+    ]
+  },
+
+  "secret_detection": {
+    "description": "写入文件时检测密钥模式（与 SECRETS_NO_HARDCODE 等价）",
+    "patterns": [
+      "sk-[A-Za-z0-9]{20,}",
+      "ghp_[A-Za-z0-9]{36,}",
+      "github_pat_[A-Za-z0-9_]{22,}",
+      "AKIA[0-9A-Z]{16}",
+      "xoxb-[0-9]{10,}-[0-9]{10,}-[A-Za-z0-9]{24,}",
+      "AIza[0-9A-Za-z_\\-]{35}",
+      "sk-ant-api[0-9A-Za-z_\\-]{30,}",
+      "-----BEGIN [A-Z ]*PRIVATE KEY-----"
+    ],
+    "action": "block_write_and_warn"
+  },
+
+  "_unsupported_in_trae": [
+    "FAILURE_CIRCUIT_BREAKER（stateful 跨轮状态）— Trae 沙箱无状态，无法实现",
+    "PROMPT_INJECTION_GUARD（runtime 输入检测）— Trae 沙箱只在工具调用前拦截",
+    "PRE_COMMIT_GIT_STATUS（提示性）— Trae 沙箱不输出软警告"
+  ]
+}

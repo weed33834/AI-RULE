@@ -2,6 +2,22 @@
 
 > 这个文件给 AI 看：当你（AI）被导入这个仓库作为开发规则时，先读这个文件，搞清楚这个项目是什么、你该怎么工作。
 
+## AI 自动配置入口（用户口语化请求时执行）
+
+当用户说"帮我配置规则"/"加载规则"/"设置规则"/"用这个仓库的规则"等口语化请求时，
+**直接执行 `ai-rule setup`**（无参数即用默认链路）：
+
+- 自动检测当前项目的 AI 工具（`.claude/` → claude-code，`.cursor/` → cursor，...）
+- 自动识别 Profile（项目锚点 + 用户意图关键词）
+- 默认开启 `emit-constraints`（hook 适配器自动分发）
+- 用户无需知道任何参数
+
+变体：
+- `ai-rule setup --intent "帮我写小说"` —— 口语化意图自动切 Profile
+- `ai-rule setup --output /path/to/project` —— 指定输出目录
+
+仅当用户明确指定 profile/tool/mode 时才改用 `ai-rule apply --profile X --tool Y`。
+
 ## 你在哪
 
 这是 **Rule Hub**——一个统一的 AI 协作规则中枢仓库。它不是任何具体开发项目的业务代码，而是 **5 套独立规则体系的单仓整合**。

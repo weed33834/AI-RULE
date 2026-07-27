@@ -1,0 +1,7 @@
+{
+  "_comment": "Cursor Hook 配置模板。复制到 .cursor/hooks.json。",
+  "_setup": "1) 把 adapters/hooks/ 目录复制到你的项目根目录 2) 安装 Rule Hub（pip install ai-rule 或设 AI_RULE_REPO）3) 重启 Cursor",
+  "preToolUse": [
+    {"command": "python ./adapters/hooks/cursor/pre_tool_use.py"}
+  ]
+}

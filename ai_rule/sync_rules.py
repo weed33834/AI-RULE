@@ -1025,6 +1025,250 @@ def write_tool_file(tool: str, profile_id: str, ruleset: str, mode: str = "skele
     return out_path
 
 
+# ─── Hook 适配器分发 ─────────────────────────────────
+
+# 每个平台要分发的 hook 文件（相对于 OUTPUT_ROOT 的路径 → 源文件路径）
+# 平台不在表中 = 不支持 hook，不输出（README 自述 7 个不支持的平台）
+HOOK_PLATFORMS = {
+    "claude-code": {
+        "settings": (".claude/settings.json", "adapters/hooks/claude-code/settings.json.template"),
+        "scripts": [
+            ("adapters/hooks/claude-code/pre_tool_use.py", "adapters/hooks/claude-code/pre_tool_use.py"),
+            ("adapters/hooks/shared/check.py", "adapters/hooks/shared/check.py"),
+        ],
+        "constraints": ("core/constraints.yaml", "core/constraints.yaml"),
+    },
+    "cursor": {
+        "settings": (".cursor/hooks.json", "adapters/hooks/cursor/hooks.json.template"),
+        "scripts": [
+            ("adapters/hooks/cursor/pre_tool_use.py", "adapters/hooks/cursor/pre_tool_use.py"),
+            ("adapters/hooks/shared/check.py", "adapters/hooks/shared/check.py"),
+        ],
+        "constraints": ("core/constraints.yaml", "core/constraints.yaml"),
+    },
+    "gemini": {
+        "settings": (".gemini/hooks.json", "adapters/hooks/gemini/hooks.json.template"),
+        "scripts": [
+            ("adapters/hooks/gemini/pre_tool_use.py", "adapters/hooks/gemini/pre_tool_use.py"),
+            ("adapters/hooks/shared/check.py", "adapters/hooks/shared/check.py"),
+        ],
+        "constraints": ("core/constraints.yaml", "core/constraints.yaml"),
+    },
+    "cline": {
+        "settings": (".cline/hooks.json", "adapters/hooks/cline/hooks.json.template"),
+        "scripts": [
+            ("adapters/hooks/cline/pre_tool_use.py", "adapters/hooks/cline/pre_tool_use.py"),
+            ("adapters/hooks/shared/check.py", "adapters/hooks/shared/check.py"),
+        ],
+        "constraints": ("core/constraints.yaml", "core/constraints.yaml"),
+    },
+    "codex": {
+        "settings": (".codex/hooks.json", "adapters/hooks/codex/hooks.json.template"),
+        "scripts": [
+            ("adapters/hooks/codex/pre_tool_use.py", "adapters/hooks/codex/pre_tool_use.py"),
+            ("adapters/hooks/shared/check.py", "adapters/hooks/shared/check.py"),
+        ],
+        "constraints": ("core/constraints.yaml", "core/constraints.yaml"),
+    },
+    "trae": {
+        "settings": (".trae/sandbox-policy.json", "adapters/hooks/trae/sandbox-policy.json"),
+        "scripts": [],
+        "constraints": None,
+    },
+}
+
+
+def emit_constraints(tool: str) -> list:
+    """把指定平台的 hook 配置文件分发到 OUTPUT_ROOT。
+
+    返回写入的文件路径列表。
+    平台不支持 hook 时返回空列表（不报错，对齐 APM 协议：unsupported targets silently skipped）。
+    """
+    if tool not in HOOK_PLATFORMS:
+        return []
+
+    config = HOOK_PLATFORMS[tool]
+    written = []
+
+    # 1. 写 settings 配置（hooks.json / settings.json）
+    if config.get("settings"):
+        out_rel, src_rel = config["settings"]
+        src_path = REPO_ROOT / src_rel
+        if src_path.exists():
+            out_path = OUTPUT_ROOT / out_rel
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            # 模板文件含 _comment 字段，转写为干净的 settings.json
+            content = src_path.read_text(encoding="utf-8")
+            try:
+                import json as _json
+                tpl = _json.loads(content)
+                # 删除 _ 开头的辅助字段
+                clean = {k: v for k, v in tpl.items() if not k.startswith("_")}
+                out_path.write_text(_json.dumps(clean, ensure_ascii=False, indent=2), encoding="utf-8")
+            except (_json.JSONDecodeError, ValueError):
+                # 模板不是 JSON（如 Trae 的 sandbox-policy.json），原样写出
+                out_path.write_text(content, encoding="utf-8")
+            written.append(out_path)
+
+    # 2. 复制脚本文件
+    for out_rel, src_rel in config.get("scripts", []):
+        src_path = REPO_ROOT / src_rel
+        if src_path.exists():
+            out_path = OUTPUT_ROOT / out_rel
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(src_path.read_text(encoding="utf-8"), encoding="utf-8")
+            # 设置可执行位
+            try:
+                out_path.chmod(0o755)
+            except OSError:
+                pass
+            written.append(out_path)
+
+    # 3. 复制 constraints.yaml（机器可读规则源）
+    if config.get("constraints"):
+        out_rel, src_rel = config["constraints"]
+        src_path = REPO_ROOT / src_rel
+        if src_path.exists():
+            out_path = OUTPUT_ROOT / out_rel
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+            out_path.write_text(src_path.read_text(encoding="utf-8"), encoding="utf-8")
+            written.append(out_path)
+
+    return written
+
+
+# ─── 默认链路（ai-rule setup 用）──────────────────────
+
+# 项目锚点 → Profile 自动识别表（与 core/profile-router.md §锚点识别 一致）
+PROFILE_ANCHORS = {
+    # 项目类型锚点（按文件/目录存在判定）
+    "pyproject.toml": "coding",
+    "package.json": "coding",
+    "requirements.txt": "coding",
+    "setup.py": "coding",
+    "Cargo.toml": "coding",
+    "go.mod": "coding",
+    "pom.xml": "coding",
+    "build.gradle": "coding",
+    ".game-state/": "interactive-novel",
+    "manuscript.md": "novel",
+    "novel.md": "novel",
+    # paper 锚点：含 .tex / .bib / paper.md
+    "main.tex": "paper",
+    "paper.md": "paper",
+    "references.bib": "paper",
+    # agent-builder 锚点
+    "agent.yaml": "agent-builder",
+    "agent.json": "agent-builder",
+}
+
+# 意图关键词 → Profile（用户口语化请求匹配）
+INTENT_KEYWORDS = {
+    "coding": ["写代码", "开发", "bug", "重构", "code", "develop", "编程", "修复"],
+    "novel": ["写小说", "小说", "章节", "novel", "story", "创作小说"],
+    "interactive-novel": ["互动小说", "分支剧情", "状态机", "interactive novel", "game state"],
+    "paper": ["论文", "文献综述", "paper", "academic", "research paper", "投稿"],
+    "conversation": ["问答", "调研", "对比", "信息检索", "research", "general"],
+    "agent-builder": ["智能体", "agent", "bot", "助手", "构建 agent"],
+}
+
+
+def detect_tool_from_cwd() -> str:
+    """从当前工作目录自动检测用户用的 AI 工具。
+    检测顺序：先看项目里已存在的工具配置目录，再看 IDE 进程。
+    """
+    cwd = Path.cwd()
+    # 1. 看现有配置目录
+    if (cwd / ".claude").is_dir() or (cwd / "CLAUDE.md").exists():
+        return "claude-code"
+    if (cwd / ".cursor").is_dir() or (cwd / ".cursorrules").exists():
+        return "cursor"
+    if (cwd / ".gemini").is_dir() or (cwd / "GEMINI.md").exists():
+        return "gemini"
+    if (cwd / ".cline").is_dir() or (cwd / ".clinerules").is_dir():
+        return "cline"
+    if (cwd / ".codex").is_dir():
+        return "codex"
+    if (cwd / ".trae").is_dir():
+        return "trae"
+    if (cwd / ".windsurfrules").exists():
+        return "windsurf"
+    if (cwd / ".github" / "copilot-instructions.md").exists():
+        return "copilot"
+    if (cwd / ".continue").is_dir():
+        return "continue"
+    if (cwd / ".amazonq").is_dir():
+        return "amazon-q"
+    if (cwd / "best_practices.md").exists():
+        return "qodo"
+    if (cwd / ".lingma").is_dir():
+        return "lingma"
+    if (cwd / ".comate").is_dir():
+        return "comate"
+    # 2. 默认回退：跨工具标准（20+ 平台原生读取 AGENTS.md）
+    return "agents-md"
+
+
+def detect_profile_from_cwd(user_intent: str = "") -> str:
+    """从当前工作目录的项目锚点 + 用户意图关键词自动识别 Profile。
+    user_intent 非空时优先匹配意图关键词。
+    """
+    cwd = Path.cwd()
+
+    # 1. 用户意图关键词优先
+    if user_intent:
+        intent_lower = user_intent.lower()
+        for profile, kws in INTENT_KEYWORDS.items():
+            if any(kw.lower() in intent_lower for kw in kws):
+                return profile
+
+    # 2. 项目锚点
+    for anchor, profile in PROFILE_ANCHORS.items():
+        if (cwd / anchor).exists():
+            return profile
+
+    # 3. 默认回退：coding（软件开发是最常见场景）
+    return "coding"
+
+
+def setup_default(
+    user_intent: str = "",
+    output_dir: Path | None = None,
+) -> dict:
+    """零配置默认链路：自动检测 profile + tool + emit-constraints + write。
+    返回 {"profile": ..., "tool": ..., "output": ..., "ruleset_size": ..., "hook_files": [...]}
+    """
+    # 刷新资源根
+    refresh_resources_root()
+
+    profile = detect_profile_from_cwd(user_intent)
+    tool = detect_tool_from_cwd()
+    if output_dir is None:
+        output_dir = Path.cwd().resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    set_output_root(output_dir)
+
+    try:
+        ruleset = build_ruleset(profile, mode="skeleton")
+        out_path = write_tool_file(tool, profile, ruleset, mode="skeleton")
+
+        # 默认开启 emit-constraints（hook 是核心价值）
+        hook_files = []
+        if tool in HOOK_PLATFORMS:
+            hook_files = emit_constraints(tool)
+
+        return {
+            "profile": profile,
+            "tool": tool,
+            "output": str(output_dir),
+            "ruleset_path": str(out_path),
+            "ruleset_size": len(ruleset),
+            "hook_files": [str(f) for f in hook_files],
+        }
+    finally:
+        reset_output_root()
+
+
 def _shard_root(tool: str) -> Path:
     """限长平台的分片目录根（写入位置由 OUTPUT_ROOT 决定）"""
     out_rel = TOOL_OUTPUT[tool]
@@ -1298,6 +1542,67 @@ def verify_ruleset(profile_id: str = None, strict_budget: bool = True) -> dict:
                 f"[verify] {pid}: ON-DEMAND INDEX 缺必要段: {missing_index}"
             )
 
+        # 6. PROJECT.md 引用断言（governance §8 要求 PROJECT.md 作为仓库导航入口）
+        #    生成文件中应含 PROJECT.md 字符串引用（在 CORE LAYER 的 governance §8 内联段中）
+        if "PROJECT.md" not in ruleset:
+            raise AssertionError(
+                f"[verify] {pid}: 生成产物未引用 PROJECT.md（governance §8 要求）。"
+                f"请检查 core/governance.md 是否含 PROJECT.md 引用条款。"
+            )
+
+        # 7. mutually_exclusive_with 对称性断言
+        #    A 声明与 B 互斥，B 必须也声明与 A 互斥
+        mutex_asymmetry = []
+        for enemy in manifest.get("mutually_exclusive_with", []):
+            try:
+                enemy_manifest = parse_manifest(enemy)
+            except FileNotFoundError:
+                mutex_asymmetry.append((enemy, "manifest 不存在"))
+                continue
+            reverse = enemy_manifest.get("mutually_exclusive_with", [])
+            if pid not in reverse:
+                mutex_asymmetry.append((enemy, f"反向未声明 {pid}"))
+        if mutex_asymmetry:
+            raise AssertionError(
+                f"[verify] {pid}: mutually_exclusive_with 不对称: {mutex_asymmetry}"
+            )
+
+        # 8. enables_capabilities 与 forbids_capabilities 无交集断言
+        enables = set(manifest.get("enables_capabilities", []))
+        forbids = set(manifest.get("forbids_capabilities", []))
+        cap_conflict = enables & forbids
+        if cap_conflict:
+            raise AssertionError(
+                f"[verify] {pid}: enables_capabilities 与 forbids_capabilities 冲突: {cap_conflict}"
+            )
+
+        # 9. DOMAIN_QUALITY_GATES 表中的 skill 路径真实存在断言
+        #    防止 agent 按表去 Read 一个不存在的文件
+        missing_gates = []
+        for gate_profile, gates in DOMAIN_QUALITY_GATES.items():
+            if gate_profile != pid:
+                continue
+            for scene_name, skill_path, formula, threshold in gates:
+                # 提取路径（去掉 § 章节）
+                path_str = skill_path.split(" §")[0].split(" ")[0]
+                gate_file = REPO_ROOT / path_str
+                if not gate_file.exists():
+                    missing_gates.append((scene_name, skill_path, str(gate_file)))
+        if missing_gates:
+            raise AssertionError(
+                f"[verify] {pid}: DOMAIN_QUALITY_GATES 引用了不存在的 skill 文件: {missing_gates}"
+            )
+
+        # 10. constraints.yaml 完整性断言（机器可读规则源必须有效）
+        #     每条约束必须有 id/description/severity/enforce_at/intercept_tools/match/action/message
+        #     只在第一次循环时检查（constraints.yaml 是全局的，不区分 profile）
+        if pid == sorted(profiles)[0]:
+            constraints_issues = _verify_constraints_yaml()
+            if constraints_issues:
+                raise AssertionError(
+                    f"[verify] core/constraints.yaml 校验失败: {constraints_issues}"
+                )
+
         reports[pid] = {
             "size": size,
             "budget_ok": budget_ok,
@@ -1305,9 +1610,47 @@ def verify_ruleset(profile_id: str = None, strict_budget: bool = True) -> dict:
             "p0_inlined": len(p0_deferred) == 0,
             "deferred_intact": len(deferred_lost) == 0,
             "index_complete": len(missing_index) == 0,
+            "mutex_symmetric": len(mutex_asymmetry) == 0,
+            "capabilities_consistent": len(cap_conflict) == 0,
+            "gates_files_exist": len(missing_gates) == 0,
         }
 
     return reports
+
+
+def _verify_constraints_yaml() -> list:
+    """校验 core/constraints.yaml 结构完整性。
+    返回 issue 列表（空列表表示通过）。
+    """
+    issues = []
+    constraints_path = CORE_DIR / "constraints.yaml"
+    if not constraints_path.exists():
+        return ["core/constraints.yaml 不存在"]
+
+    text = constraints_path.read_text(encoding="utf-8")
+    # 简单 YAML 解析（不依赖 PyYAML，避免引入依赖）
+    # 检查每个 constraint 块都有必需字段
+    required_fields = ["id:", "severity:", "enforce_at:", "action:", "message:"]
+    # 用 - id: 作为分隔
+    blocks = re.split(r"\n\s*-\s+id:\s+", text)
+    if len(blocks) <= 1:
+        return ["未找到任何 constraint 块"]
+
+    for i, block in enumerate(blocks[1:], 1):
+        block_id = block.split("\n", 1)[0].strip()
+        for field in required_fields[1:]:  # 跳过 id（已用于分隔）
+            if field not in block:
+                issues.append(f"constraint #{i} ({block_id}): 缺字段 {field}")
+
+    # 检查 meta 段
+    if "platforms_supported:" not in text:
+        issues.append("缺 meta.platforms_supported 段")
+    if "claude-code" not in text:
+        issues.append("meta.platforms_supported 缺 claude-code 平台")
+    if "cursor" not in text:
+        issues.append("meta.platforms_supported 缺 cursor 平台")
+
+    return issues
 
 
 # ─── CLI ─────────────────────────────────────────────
