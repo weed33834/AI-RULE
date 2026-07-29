@@ -1,4 +1,4 @@
-<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-07-27 22:51:52 | hash: 8198e411d84b | 禁止手工编辑 -->
+<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-07-29 04:54:25 | hash: 8198e411d84b | 禁止手工编辑 -->
 <!-- 源: core/*.md + profiles/<id>/{AGENTS.md,docs/} + capabilities/*.md + manifests/*.yaml | 生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->
 
 # === CORE LAYER (P0 红线，始终生效) ===
@@ -531,7 +531,7 @@ Before producing your final output:
 
 # === ON-DEMAND INDEX (按需加载，不预载) ===
 > 以下内容默认**不加载**。Agent 在对话中遇到对应触发条件时，必须主动用 `Read` 工具读取对应文件后再行动。
-> 资源根绝对路径（生成时记录）: `/workspace/AI-RULE`
+> 资源根绝对路径（生成时记录）: `/workspace/AI-rule`
 > 资源来源: Rule Hub 仓库 dev 模式（ai_rule/ 在仓库内）
 > 远程仓库: https://gitcode.com/badhope/AI-RULE.git
 > 预算对齐 governance.md §Instruction Budget：不预载是为避免指令过载导致 P0 红线失守。
