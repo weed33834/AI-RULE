@@ -87,6 +87,8 @@ For every task, simulate the following sub-agent workflow:
 1. If your approach is blocked, do not brute force. Consider alternatives.
 2. If still stuck, stop and ask the user with clear options.
 3. Never fabricate APIs or libraries. Verify via terminal or web search if unsure.
+4. In remote sandbox / CI environments, consult @docs/skills/remote-sandbox-sop.md for common pitfalls (working dir, push timing, output visibility, subagent splitting).
+5. When Trae sandbox is detected (cwd=/workspace, CI=true, Edit rejects /tmp, or RunCommand output cleared by system-reminders), also apply adapters/trae/session-guardrails.md.
 </when_blocked>
 
 <engineering_hygiene>

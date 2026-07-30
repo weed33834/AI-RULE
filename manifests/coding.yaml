@@ -30,6 +30,7 @@ includes:
     - profiles/coding/docs/skills/powershell-tips.md
     - profiles/coding/docs/skills/mcp-registry.md
     - profiles/coding/docs/skills/tool-skill-mcp.md
+    - profiles/coding/docs/skills/remote-sandbox-sop.md
 
 enables_capabilities:
   - research

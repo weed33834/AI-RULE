@@ -37,6 +37,8 @@
 ## 4. Debugging & Error Handling (防死循环与求助机制)
 - 失败熔断：修复同一个 Bug 连续失败 2 次，或终端请求连续失败 3 次，必须立刻停止所有代码修改操作。
 - 停止后动作：After stopping, output a fault report (current error, attempted solutions, suspected root cause) and explicitly request human takeover. Drive the next step from the report rather than blind trial-and-error.
+- 远程沙箱工程规范：在远程沙箱/CI 环境开发时必须查阅 @docs/skills/remote-sandbox-sop.md（工作目录选择、push 时机、命令输出可见性、subagent 拆分等通用教训）。
+- 平台专属护栏：检测到 Trae 沙箱环境（见 `adapters/trae/session-guardrails.md` §0 检测条件）时，额外应用 `adapters/trae/session-guardrails.md` 的 Trae 专属条款。
 
 ## 5. Security & Secrets (安全与保密)
 - API Keys, passwords, tokens, and database connection strings must be read from `os.getenv()` or `python-dotenv`, never hardcoded in source.
@@ -125,3 +127,5 @@ When the user's task requires factual support, dependency verification, or error
 - 验证员角色: @docs/prompts/verifier-subagent.md
 - 交付角色: @docs/prompts/final-subagent.md
 - 技能注册表: @docs/skills/registry.md
+- 远程沙箱工程规范: @docs/skills/remote-sandbox-sop.md
+- Trae 平台专属护栏（条件激活）: `adapters/trae/session-guardrails.md`
