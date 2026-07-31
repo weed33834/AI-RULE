@@ -451,6 +451,18 @@ This repository is mirrored on both GitCode and GitHub with identical content:
 - GitCode (primary): https://gitcode.com/badhope/AI-RULE
 - GitHub (mirror): https://github.com/weed33834/AI-RULE
 
+## Mirrors / 镜像
+
+This repository is primarily hosted on **GitHub** and mirrored to GitCode and Gitee for accessibility.
+
+| Platform | URL |
+|----------|-----|
+| **GitHub** (primary) | https://github.com/weed33834/AI-RULE |
+| GitCode (mirror) | https://gitcode.com/badhope/AI-RULE |
+| Gitee (mirror) | https://gitee.com/badhope/AI-RULE |
+
+> Content is synchronized manually across platforms. GitHub is the canonical source.
+
 ## License
 
 MIT
