@@ -20,7 +20,7 @@
 
 ## 你在哪
 
-这是 **Rule Hub**——一个统一的 AI 协作规则中枢仓库。它不是任何具体开发项目的业务代码，而是 **5 套独立规则体系的单仓整合**。
+这是 **Rule Hub**——一个统一的 AI 协作规则中枢仓库。它不是任何具体开发项目的业务代码，而是 **6 套独立规则体系的单仓整合**。
 
 ## 这个仓库是干嘛的
 
@@ -32,7 +32,7 @@
 - **互动小说游戏** → interactive-novel Profile
 - **构建智能体** → agent-builder Profile
 
-5 套规则领域约束互相冲突（如"禁止虚构" vs "小说必须能虚构"），不能平铺加载，必须按 Profile 隔离。
+6 套规则领域约束互相冲突（如"禁止虚构" vs "小说必须能虚构"），不能平铺加载，必须按 Profile 隔离。
 
 ## 你该怎么工作
 
@@ -125,6 +125,11 @@ P0：core/ 安全、权限、真实性、MCP 红线、失败熔断
 ## 验证
 
 ```bash
+# 规则冲突形式化检测（6 Profile，0 BLOCKER 标准）
+python scripts/validate_rules.py                    # 全量
+python scripts/validate_rules.py --profile coding   # 单 Profile
+
+# 同步脚本测试
 python tests/test_sync.py            # 同步脚本测试
 python tests/test_profile_router.py  # Profile 选择测试
 python tests/test_structure.py       # 结构验证测试
@@ -144,6 +149,18 @@ python tests/test_scenarios.py       # 复杂场景测试
 | `manifests/*.yaml` | 各 Profile 装配清单 |
 | `profiles/<id>/AGENTS.md` | 各领域规则 |
 | `capabilities/*.md` | 能力包定义 |
-| `scripts/sync_rules.py` | 跨工具同步脚本 |
-| `tests/*.py` | 5 套验证测试 |
+| `core/attention-budget.md` | 注意预算分级、ABA 协议与 RT 推理深度标记 |
+| `core/agent-modes.md` | Task/Project/Autonomous 三模式定义 |
+| `core/mode-overrides.yaml` | 边缘场景模式覆写配置 |
+| `core/mcp-integration.md` | MCP 集成使用说明 |
+| `skills/` | 7 个 coding Profile 运行时技能（git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy） |
+| `mcp/` | 4 个 MCP 工具实现（validate_codebase / review_code / git_precommit_check / generate_tests） |
+| `scripts/sync_rules.py` | 跨工具同步脚本（支持 --validate / --cache） |
+| `scripts/validate_rules.py` | 规则冲突形式化验证 |
+| `scripts/generate_mcp_config.py` | MCP 配置自动生成 |
+| `scripts/build_dar_md.py` | DAR 聚合生成 dar.md |
+| `scripts/inject_memory.py` | Reflexion 记忆注入 |
+| `scripts/inject_rules.py` | 运行时规则注入 Marvis 上下文 |
+| `scripts/rule_injection_guide.md` | 规则注入使用指南 |
+| `tests/*.py` | 6 套验证测试 + 共享 fixtures |
 | `README.md` | 用户使用指南 |

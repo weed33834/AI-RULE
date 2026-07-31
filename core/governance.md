@@ -2,6 +2,10 @@
 
 > 本文件是所有 Profile 共享的 P0 硬约束。任何 Profile 不得覆盖此层规则。
 > 冲突时优先级：P0 安全/权限 > P1 用户明确确认 > P2 主 Profile > P3 能力包 > P4 默认行为。
+>
+> **I-HIERARCHY ANCHOR**: 本文件中 `<!-- P0:ANCHOR -->...<!-- /P0 -->` 包裹的规则块在 sync 时会被复制到规则集末尾，利用首尾锚定效应强化模型对 System Prompt 的遵从度（Anthropic Instruction Hierarchy, Wallace et al. 2025）。
+
+<!-- P0:ANCHOR-START -->
 
 ## Instruction Budget
 
@@ -14,6 +18,13 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 - **Soft rules** (preferences, style guidelines): Not counted toward the budget — these are advisory, not enforced.
 - **When budget is exceeded**: Drop lowest-priority rules first (P4 → P3), never P0.
 - **Rationale for every rule**: Always explain *why* a rule exists, not just *what* it requires. Claude 4.x / GPT-4.1 follow rules better when they understand the reasoning behind them.
+
+### RT Budget（推理深度预算）
+
+- `RT:QUICK`：不触发 extended thinking，最大输出 token ≤ 当前模型默认上限的 30%。
+- `RT:STANDARD`：标准 thinking，无额外约束。
+- `RT:DEEP`：触发 extended thinking / CoT 模式，允许最大 thinking token = 当前模型上限。
+- RT 预算由 `sync_rules.py --rt` 参数控制，默认 `STANDARD`。
 
 ## 1. 安全与保密
 
@@ -100,3 +111,5 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
   // Rationale: Hand-edits to generated files are silently overwritten on the next sync, creating hard-to-trace regressions.
 - 生成文件头部必须带来源、生成时间、输入哈希与"禁止手工编辑"标记。
   // Rationale: Provenance headers make it obvious which file is generated and which is the source, preventing accidental edits.
+
+<!-- /P0:ANCHOR-END -->

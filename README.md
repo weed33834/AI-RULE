@@ -1,21 +1,23 @@
 # Rule Hub — Unified AI Collaboration Rules
 
-[English] · [中文](README_CN.md) · [日本語](README_JA.md)
+[English](README.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-245+-orange)
+![Files](https://img.shields.io/badge/files-384-orange)
 ![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
 ![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
 
-> A single repository integrating 6 independent rule systems: core layer + one active profile + capability packs.
-> Clone once, pick a profile, sync to any AI tool's rule file.
+> One repository that integrates 6 independent rule systems: a shared core layer, one active profile, and on-demand capability packs.
+> Clone once, pick a profile, and sync to any AI tool's rule file.
+
+**一句话使用**：`git clone` → `python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code` → 把生成的文件复制到项目根目录。
 
 ---
 
 ## What This Repository Is
 
-This is the **single source of truth for AI collaboration rules** — not application code for any specific project. It consolidates 6 previously separate rule repositories into one, loaded by profile to avoid domain conflicts (e.g., "no fabrication" vs. "novel writing requires fiction").
+This repository is the **single source of truth for AI collaboration rules**, not application code for any specific project. It consolidates 6 previously separate rule repositories into one. Profiles are loaded in isolation so that conflicting domain constraints (for example, "never fabricate" versus "fiction is the core ability of novel writing") do not collide.
 
 | Profile | Origin | Use Case |
 |---|---|---|
@@ -26,9 +28,9 @@ This is the **single source of truth for AI collaboration rules** — not applic
 | `paper` | badhope/paper | Academic paper writing, literature review, submission |
 | `agent-builder` | badhope/AgentCreater | Design, evaluate, and deploy AI agents |
 
-**Why merge**: stop 5 rule sets from drifting apart; clone one repo instead of five; unify the cross-tool sync entry point.
+**Why merge**: keep 5 rule sets from drifting apart; clone one repository instead of five; unify the cross-tool sync entry point.
 
-**Why not merge into one set**: domain constraints conflict (e.g., "no fabrication" vs. "fiction is the core ability"). Profiles are loaded in isolation.
+**Why not merge into one set**: domain constraints conflict (for example, "no fabrication" vs. "fiction is the core ability"). Profiles are loaded in isolation.
 
 ## Quick Start
 
@@ -45,14 +47,31 @@ cd AI-RULE
 # List available profiles
 python scripts/sync_rules.py --list
 
-# Generate Claude Code entry for the coding profile
-python scripts/sync_rules.py --profile coding --tool claude-code
+# Generate Claude Code entry with validation and cache (recommended)
+python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code
 
 # Generate AGENTS.md (cross-tool standard, read by Codex CLI, OpenCode, Aider, etc.)
 python scripts/sync_rules.py --profile coding --tool agents-md
 
 # Generate all 13 tool entries for the novel profile
 python scripts/sync_rules.py --profile novel --tool all
+```
+
+#### Validate Rules for Conflicts
+
+```bash
+# Check all profiles for rule conflicts (0 BLOCKER required)
+python scripts/validate_rules.py
+
+# Check a single profile
+python scripts/validate_rules.py --profile coding
+```
+
+#### Generate MCP Configurations
+
+```bash
+# Generate MCP JSON for all DAR-enabled profiles
+python scripts/generate_mcp_config.py
 ```
 
 ### Supported Platforms (13)
@@ -75,7 +94,7 @@ python scripts/sync_rules.py --profile novel --tool all
 
 ### 3. Use in Your Project
 
-Copy the generated tool entry file (e.g., `CLAUDE.md`) to your project root, or reference this repo as a Git submodule and run the sync script.
+Copy the generated tool entry file (for example `CLAUDE.md`) to your project root, or reference this repository as a Git submodule and run the sync script.
 
 ### 4. Tell AI Which Profile to Load
 
@@ -119,6 +138,7 @@ Load the <profile-id> Profile from Rule Hub.
 - **Origin**: badhope/AI
 - **Scope**: Python/FastAPI development, bug fixes, refactoring, testing, code review
 - **Core capabilities**: Git SOP, dependency management, PowerShell syntax, MCP red lines, engineering hygiene
+- **Runtime skills**: 7 executable skills (git-sop, workflow-five-roles, skill-acquisition, deep-search-first, frontend-design, backend-scaffold, fullstack-deploy)
 - **Capability packs**: research, testing, review, agent-governance, dar
 - **Mutually exclusive with**: novel, interactive-novel
 
@@ -161,13 +181,13 @@ Load the <profile-id> Profile from Rule Hub.
 
 ![Rule Hub Assembly Model](docs/architecture.svg)
 
-Single-source rules (`core/` layer + `AGENTS.md` selector) are assembled per profile, then `sync_rules.py` generates entry files for each AI tool.
+Single-source rules (the `core/` layer plus the `AGENTS.md` selector) are assembled per profile, and `sync_rules.py` then generates an entry file for each AI tool.
 
 ## Usage Flow
 
 ![Rule Hub Usage Flow](docs/usage.svg)
 
-Clone repo → pick profile → run sync → import to project → AI works under unified rules (consistent across tools).
+Clone the repository, pick a profile, run the sync, import the result into your project, and the AI works under unified rules that stay consistent across tools.
 
 ## Repository Structure
 
@@ -179,6 +199,10 @@ AI-RULE/
 │   ├── interaction.md           # Clarification, intent normalization, output spec
 │   ├── profile-router.md        # Profile selection and capability pack whitelist
 │   ├── language-mediation.md    # Language mediation protocol (English reasoning, user-language output)
+│   ├── attention-budget.md      # Instruction budget tiers and ABA protocol
+│   ├── agent-modes.md           # Task / Project / Autonomous mode definitions
+│   ├── mode-overrides.yaml      # Edge-case mode override configuration
+│   ├── mcp-integration.md       # MCP integration and configuration guide
 │   └── dar-spec.md              # DAR (Domain Authority Registry) unified spec
 ├── profiles/                    # 6 independent rule sets
 │   ├── coding/          ( 13 files)
@@ -187,18 +211,25 @@ AI-RULE/
 │   ├── interactive-novel/ (31 files)
 │   ├── paper/           ( 22 files)
 │   └── agent-builder/   ( 70 files)
-├── capabilities/                # 14 on-demand capability packs (incl. dar/ domain registry)
+├── capabilities/                # 14 on-demand capability packs (incl. dar/ + MCP JSON configs)
 ├── manifests/                   # Per-profile assembly manifests
-├── scripts/sync_rules.py        # Generate tool entry files per profile
+├── skills/                      # 7 runtime skills for coding profile (git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy)
+├── mcp/                         # 4 MCP tool implementations (validate_codebase / review_code / git_precommit_check / generate_tests)
+├── scripts/
+│   ├── sync_rules.py            # Generate tool entry files (--validate / --cache)
+│   ├── validate_rules.py        # Formal rule conflict validation (SMT-based)
+│   ├── generate_mcp_config.py   # Auto-generate MCP JSON configurations
+│   ├── inject_rules.py          # Inject runtime rules into Marvis context
+│   └── rule_injection_guide.md  # Rule injection usage guide
 └── tests/                       # 6 test suites (51 checks, all passing)
 ```
 
 ## Language Mechanism
 
-All **system prompts** are written in **English** (for reasoning precision); rule documentation uses bilingual Chinese-English for clarity. The AI communicates with you in **your language**:
+All **system prompts** are written in **English** for reasoning precision; rule documentation is bilingual Chinese-English for clarity. The AI communicates with you in **your language**:
 
-1. **Input**: auto-detect your language → identify intent → reason internally in English
-2. **Output**: generate in English → translate to your language → polish against translationese
+1. **Input**: auto-detect your language, identify the intent, then reason internally in English.
+2. **Output**: generate in English, translate to your language, and polish against translationese.
 
 See `core/language-mediation.md` for details.
 
@@ -234,13 +265,13 @@ python scripts/sync_rules.py --profile coding --tool all
 
 This repository incorporates findings from recent prompt engineering and AI alignment research:
 
-- **Instruction Budget**: Empirical research (ManyIFEval, ICLR 2025) shows instruction adherence degrades as a power law with simultaneous instruction count. P0 rules are capped at ≤5 simultaneously active; total hard constraints ≤12.
-- **Position Effects (Lost in the Middle)**: LLMs attend to the beginning and end of context, under-weighting the middle. P0 rules are placed at both ends of the context window.
-- **Anti-Patterns**: ALL CAPS emphasis, negative-only constraints, and manual "think step by step" are empirically ineffective on next-gen models (Claude 4.x, GPT-4.1). Rules are written with conditional logic and positive alternatives.
+- **Instruction Budget**: Empirical research (ManyIFEval, ICLR 2025) shows instruction adherence degrades as a power law as the simultaneous instruction count grows. P0 rules are capped at 5 simultaneously active; total hard constraints are capped at 12.
+- **Position Effects (Lost in the Middle)**: LLMs attend to the beginning and end of the context window and under-weight the middle. P0 rules are placed at both ends.
+- **Anti-Patterns**: ALL CAPS emphasis, negative-only constraints, and manual "think step by step" are empirically ineffective on next-generation models (Claude 4.x, GPT-4.1). Rules are written with conditional logic and positive alternatives.
 - **Extended Thinking**: Model-native reasoning budget (Claude 4.x / OpenAI o-series) replaces manual CoT for complex tasks.
-- **Three-Tier Behavior Boundaries**: Allowed (autonomous) / Confirmation Required / Forbidden — replacing vague "appropriate behavior" declarations.
-- **GUID Delimiter Injection Defense**: Random GUID-based delimiters replace fixed `[UNTRUSTED]` markers, preventing marker-closing injection attacks.
-- **Abstention Protocol**: Explicit permission to say "I don't know" with anti-inflation guards — preventing confident fabrication.
+- **Three-Tier Behavior Boundaries**: Allowed (autonomous) / Confirmation Required / Forbidden, replacing vague "appropriate behavior" declarations.
+- **GUID Delimiter Injection Defense**: Random GUID-based delimiters replace fixed `[UNTRUSTED]` markers to prevent marker-closing injection attacks.
+- **Abstention Protocol**: Explicit permission to say "I don't know" with anti-inflation guards, preventing confident fabrication.
 - **Self-Refinement**: Reflexion loops and Constitutional self-critique for pre-output quality checking.
 
 See `profiles/agent-builder/docs/skills/` for full documentation.
@@ -248,6 +279,11 @@ See `profiles/agent-builder/docs/skills/` for full documentation.
 ## Verification
 
 ```bash
+# Rule conflict validation (6 profiles, 0 BLOCKER standard)
+python scripts/validate_rules.py                    # All profiles
+python scripts/validate_rules.py --profile coding   # Single profile
+
+# Test suites
 pytest tests/                        # 6 suites, 51 checks, all passing
 # Or run individually: pytest tests/test_audit.py
 ```
@@ -324,23 +360,23 @@ xychart-beta
 
 ### Key Findings
 
-1. **DAR excels in domain-specific scenarios** — S4-NOVEL (+11) and S1-CVE (+14) where models lack specialized source knowledge (Etymonline, NVD)
-2. **DAR's routing rules are its greatest value** — Routing Accuracy improved +0.72, far exceeding other dimensions
-3. **Qwen3.5-397B-A17B is the most DAR-compatible model** — 4/6 scenarios improved, avg +2.2
-4. **Long DAR prompts can hurt small models** — moonweaver-4.8 returned empty on S3-ACADEMIC (−19)
-5. **DAR adds noise when baseline is already strong** — S6-AGENT regressed across all models
+1. **DAR excels in domain-specific scenarios** — S4-NOVEL (+11) and S1-CVE (+14), where models lack specialized source knowledge (Etymonline, NVD).
+2. **DAR's routing rules are its greatest value** — Routing Accuracy improved +0.72, far exceeding the other dimensions.
+3. **Qwen3.5-397B-A17B is the most DAR-compatible model** — 4 of 6 scenarios improved, average +2.2.
+4. **Long DAR prompts can hurt small models** — moonweaver-4.8 returned an empty response on S3-ACADEMIC (−19).
+5. **DAR adds noise when the baseline is already strong** — S6-AGENT regressed across all models.
 
 ### Optimization Roadmap
 
-1. Compress DAR prompt prefix from 200–400 words to <100 words
-2. Provide a lite DAR (routing only) for smaller models
-3. Append "all factual claims must cite URL + date" to strengthen Citation Fidelity
-4. Skip DAR enhancement when baseline score already exceeds 20/30
-5. Refine Chinese DAR prompt wording to avoid disrupting model comprehension
+1. Compress the DAR prompt prefix from 200–400 words to under 100 words.
+2. Provide a lite DAR (routing only) for smaller models.
+3. Append "all factual claims must cite URL + date" to strengthen Citation Fidelity.
+4. Skip DAR enhancement when the baseline score already exceeds 20/30.
+5. Refine the Chinese DAR prompt wording to avoid disrupting model comprehension.
 
 ## Capability Packs
 
-Capability packs are composable, on-demand work methods. They don't define agent identity — the profile does. Packs only provide methodology.
+Capability packs are composable, on-demand work methods. They do not define agent identity — the profile does. Packs only provide methodology.
 
 | Pack | Use Case |
 |---|---|
@@ -361,6 +397,27 @@ Capability packs are composable, on-demand work methods. They don't define agent
 
 See `capabilities/README.md`.
 
+## Runtime Skills (coding Profile)
+
+The `skills/` directory contains 7 executable runtime skills for the coding profile. Unlike capability packs (which provide methodology), runtime skills are injected into the Marvis AI runtime and execute autonomously:
+
+| Skill | Purpose |
+|---|---|
+| `git-sop` | Conventional Commits, granular commits, send2trash |
+| `workflow-five-roles` | Architect → Engineer → Critic → Verifier → Final |
+| `skill-acquisition` | 5-tier library/tool selection protocol |
+| `deep-search-first` | Web search before coding for new frameworks/APIs |
+| `frontend-design` | Reference open-source design repositories before generating UI |
+| `backend-scaffold` | FastAPI + httpx + pendulum + pydantic + polars stack |
+| `fullstack-deploy` | CI/CD, Docker, environment validation |
+
+Inject into Marvis runtime:
+```bash
+python scripts/inject_rules.py --profile coding
+```
+
+The `mcp/` directory provides 4 MCP tool implementations: `validate_codebase.py`, `review_code.py`, `git_precommit_check.py`, `generate_tests.py`.
+
 ## Rule Priority
 
 Higher priority wins on conflict:
@@ -376,16 +433,16 @@ P0: core/ security, permissions, truthfulness, MCP red lines
 ## Boundaries
 
 **Can guarantee**:
-- Profiles are mutually exclusive and conflict-free
-- Manifest references are complete
-- Generated files come from specified sources
-- Rule sets include core + profile + skills three layers
-- Hand-edited generated files can be overwritten by re-syncing
+- Profiles are mutually exclusive and conflict-free.
+- Manifest references are complete.
+- Generated files come from specified sources.
+- Rule sets include the three layers: core + profile + skills.
+- Hand-edited generated files can be overwritten by re-syncing.
 
 **Cannot guarantee**:
-- Any model 100% executes natural language rules
-- Rule files alone prevent dangerous operations (needs tool permissions, Git hooks, human confirmation)
-- Auto-configuration of Trae custom agents or MCP after cloning (manual setup required)
+- Any model 100% executes natural-language rules.
+- Rule files alone prevent dangerous operations (this needs tool permissions, Git hooks, and human confirmation).
+- Auto-configuration of Trae custom agents or MCP after cloning (manual setup is required).
 
 ## Repository
 

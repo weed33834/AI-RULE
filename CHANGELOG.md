@@ -2,6 +2,48 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，版本号参考语义化版本。
 
+## [1.4.0] — 2026-07-25
+
+### 新增
+
+- **Runtime Skills（运行时技能）**：`skills/` 目录下 7 个可在 Main Agent 侧按需加载的专业技能。
+  - `git-sop.md`：Git 标准操作流程——提交前检查、粒度控制、Conventional Commits。
+  - `workflow-five-roles.md`：五子角色工作流——Architect → Engineer → Critic → Verifier → Final。
+  - `skill-acquisition.md`：技能获取五层协议——标准库 → 包管理器 → 本地注册表 → 官方仓库 → 受限搜索。
+  - `deep-search-first.md`：深度搜索优先——先联网确认再编码，不凭训练数据硬扛。
+  - `frontend-design.md`：前端设计——先参考优秀开源仓库/设计系统再落地，不凭空生成 UI。
+  - `backend-scaffold.md`：后端脚手架——项目结构、技术选型、API 设计。
+  - `fullstack-deploy.md`：全栈部署——CI/CD、Docker、环境变量、监控。
+- **MCP 工具**：`mcp/` 目录下 4 个 Python 工具。
+  - `validate_codebase.py`：代码库结构验证。
+  - `review_code.py`：代码审查。
+  - `git_precommit_check.py`：提交前自动检查。
+  - `generate_tests.py`：测试生成。
+- **规则注入脚本**：`scripts/inject_rules.py`——按 Profile+Mode 装配规则，将 runtime skills 注入 Agent 上下文。
+- **规则注入指南**：`scripts/rule_injection_guide.md`——Main Agent 派发前注入规则的操作说明。
+- **BOOTSTRAP 自检**：`scripts/sync_rules.py` 新增 BOOTSTRAP 自检加载块，防止在未初始化环境中运行。
+- **Agent 可执行指令段**：`core/attention-budget.md` 新增 ABA 压缩 / RT 推理控制 / 模式切换指令，支持运行时直接消费。
+- **DAR 修复**：`core/mode-overrides.yaml` 新增 DAR 默认禁用但 coding/paper/conversation 按模式启用的配置。
+
+### 变更
+
+- `manifests/coding.yaml`：新增 `runtime_skills` 与 `rule_injection` 段。
+- `README.md` / `README.zh.md` / `README.ja.md`：徽章数 260+→380+；结构树补全 `skills/` / `mcp/` / `agent-modes.md` / `mode-overrides.yaml` / `inject_rules.py`；新增 Runtime Skills 章节。
+- `PROJECT.md`：文件速查表更新。
+- `CONTRIBUTING.md`：修正多语言 README 文件名引用（`README_CN.md`→`README.zh.md`、`README_JA.md`→`README.ja.md`）；新增 Runtime Skills 与 MCP 工具章节。
+
+### 修复
+
+- **AGENTS.md 异常**：此前被错误生成为 paper profile 且内容从 33k 字缩至 3k，已恢复至 agent-builder profile。
+- **形同虚设项全部落地**：6 Profile 运行时此前 0 开发专用 Skill/MCP，现已补全并在 manifests 中注册。
+- **coding Profile 3 弱点修复**：ABA/RT 未落地、mode-overrides 未测试、规则未加载问题均已解决。
+
+### 测试
+
+- **6 Profile 全量测试**：coding 20 轮 + 其余 5 个各 5~10 轮，通过率 100%。
+- **validate_rules.py**：6 Profile 全部通过（0 BLOCKER, 0 WARNING, 0 INFO）。
+- **inject_rules.py 验证**：按 Profile 装配规则，输出 P0=5 / P1=5 / P2=5。
+
 ## [1.3.1] — 2026-07-19
 
 ### 新增

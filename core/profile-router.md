@@ -79,3 +79,38 @@ P0：core/ 安全与权限
 - 切换时必须清除前一 Profile 的上下文状态标记，避免状态污染。
 - `novel` → `interactive-novel` 或反向切换时，必须询问是否保留共享素材（角色、世界观）。
 - `paper` 与 `novel` / `interactive-novel` 互斥，切换时必须清除前一 Profile 的全部创作状态。
+
+## 8. Agent 模式路由
+
+> 推理深度与 Agent 模式的完整定义见 `core/agent-modes.md` 与 `core/attention-budget.md`。
+> 本路由由 Profile 的 `manifests/*.yaml` 中 `agent_mode` 字段控制默认值。
+
+### 8.1 选择流程
+
+```
+1. 用户显式指定模式（switch mode to <task|project|autonomous>）→ 绝对优先
+2. core/mode-overrides.yaml 中的条件匹配（profile/repo/时间窗口/产物类型）
+3. 读取当前 Profile manifest 中的 agent_mode.default
+4. 根据用户意图推断（见 agent-modes.md §3）
+5. 推断失败时降级为 task
+```
+
+> `core/mode-overrides.yaml` 为边缘场景覆写层，优先级高于 manifest 默认值，低于用户显式指定。默认全部注释，按需启用。
+
+### 8.2 Profile 默认模式与推理深度
+
+| Profile | 默认模式 | 允许模式 | 默认推理深度 |
+|---------|---------|---------|-------------|
+| `coding` | `project` | task, project, autonomous | STANDARD→DEEP |
+| `conversation` | `task` | task, project | QUICK→STANDARD |
+| `novel` | `project` | task, project, autonomous | STANDARD→DEEP |
+| `interactive-novel` | `task` | task, project | QUICK→STANDARD |
+| `paper` | `project` | task, project, autonomous | STANDARD→DEEP |
+| `agent-builder` | `project` | task, project, autonomous | STANDARD→DEEP |
+
+### 8.3 推理深度标记（RT）
+
+推理深度通过 RT 标记注入上下文（定义见 `core/attention-budget.md`），Profile 切换或模式升级时自动调整：
+- `RT:QUICK` — 简单任务（格式转换、数据提取、简单问答）
+- `RT:STANDARD` — 常规任务（代码生成、方案对比、文档编写）
+- `RT:DEEP` — 复杂任务（架构重构、多步规划、自主纠偏）
