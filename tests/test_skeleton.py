@@ -59,12 +59,13 @@ def test_skeleton_has_on_demand_index():
 
 
 def test_skeleton_has_skills_table():
-    """skeleton 模式每个 profile 的 INDEX 必含 Skills 表"""
+    """skeleton 模式每个 profile 的 INDEX 必含 Skills 表（Skills 层）"""
     for pid in PROFILES:
         rs = build_ruleset(pid, mode="skeleton")
-        assert "## Skills (按需)" in rs, f"{pid}: 缺 Skills 表"
+        assert "## SKILLS LAYER (按需)" in rs, f"{pid}: 缺 Skills 表"
+        assert "SKILLS LAYER" in rs, f"{pid}: 缺 Skills 层标注"
         # 至少列出一行
-        m = rs.split("## Skills (按需)")[1].split("##", 1)[0]
+        m = rs.split("## SKILLS LAYER (按需)")[1].split("##", 1)[0]
         rows = [l for l in m.splitlines() if l.startswith("|") and "文件路径" not in l and "---" not in l]
         assert len(rows) > 0, f"{pid}: Skills 表无条目"
     print("[PASS] skeleton 模式含 Skills 索引表")

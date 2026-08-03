@@ -238,7 +238,8 @@ def test_single_profile_loading():
     for pid in PROFILES:
         ruleset = build_ruleset(pid)
         # PROFILE LAYER 段的截断点：
-        # - skeleton 模式下 PROFILE LAYER 之后是 ON-DEMAND INDEX（无 SKILLS LAYER）
+        # - skeleton 模式下 PROFILE LAYER 之后是 ON-DEMAND INDEX（Skills 层以
+        #   「## Skills LAYER (按需)」索引形式出现，非内联）
         # - full 模式下 PROFILE LAYER 之后是 SKILLS LAYER
         # ON-DEMAND INDEX 段里的「跨 profile 复用」路径（如 DOMAIN_QUALITY_GATES
         # 显式标注"(跨 profile 复用)"的 skill 引用）是有意保留的复用关系，

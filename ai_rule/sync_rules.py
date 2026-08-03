@@ -864,9 +864,11 @@ def _build_on_demand_index(profile_id: str, manifest: dict, profile_on_demand: l
         parts.append("\n")
 
     # ── Skills ──
+    # 标题保留「SKILLS LAYER」字样（全大写，与 full 模式 `# === SKILLS LAYER ===` 对齐）：
+    # skeleton 模式下 skills 是三层结构中的 Skills 层（内容为按需索引而非内联）。
     skills = manifest["includes"].get("skills", [])
     if skills:
-        parts.append("## Skills (按需)\n")
+        parts.append("## SKILLS LAYER (按需)\n")
         parts.append("| 触发条件 (C) | 终止条件 (T) | 文件路径 | 大小 |\n|---|---|---|---|\n")
         for sf in skills:
             p = REPO_ROOT / sf
@@ -1535,7 +1537,7 @@ def verify_ruleset(profile_id: str = None, strict_budget: bool = True) -> dict:
             )
 
         # 5. INDEX 必要段（用前缀匹配，避免括号内描述差异导致误报）
-        index_required = ["## Skills (按需", "## Capabilities (按需", "## MCP (按需", "## Loading Protocol"]
+        index_required = ["## SKILLS LAYER (按需", "## Capabilities (按需", "## MCP (按需", "## Loading Protocol"]
         missing_index = [seg for seg in index_required if seg not in ruleset]
         if missing_index:
             raise AssertionError(
