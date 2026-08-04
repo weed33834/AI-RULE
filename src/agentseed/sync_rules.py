@@ -30,6 +30,7 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+from . import env as _env
 
 # ─── 资源根检测 ─────────────────────────────────────────
 _AGENTSEED_REPO_URL = "https://github.com/weed33834/AgentSeed.git"
@@ -100,15 +101,15 @@ def _find_rule_hub_root() -> Path:
             _RESOURCES_SOURCE = "cwd"
             return parent
 
-    # 4) clone 到缓存
-    cache = Path.home() / ".cache" / "agentseed"
+    # 4) clone 到缓存（跨平台：使用 env.user_cache_dir()）
+    cache = _env.user_cache_dir()
     if not cache.exists():
         cache.parent.mkdir(parents=True, exist_ok=True)
         print(f"[agentseed] AgentSeed 源未在本地找到，正在 clone 到 {cache} ...", file=sys.stderr)
         try:
-            subprocess.run(
+            code, stdout, stderr = _env.run_command(
                 ["git", "clone", "--depth", "1", _AGENTSEED_REPO_URL, str(cache)],
-                check=True, capture_output=True,
+                check=True,
             )
         except subprocess.CalledProcessError as e:
             print(

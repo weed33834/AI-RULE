@@ -10,7 +10,7 @@ Installation flow:
   2. Download (git clone --depth 1, shallow)
   3. Validate structure (persona.yaml present, SOUL.md/AGENTS.md present)
   4. Run Quality Gate (safety / quality / compatibility)
-  5. Install into personas/ (or ~/.agentseed/personas/ for user-level)
+  5. Install into personas/ (or platform-specific user config dir for user-level)
   6. Report result
 
 P0 constraints honored:
@@ -218,9 +218,12 @@ def _download(source: str, dest: Path) -> str:
     """
     if source.startswith(("http://", "https://", "git@")):
         try:
-            subprocess.run(
+            from . import env as _env
+            code, stdout, stderr = _env.run_command(
                 ["git", "clone", "--depth", "1", source, str(dest)],
-                check=True, capture_output=True, timeout=120,
+                timeout=120,
+                check=True,
+                capture=True,
             )
         except (subprocess.CalledProcessError, FileNotFoundError) as e:
             return f"git clone 失败: {e}"
@@ -265,8 +268,9 @@ def install_persona(
             error=f"Quality Gate 未通过: {failed[0]['gate']}",
         )
 
-    # 4. Install
-    root = target_root or Path.home() / ".agentseed" / "personas"
+    # 4. Install（跨平台路径：Windows %APPDATA%，Linux XDG，macOS ~/Library）
+    from . import env as _env
+    root = target_root or _env.user_personas_dir()
     root.mkdir(parents=True, exist_ok=True)
     target = root / name
     if target.exists():
