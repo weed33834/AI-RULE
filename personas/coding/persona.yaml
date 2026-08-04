@@ -1,11 +1,11 @@
 # coding Profile 装配清单
-# 来源仓库: badhope/AI
+# 来源仓库: badhope/agentseed
 # 适用场景: 软件开发、Bug 修复、重构、测试、代码审查
 
 profile:
   id: coding
   name: 软件开发规则
-  source_repo: badhope/AI
+  source_repo: https://github.com/weed33834/agentseed.git
   mutually_exclusive_with:
     - novel
     - interactive-novel

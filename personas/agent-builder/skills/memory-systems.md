@@ -118,7 +118,7 @@
   "entity_id": "ent_proj_AgentCreater",
   "type": "project",
   "name": "AgentCreater",
-  "attributes": { "repo": "github.com/weed33834/AgentSeed" },
+  "attributes": { "repo": "github.com/weed33834/agentseed" },
   "valid_at": "2026-07-12T00:00:00Z",
   "invalid_at": null,
   "source_episode_id": "ep_20260712_001"

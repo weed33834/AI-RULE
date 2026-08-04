@@ -19,8 +19,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/weed33834/AgentSeed"
-Repository = "https://github.com/weed33834/AgentSeed"
+Homepage = "https://github.com/weed33834/agentseed"
+Repository = "https://github.com/weed33834/agentseed"
 
 [project.scripts]
 agentseed = "agentseed.cli:main"

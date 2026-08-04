@@ -2,6 +2,12 @@
 
 > **`pip install agentseed && agentseed forge`** → 空白 Agent 立刻拥有完整人格、规则体系、技能和工具配置。
 
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Personas](https://img.shields.io/badge/personas-6-green)
+![Platforms](https://img.shields.io/badge/platforms-13-orange)
+![Tests](https://img.shields.io/badge/tests-144%20passing-brightgreen)
+![Python](https://img.shields.io/badge/python-3.10%2B-informational)
+
 AgentSeed is a **Persona-Governance Platform for AI Agents**. It's what you inject into a blank AI coding assistant (Claude Code, Cursor, Copilot, Trae, Gemini, Windsurf, and more) to give it:
 
 - 🧬 **A Permanent Brain (Governance Engine)** — safety boundaries, decision formulas, self-evolution triggers

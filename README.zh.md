@@ -1,455 +1,181 @@
-# AgentSeed — 统一 AI 协作规则（中文）
+# AgentSeed — 一条命令，给你的 Agent 一个大脑
 
-[English](README.md) | [中文](README.zh.md) | [日本語](README.ja.md)
+> **`pip install agentseed && agentseed forge`** → 空白 Agent 立刻拥有完整人格、规则体系、技能和工具配置。
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
-![Profiles](https://img.shields.io/badge/profiles-6-green)
-![Files](https://img.shields.io/badge/files-384-orange)
-![Tests](https://img.shields.io/badge/tests-51%20passing-brightgreen)
-![Languages](https://img.shields.io/badge/docs-EN%20%2F%20%E4%B8%AD%20%2F%20%E6%97%A5-informational)
+![Personas](https://img.shields.io/badge/personas-6-green)
+![Platforms](https://img.shields.io/badge/platforms-13-orange)
+![Tests](https://img.shields.io/badge/tests-144%20passing-brightgreen)
+![Python](https://img.shields.io/badge/python-3.10%2B-informational)
 
-> 一个仓库整合 6 套独立的规则体系：共享核心层 + 单一主 Profile + 按需能力包。
-> 克隆一次，选定 Profile，同步生成任意 AI 工具的规则文件。
+AgentSeed 是一个 **面向 AI Agent 的人格治理平台**。把它注入空白 AI 编程助手（Claude Code、Cursor、Copilot、Trae、Gemini、Windsurf 等），立刻获得：
 
-**一句话使用**：`git clone` → `python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code` → 把生成的文件复制到项目根目录。
+- 🧬 **永久大脑（治理引擎）** — 安全边界、决策公式、自进化触发
+- 🎭 **可插拔人格（Persona Packs）** — coding、novel、paper、conversation、interactive-novel、agent-builder
+- 🚀 **零配置平台同步** — 13 个平台，一条命令
 
 ---
 
-## 这个仓库是什么
+## 工作原理
 
-本仓库是 **AI 协作规则的唯一权威来源**，不是任何具体开发项目的业务代码。它把 6 个原本独立的规则仓库合并为一。各 Profile 隔离加载，避免领域约束互相冲突（例如"禁止虚构"与"小说创作以虚构为核心能力"）。
+```
+┌──────────────────────────────────────────────┐
+│                 AgentSeed                      │
+│                                               │
+│  ┌─────────────────────────────────────────┐ │
+│  │  ⚡ 治理引擎（不可插拔）                  │ │
+│  │  P0 安全红线 · 决策公式 · 自进化触发     │ │
+│  └─────────────────────────────────────────┘ │
+│                    ↓                          │
+│  ┌─────────────────────────────────────────┐ │
+│  │  🎭 人格包（可插拔画像）                  │ │
+│  │  coding · novel · paper · agent-builder   │ │
+│  │  conversation · interactive-novel · 自定义│ │
+│  └─────────────────────────────────────────┘ │
+│                    ↓                          │
+│  ┌─────────────────────────────────────────┐ │
+│  │  🚀 13 平台同步                           │ │
+│  │  Claude Code · Cursor · Copilot · Trae   │ │
+│  │  Gemini · Windsurf · Cline · Continue    │ │
+│  │  Amazon Q · Qodo · Lingma · Comate       │ │
+│  │  AGENTS.md（通用）                        │ │
+│  └─────────────────────────────────────────┘ │
+└──────────────────────────────────────────────┘
+```
 
-| Profile | 来源 | 用途 |
-|---|---|---|
-| `coding` | badhope/AI | 软件开发、Bug 修复、重构、代码审查 |
-| `conversation` | badhope/universal | 通用问答、调研、方案对比、信息检索 |
-| `novel` | badhope/novel | 小说写作、章节创作、角色/世界观 |
-| `interactive-novel` | badhope/interactive-novel | 互动小说、分支叙事、状态机 |
-| `paper` | badhope/paper | 学术论文写作、文献综述、投稿 |
-| `agent-builder` | badhope/AgentCreater | 设计、评估、部署 AI 智能体 |
-
-**为什么合并**：避免 5 套规则各自漂移；只需克隆一个仓库而非五个；统一跨工具同步入口。
-
-**为什么不揉成一套**：领域约束互斥（如"禁止虚构"与"虚构是核心能力"）。Profile 必须隔离加载。
+---
 
 ## 快速开始
 
-### 1. 克隆仓库
-
 ```bash
-git clone https://github.com/weed33834/agentseed.git
-cd AgentSeed
+# 安装
+pip install agentseed
+
+# 自动检测 → 装配 → 生成
+agentseed forge
+
+# 交互模式：选择你的画像
+agentseed forge --interactive
+
+# 指定画像
+agentseed forge --profile coding
+
+# 预览（不写文件）
+agentseed forge --dry-run
+
+# 切换画像
+agentseed switch --profile novel
+
+# 列出所有可用画像
+agentseed list
+
+# 同步到指定平台
+agentseed sync --platform cursor
 ```
 
-### 2. 选定 Profile 并生成工具入口
+AgentSeed 会自动检测你的项目类型（pyproject.toml → coding、chapters/ → novel 等），选择最合适的 Persona Pack，并生成所有必要的规则文件。
 
-```bash
-# 列出可用 Profile
-python scripts/sync_rules.py --list
+---
 
-# 为 coding Profile 生成 Claude Code 入口（推荐：附加验证与缓存）
-python scripts/sync_rules.py --profile coding --validate --cache --tool claude-code
+## 为什么用 AgentSeed？
 
-# 生成 AGENTS.md（跨工具标准，Codex CLI、OpenCode、Aider 等读取）
-python scripts/sync_rules.py --profile coding --tool agents-md
+| 问题 | AgentSeed 方案 |
+|---------|-------------------|
+| AI Agent 缺乏一致的行为规则 | **P0 治理** — 处处相同的安全基线 |
+| 不同任务需要不同人格 | **Persona Packs** — 切换身份而不丢失安全 |
+| 为多个工具配置规则很繁琐 | **13 平台同步** — 一条命令全覆盖 |
+| Agent 在预设工具失败时卡住 | **自进化引擎** — 自动检测缺口，搜索/获取/安装 |
+| 自定义人格难以创建和分享 | **Persona 市场** — 创建一次，社区共享 |
 
-# 为 novel Profile 生成全部 13 个平台入口
-python scripts/sync_rules.py --profile novel --tool all
-```
+### 对比竞品
 
-#### 规则冲突验证
+| 项目 | 做什么 | AgentSeed 差异 |
+|---------|-------------|---------------------|
+| agent-rules (steipete) | Cursor/Claude 的统一 .mdc 规则 | 已归档；仅编码 |
+| agent-rules-books | 从软件书籍提炼的规则 | 仅编码；无人格 |
+| ACP | Agent 配置 + MCP 管理 | 无治理；无自进化 |
+| agents.md | AGENTS.md 格式标准 | 仅格式；无内容 |
+| chatgpt_system_prompt | 系统提示词合集 | 仅收藏；无工具链 |
+| **AgentSeed** | **完整人格 + 治理 + 同步平台** | **完整的 Agent 大脑** |
 
-```bash
-# 检查所有 Profile 的规则冲突（要求 0 BLOCKER）
-python scripts/validate_rules.py
+---
 
-# 检查单个 Profile
-python scripts/validate_rules.py --profile coding
-```
+## 内含什么
 
-#### 生成 MCP 配置
+### 🧬 治理引擎（宪法层）
+永久大脑。任何 Persona Pack 都不能覆盖它。
 
-```bash
-# 为所有 DAR 启用的 Profile 生成 MCP JSON
-python scripts/generate_mcp_config.py
-```
+- `core/governance.md` — P0 红线（安全、真实、边界）
+- `core/constraints.yaml` — 机器可执行的钩子
+- `core/agent-modes.md` — Task / Project / Autonomous 模式
+- `core/self-evolution.md` — ★ 缺口检测 + 自愈
+- `core/dar-spec.md` — 领域权威评分（搜索质量）
+- `core/persona-router.md` — 人格路由与选择
 
-### 支持平台（13 个）
+### 🎭 人格包（可插拔）
+每个包 = SOUL + 规则 + 技能 + MCP + 提示词
 
-| 类别 | Tool ID | 输出文件 | 说明 |
-|------|---------|----------|------|
-| 跨工具标准 | `agents-md` | `AGENTS.md` | Codex CLI、OpenCode、Aider、Zed、Warp、Junie、Devin、Google Jules 等 20+ 平台读取 |
-| 已有平台 | `claude-code` | `CLAUDE.md` | Claude Code |
-| 已有平台 | `gemini` | `GEMINI.md` | Gemini CLI |
-| 已有平台 | `cursor` | `.cursor/rules/project.mdc` | Cursor（带 frontmatter） |
-| 已有平台 | `copilot` | `.github/copilot-instructions.md` | GitHub Copilot |
-| 已有平台 | `trae` | `.trae/rules/project_rules.md` | Trae IDE |
-| 国际平台 | `windsurf` | `.windsurfrules` | Windsurf（12K 字符限制） |
-| 国际平台 | `cline` | `.clinerules/project.md` | Cline / Kilo Code |
-| 国际平台 | `continue` | `.continue/rules/project.md` | Continue.dev |
-| 国际平台 | `amazon-q` | `.amazonq/rules/project.md` | Amazon Q Developer |
-| 国际平台 | `qodo` | `best_practices.md` | Qodo（原 Codium） |
-| 国内平台 | `lingma` | `.lingma/rules/project.md` | 通义灵码（10K 字符限制） |
-| 国内平台 | `comate` | `.comate/rules/project.mdr` | 文心快码（.mdr 格式） |
+| 画像 | 适用 | 关键特质 |
+|---------|-----|-----------|
+| `coding` | 软件工程师 | 重构、测试、CI/CD |
+| `novel` | 小说家 | 章节、人物、世界观 |
+| `paper` | 学术研究者 | 文献综述、LaTeX、投稿 |
+| `conversation` | 通用助手 | 问答、调研、分析 |
+| `interactive-novel` | 游戏编剧 | 分支叙事、状态机 |
+| `agent-builder` | Agent 设计师 | 构建、评估、部署 Agent |
 
-### 3. 在目标项目使用
+### 🚀 平台同步
+为 **13 个平台**生成平台原生规则文件：
 
-把生成的工具入口文件（如 `CLAUDE.md`）复制到项目根目录，或以 Git 子模块引用本仓库后运行同步脚本。
+Claude Code, Cursor, Copilot, Trae, Gemini, Windsurf, Cline, Continue, Amazon Q, Qodo, Lingma, Comate，以及 AGENTS.md（通用）。
 
-### 4. 告诉 AI 加载哪个 Profile
-
-```text
-按 AgentSeed 加载 coding Profile。
-```
-
-或由项目锚点自动识别（见下文）。
-
-## Profile 选择
-
-### 显式指定（推荐）
-
-```text
-按 AgentSeed 加载 <profile-id> Profile。
-```
-
-### 项目锚点自动识别
-
-| 锚点信号 | 推断 Profile |
-|---|---|
-| `pyproject.toml`、`package.json`、`requirements.txt` + 源码 | `coding` |
-| `.ai-memory/creative-blueprint.md`、`chapters/`、`outline.md` | `novel` |
-| `.game-state/`、`game-state-machine.md`、`save-slot-*.json` | `interactive-novel` |
-| `config.yaml` + `tools.json` + `test-cases.md` | `agent-builder` |
-| 无上述锚点 | `conversation` |
-
-### 意图关键词
-
-| 关键词 | Profile |
-|---|---|
-| 修复/重构/测试/接口/Bug | `coding` |
-| 写一章/续写/人物/伏笔/世界观 | `novel` |
-| 开始一局/分支/存档/NPC/回合 | `interactive-novel` |
-| 设计 Agent/智能体配置/工具权限 | `agent-builder` |
-| 查询/对比/分析/调研 | `conversation` |
-
-## 6 个 Profile
-
-### coding（软件开发）
-- **来源**：badhope/AI
-- **适用**：Python/FastAPI 开发、Bug 修复、重构、测试、代码审查
-- **核心能力**：Git SOP、依赖管理、PowerShell 语法、MCP 红线、工程卫生
-- **运行时技能**：7 个可执行技能（git-sop、workflow-five-roles、skill-acquisition、deep-search-first、frontend-design、backend-scaffold、fullstack-deploy）
-- **可叠加能力包**：research、testing、review、agent-governance、dar
-- **互斥**：novel、interactive-novel
-
-### conversation（通用对话）
-- **来源**：badhope/universal
-- **适用**：通用问答、调研、方案对比、信息检索
-- **核心能力**：真实性协议、深度搜索、反降智、澄清协议、推理深度控制
-- **可叠加能力包**：research、dar
-- **互斥**：novel、interactive-novel、agent-builder
-
-### novel（小说创作）
-- **来源**：badhope/novel
-- **适用**：小说写作、章节创作、角色/世界观维护
-- **核心能力**：创作种子确认、35 项去 AI 文学味清单、角色一致性、伏笔追踪、故事知识图谱、三层修订
-- **可叠加能力包**：research、worldbuilding、creative、dar
-- **互斥**：coding、conversation、interactive-novel、agent-builder
-
-### interactive-novel（互动小说）
-- **来源**：badhope/interactive-novel
-- **适用**：互动小说游戏、分支叙事、状态机驱动
-- **核心能力**：游戏种子、状态机、NPC 自主性、自适应难度、存档/读档、回合制
-- **可叠加能力包**：creative、research、state-machine、npc-simulation、adaptive-difficulty、dar
-- **互斥**：coding、conversation、novel、agent-builder
-
-### paper（学术论文写作）
-- **来源**：badhope/paper
-- **适用**：学术论文写作、文献综述、投稿、审稿回复
-- **核心能力**：学术诚信协议、引用验证流程、文献综述方法论、论文结构框架（IMRaD/Review/Position/Case Study）、研究问题提炼、方法论设计、数据呈现、去 AI 学术味、模拟同行评审、修订信回复
-- **可叠加能力包**：research、dar
-- **互斥**：novel、interactive-novel
-
-### agent-builder（智能体构建）
-- **来源**：badhope/AgentCreater
-- **适用**：设计、评估、部署 AI 智能体，产出 config、工具定义、测试用例
-- **核心能力**：角色四层模型、CTCO 提示词结构、工具副作用分级、记忆系统、评估框架、6 套可执行模板
-- **可叠加能力包**：research、agent-governance、engineering、testing、dar
-- **互斥**：conversation、novel、interactive-novel
+---
 
 ## 架构
 
-![AgentSeed 装配模型](docs/architecture.svg)
+完整架构设计见 [docs/AGENTSEED_ARCHITECTURE.md](docs/AGENTSEED_ARCHITECTURE.md)。
 
-单源规则（`core/` 层 + `AGENTS.md` 选择器）按 Profile 装配，再由 `sync_rules.py` 为各 AI 工具生成入口文件。
+关键创新：
+- **骨架模式**：核心规则内联，技能按需加载 — 保持提示词精简
+- **自进化引擎**：Agent 检测自身能力缺口并自愈
+- **质量门禁**：所有自动获取的内容都通过 安全 → 质量 → 兼容 检查
 
-## 使用流程
+---
 
-![AgentSeed 使用流程](docs/usage.svg)
-
-克隆仓库 → 选定 Profile → 运行同步 → 引入项目 → AI 按统一规则工作，跨工具保持一致。
-
-## 仓库结构
-
-```
-AgentSeed/
-├── AGENTS.md                    # 规则中枢入口（选择器 + 优先级 + 语言中介）
-├── core/                        # 所有 Profile 共享的 P0 硬约束
-│   ├── governance.md            # 安全、权限、MCP 红线、失败熔断
-│   ├── interaction.md           # 澄清、意图归一化、输出规范
-│   ├── persona-router.md        # Profile 选择与能力包白名单
-│   ├── language-mediation.md    # 语言中介协议（英语推理、用户语言输出）
-│   ├── attention-budget.md      # 注意预算分级与 ABA 协议
-│   ├── agent-modes.md           # Task / Project / Autonomous 三模式定义
-│   ├── mode-overrides.yaml      # 边缘场景模式覆写配置
-│   ├── mcp-integration.md       # MCP 集成与配置指南
-│   └── dar-spec.md              # DAR（域权威注册表）统一规范
-├── personas/                    # 6 套独立规则
-│   ├── coding/          ( 13 文件)
-│   ├── conversation/    ( 19 文件)
-│   ├── novel/           ( 28 文件)
-│   ├── interactive-novel/ (31 文件)
-│   ├── paper/           ( 22 文件)
-│   └── agent-builder/   ( 70 文件)
-├── capabilities/                # 14 个按需能力包（含 dar/ + MCP JSON 配置）
-├── personas/                   # 每个 Profile 的装配清单
-├── skills/                      # coding Profile 的 7 个运行时技能（git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy）
-├── mcp/                         # 4 个 MCP 工具实现（validate_codebase / review_code / git_precommit_check / generate_tests）
-├── scripts/
-│   ├── sync_rules.py            # 按 Profile 生成各工具入口（--validate / --cache）
-│   ├── validate_rules.py        # 规则冲突形式化验证（SMT 驱动）
-│   ├── generate_mcp_config.py   # 自动生成 MCP JSON 配置
-│   ├── inject_rules.py          # 将运行时规则注入 Marvis 上下文
-│   └── rule_injection_guide.md  # 规则注入使用指南
-└── tests/                       # 6 套测试（51 项检查，全部通过）
-```
-
-## 语言机制
-
-所有 **系统提示词** 用 **英语** 编写以保证推理精度；规则文档采用中英双语以兼顾清晰度。AI 用 **你的语言** 与你交流：
-
-1. **输入**：自动检测你的语言，识别意图，再用英语内部推理。
-2. **输出**：英语生成 → 翻译为你的语言 → 反翻译腔润色。
-
-详见 `core/language-mediation.md`。
-
-## 支持的 AI 工具
-
-同步脚本可为以下 13 个平台生成规则入口：
-
-| 类别 | 工具 | 输出文件 |
-|------|------|----------|
-| 跨工具标准 | AGENTS.md | `AGENTS.md`（Codex CLI、OpenCode、Aider 等 20+ 工具） |
-| 已有 | Claude Code | `CLAUDE.md` |
-| 已有 | Gemini | `GEMINI.md` |
-| 已有 | Cursor | `.cursor/rules/project.mdc` |
-| 已有 | GitHub Copilot | `.github/copilot-instructions.md` |
-| 已有 | Trae | `.trae/rules/project_rules.md` |
-| 国际 | Windsurf | `.windsurfrules` |
-| 国际 | Cline / Kilo Code | `.clinerules/project.md` |
-| 国际 | Continue.dev | `.continue/rules/project.md` |
-| 国际 | Amazon Q Developer | `.amazonq/rules/project.md` |
-| 国际 | Qodo（原 Codium） | `best_practices.md` |
-| 国内 | 通义灵码 | `.lingma/rules/project.md` |
-| 国内 | 文心快码 | `.comate/rules/project.mdr` |
+## 安装
 
 ```bash
-# 单工具
-python scripts/sync_rules.py --profile coding --tool claude-code
+# pip（全平台）
+pip install agentseed
 
-# 全部 13 个平台
-python scripts/sync_rules.py --profile coding --tool all
+# pipx（隔离，推荐给非 Python 用户）
+pipx install agentseed
+
+# 从源码
+git clone https://github.com/weed33834/agentseed.git
+cd agentseed
+pip install -e .
 ```
 
-## 研究驱动的优化
+---
 
-本仓库融合了提示词工程与 AI 对齐领域的近期研究成果：
-
-- **指令预算（Instruction Budget）**：ManyIFEval（ICLR 2025）证明同时激活的指令越多，单条指令的遵循率越低，呈幂律衰减。P0 规则限制为同时激活不超过 5 条，硬约束总计不超过 12 条。
-- **位置效应（Lost in the Middle）**：大模型对上下文窗口的首尾更敏感，中间部分被弱化。P0 规则放置在上下文窗口的首尾两端。
-- **反模式（Anti-Patterns）**：全大写强调、纯否定式约束、手写"一步步思考"在新一代模型（Claude 4.x、GPT-4.1）上已失效。规则采用条件逻辑与正向替代写法。
-- **扩展思考（Extended Thinking）**：用 Claude 4.x / OpenAI o 系列的原生推理预算替代手动 CoT，处理复杂任务。
-- **三层行为边界**：允许（自主执行）/ 需确认 / 禁止，替代模糊的"适当行为"声明。
-- **GUID 分隔符注入防御**：用随机 GUID 分隔符替代固定 `[UNTRUSTED]` 标记，防止标记闭合逃逸攻击。
-- **弃权协议（Abstention Protocol）**：允许说"我不知道"并防止虚张声势，避免自信地编造。
-- **自我精炼（Self-Refinement）**：Reflexion 循环与 Constitutional 自我批评，在输出前做质量自检。
-
-详见 `personas/agent-builder/skills/`。
-
-## 验证
+## 开发
 
 ```bash
-# 规则冲突验证（6 个 Profile，0 BLOCKER 标准）
-python scripts/validate_rules.py                    # 全部 Profile
-python scripts/validate_rules.py --profile coding   # 单个 Profile
+# 创建新画像
+agentseed persona new my-role
 
-# 测试套件
-pytest tests/                        # 6 套测试，51 项检查，全部通过
-# 或单文件运行：pytest tests/test_audit.py
+# 验证规则
+agentseed verify
+
+# 运行测试
+python -m pytest tests/
+
+# 检查规则质量
+python scripts/validate_rules.py
 ```
 
-## DAR 多模型实测评估
-
-> 10 个模型 × 6 场景（120 次 API 调用），客观对比 **基准**（无 DAR）与 **增强**（含 DAR 路由/打分/领域知识提示词）。
-> 完整报告：[`tests/dar-evaluation/multi-model-report.md`](tests/dar-evaluation/multi-model-report.md) · 原始数据：[`tests/dar-evaluation/full-test-results.json`](tests/dar-evaluation/full-test-results.json)
-
-### 测试规模
-
-| 维度 | 覆盖 |
-|------|------|
-| 测试模型数 | 10（主接口 1 + 备用接口 9） |
-| 测试场景数 | 6（coding / conversation / paper / novel / agent-builder） |
-| 语言覆盖 | English · 中文 · 日本語 |
-| 总 API 调用数 | 120（基准 + 增强） |
-| 有效结果数 | 60 |
-| 评分方式 | 6 维度 × 0–5 分 = /30 每场景 |
-
-### 模型可用性与总览
-
-| 模型 | 接口 | 状态 | 基准均分 | 增强均分 | 差值 |
-|------|------|------|---------|---------|------|
-| **Qwen3.5-397B-A17B** | 备用 | ✅ 可用 | 18.3 | 20.5 | **+2.2** |
-| DeepSeek-V4-Pro | 备用 | ✅ 可用 | 15.8 | 15.2 | -0.7 |
-| moonweaver-4.8 | 主接口 | ✅ 可用 | 14.3 | 13.2 | -1.2 |
-| DeepSeek-V4-Flash | 备用 | ⚠ 部分 | 7.0 | 4.5 | -2.5 |
-| glm-4.7 | 备用 | ⚠ 部分 | 7.5 | 5.0 | -2.5 |
-| step-3.7-flash | 备用 | ⚠ 低质 | 2.8 | 2.0 | -0.8 |
-| glm-5.2 | 备用 | ❌ 超时 | — | — | — |
-| Kimi-K2.6 | 备用 | ❌ 超时 | — | — | — |
-| MiniMax-M3 | 备用 | ❌ 超时 | — | — | — |
-| Spark-X2-Flash | 备用 | ❌ 授权失败 | — | — | — |
-| sensenova-u1-fast | 备用 | ❌ 模型不存在 | — | — | — |
-
-### 得分对比 — 3 个有效模型
-
-```mermaid
-xychart-beta
-    title "DAR 增强：基准 vs 增强（均分 /30）"
-    x-axis ["Qwen3.5-397B", "DeepSeek-V4-Pro", "moonweaver-4.8"]
-    y-axis "平均得分" 0 --> 25
-    bar [18.3, 15.8, 14.3]
-    bar [20.5, 15.2, 13.2]
-```
-
-### DAR 提升热力图
-
-| 场景 | moonweaver-4.8 | DeepSeek-V4-Pro | Qwen3.5-397B-A17B |
-|------|:--------------:|:---------------:|:-----------------:|
-| S1-CVE（安全漏洞） | **+14** 🟢 | 0 ⚪ | +1 🟢 |
-| S2-GDP（中文事实核查） | -3 🔴 | -11 🔴 | **+2** 🟢 |
-| S3-ACADEMIC（学术综述） | -19 🔴 | +3 🟢 | **+5** 🟢 |
-| S4-NOVEL（历史小说） | +3 🟢 | **+7** 🟢 | **+11** 🟢 |
-| S5-JP（日本語技術） | 0 ⚪ | **+4** 🟢 | -2 🔴 |
-| S6-AGENT（模型选型） | -2 🔴 | -7 🔴 | -4 🔴 |
-
-> 🟢 = DAR 提升 · ⚪ = 持平 · 🔴 = DAR 下滑
-
-### 六维度分析
-
-```mermaid
-xychart-beta
-    title "DAR 各维度影响（均差值，3 个有效模型）"
-    x-axis ["路由准确", "来源质量", "领域知识", "引用保真", "冲突处理", "时效意识"]
-    y-axis "差值" -0.5 --> 1.0
-    bar [0.72, 0.28, 0.22, -0.44, -0.33, -0.33]
-```
-
-**DAR 提升的维度**：路由准确度（+0.72，核心价值）、来源质量（+0.28）、领域知识（+0.22）
-
-**DAR 未提升的维度**：引用保真度（-0.44）、冲突处理（-0.33）、时效意识（-0.33）
-
-### 核心发现
-
-1. **DAR 在领域冷门场景提升最大** — S4-NOVEL（+11）、S1-CVE（+14），这些场景需要专业来源（Etymonline、NVD），模型自身缺乏相关知识。
-2. **DAR 路由规则是最大价值点** — 路由准确度提升 +0.72，远超其他维度。
-3. **Qwen3.5-397B-A17B 与 DAR 兼容性最好** — 6 个场景中 4 个正向提升，平均 +2.2。
-4. **长 DAR 提示词可能损害小模型** — moonweaver-4.8 在 S3-ACADEMIC 返回空响应（−19）。
-5. **基准已较强时 DAR 反而引入噪音** — S6-AGENT 全部模型下滑。
-
-### 优化路线
-
-1. 将 DAR 提示词前缀从 200–400 字压缩到 100 字以内。
-2. 为小模型提供精简版 DAR（仅路由）。
-3. 追加"所有事实陈述必须附 URL + 日期"以增强引用保真度。
-4. 基准分已超过 20/30 时跳过 DAR 增强。
-5. 优化中文 DAR 提示词措辞，避免干扰模型理解。
-
-## 能力包
-
-能力包是可组合、按需加载的工作方法。它们不定义智能体身份，身份由主 Profile 决定；能力包只提供方法。
-
-| 能力包 | 用途 |
-|---|---|
-| `research` | 事实支撑、数据验证 |
-| `testing` | 编写/验证测试 |
-| `review` | 代码/内容审查 |
-| `engineering` | 工程实现 |
-| `creative` | 创意生成、文风、修订 |
-| `worldbuilding` | 世界观、角色、时间线 |
-| `state-machine` | 状态机治理、分支可达性 |
-| `npc-simulation` | NPC 自主性、记忆、关系 |
-| `adaptive-difficulty` | 难度自适应 |
-| `game-engine` | 游戏回合、存档、命令 |
-| `agent-governance` | 智能体评估、观测、安全对齐 |
-| `orchestration` | 多智能体编排 |
-| `novel-chapter-deliverable-mode` | 小说章节交付模式 |
-| `dar` | 域权威注册表——权威源名录、打分、路由 |
-
-详见 `capabilities/README.md`。
-
-## 运行时技能（coding Profile）
-
-`skills/` 目录包含 coding Profile 的 7 个可执行运行时技能。与能力包（提供方法）不同，运行时技能被注入 Marvis AI 运行时并自主执行：
-
-| 技能 | 用途 |
-|---|---|
-| `git-sop` | Conventional Commits、细粒度提交、send2trash |
-| `workflow-five-roles` | 架构师 → 工程师 → 审查官 → 验证员 → 交付 |
-| `skill-acquisition` | 5 层库/工具选择协议 |
-| `deep-search-first` | 编码前先联网搜索新框架/API |
-| `frontend-design` | 生成 UI 前参考优秀开源设计仓库 |
-| `backend-scaffold` | FastAPI + httpx + pendulum + pydantic + polars 技术栈 |
-| `fullstack-deploy` | CI/CD、Docker、环境验证 |
-
-注入 Marvis 运行时：
-```bash
-python scripts/inject_rules.py --profile coding
-```
-
-`mcp/` 目录提供 4 个 MCP 工具实现：`validate_codebase.py`、`review_code.py`、`git_precommit_check.py`、`generate_tests.py`。
-
-## 规则优先级
-
-冲突时高优先级胜出：
-
-```
-P0：core/ 安全、权限、真实性、MCP 红线
-> P1：用户当前明确确认
-> P2：主 Profile 领域规则
-> P3：能力包按需规则
-> P4：模型默认行为
-```
-
-## 边界
-
-**能保证**：
-- Profile 互斥不冲突。
-- manifest 引用完整。
-- 生成文件来自指定来源。
-- 规则集包含 core + profile + skills 三层。
-- 手改的生成文件可被重新生成覆盖。
-
-**不能保证**：
-- 任意模型 100% 执行自然语言规则。
-- 单靠规则文件阻止危险操作（需工具权限、Git 钩子、人工确认）。
-- 克隆后自动配置 Trae 自定义 Agent 或 MCP（必须手动配置）。
-
-## 仓库地址
-
-本仓库在 GitHub 与 GitHub 同步镜像，内容完全一致：
-
-- GitHub（主仓库）：https://github.com/weed33834/AgentSeed
-- GitHub（镜像）：https://github.com/weed33834/AgentSeed
+---
 
 ## 许可证
 
@@ -457,12 +183,4 @@ MIT
 
 ---
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=weed33834/AgentSeed&type=Date)](https://star-history.com/#weed33834/AgentSeed&Date)
-
-<div align="center">
-
-[↑ 返回顶部](#agentseed--统一-ai-协作规则中文)
-
-</div>
+*AgentSeed: 宪法教 Agent 何时自己找资源，身份决定擅长领域。*

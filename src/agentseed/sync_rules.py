@@ -33,7 +33,7 @@ from pathlib import Path
 from . import env as _env
 
 # ─── 资源根检测 ─────────────────────────────────────────
-_AGENTSEED_REPO_URL = "https://github.com/weed33834/AgentSeed.git"
+_AGENTSEED_REPO_URL = "https://github.com/weed33834/agentseed.git"
 
 # 模块级缓存：避免每次 build_ruleset 都重复探查文件系统
 _RESOURCES_ROOT_CACHE: Path = None
@@ -820,11 +820,8 @@ def _build_on_demand_index(profile_id: str, manifest: dict, profile_on_demand: l
     deferred_profile_sections = deferred_profile_sections or []
     parts = []
     parts.append("\n# === ON-DEMAND INDEX (按需加载，不预载) ===\n")
-    # 写入生成时的资源根绝对路径 + 资源来源（pip 打包 / 外部仓库 / 缓存 clone）
-    try:
-        repo_abs = str(RESOURCES_ROOT.resolve())
-    except Exception:
-        repo_abs = str(RESOURCES_ROOT)
+    # 写入生成时的资源根（开发时为 repo 根，打包后为包内 _resources）
+    # 不再写本机绝对路径，改为中性标识
     src = resources_source()
     src_note = {
         "packaged": "包内打包资源（pip install agentseed 后随包分发，离线可用）",
@@ -835,16 +832,14 @@ def _build_on_demand_index(profile_id: str, manifest: dict, profile_on_demand: l
     }.get(src, src)
     parts.append(
         "> 以下内容默认**不加载**。Agent 在对话中遇到对应触发条件时，必须主动用 `Read` 工具读取对应文件后再行动。\n"
-        f"> 资源根绝对路径（生成时记录）: `{repo_abs}`\n"
         f"> 资源来源: {src_note}\n"
-        "> 远程仓库: https://github.com/weed33834/AgentSeed.git\n"
+        "> 远程仓库: https://github.com/weed33834/agentseed.git\n"
         "> 预算对齐 governance.md §Instruction Budget：不预载是为避免指令过载导致 P0 红线失守。\n\n"
         "> **路径解析协议（agent 必读，按顺序尝试，首个成功即用）**:\n"
-        "> 1. 优先尝试 `<资源根绝对路径>/<表中相对路径>`\n"
-        "> 2. 若上条路径不存在（如入口文件被复制到其他机器/项目），尝试环境变量 `AGENTSEED_REPO` 指向的目录\n"
-        "> 3. 若是 pip 安装的 agentseed 包，规则源已随包分发，可从 Python 解释器内查：`python -c \"import agentseed, pathlib; print(pathlib.Path(agentseed.__file__).parent / '_resources')\"`，得到路径后拼接表中相对路径\n"
-        "> 4. 若仍不存在，从 https://github.com/weed33834/AgentSeed.git 重新 clone 到 `~/.cache/agentseed/`，再从该目录 Read\n"
-        "> 5. 若网络不可用且本地无仓库，**直接告知用户**：「我需要访问 AgentSeed 仓库才能加载该 skill，请执行 `pip install agentseed` 或 `git clone https://github.com/weed33834/AgentSeed.git` 并设置 `AGENTSEED_REPO` 环境变量」，不要跳过或自行编造规则内容\n\n"
+        "> 1. 优先从 AgentSeed 仓库根（当前项目或 AGENTSEED_REPO 环境变量指向）读取相对路径\n"
+        "> 2. 若是 pip 安装的 agentseed 包，规则源已随包分发，可从 Python 解释器内查：`python -c \"import agentseed, pathlib; print(pathlib.Path(agentseed.__file__).parent / '_resources')\"`，得到路径后拼接表中相对路径\n"
+        "> 3. 若仍不存在，从 https://github.com/weed33834/agentseed.git 重新 clone 到 `~/.cache/agentseed/`，再从该目录 Read\n"
+        "> 4. 若网络不可用且本地无仓库，**直接告知用户**：「我需要访问 AgentSeed 仓库才能加载该 skill，请执行 `pip install agentseed` 或 `git clone https://github.com/weed33834/agentseed.git` 并设置 `AGENTSEED_REPO` 环境变量」，不要跳过或自行编造规则内容\n\n"
     )
 
     # ── Meta Rules (按需的 core 元规则，如 persona-router) ──

@@ -1,13 +1,13 @@
 # 新项目初始化配置指令（复制发给任意 AI 工具）
 
 > 用途：开新项目时，把这套规则模板一次性注入项目，让 Codex / Claude Code / Cursor / Trae / OpenCode / Qoder / GitHub Copilot 等工具都按你的铁律开发。
-> 规则唯一源头：`https://github.com/weed33834/AgentSeed`
+> 规则唯一源头：`https://github.com/weed33834/agentseed`
 
 ## 直接复制下面这段发给智能体
 
 ```
 【任务】初始化本项目 AI 开发规则
-【来源】规则模板仓库：https://github.com/weed33834/AgentSeed
+【来源】规则模板仓库：https://github.com/weed33834/agentseed
 【要求】
 1. 把仓库里的以下文件/目录原样拷贝到当前项目根目录（不要改写内容）：
    - AGENTS.md

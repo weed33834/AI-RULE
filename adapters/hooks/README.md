@@ -46,7 +46,7 @@ adapters/hooks/
 ```bash
 pip install agentseed
 # 或
-git clone https://github.com/weed33834/AgentSeed.git
+git clone https://github.com/weed33834/agentseed.git
 export AGENTSEED_REPO=/path/to/AgentSeed
 ```
 

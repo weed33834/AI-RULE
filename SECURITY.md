@@ -3,7 +3,7 @@
 ## 漏洞披露
 如发现本仓库相关的安全漏洞（如规则导致密钥泄露风险、MCP 红线被绕过等），**请勿在公开 Issue 中附带漏洞详情**。
 
-请先在 [GitHub Issues](https://github.com/weed33834/AgentSeed/issues) 或 [GitCode Issues](https://github.com/weed33834/AgentSeed/issues) 提交一个标题模糊的 issue（如"安全漏洞报告"），向维护者索取安全联系方式。维护者确认后会提供私密沟通渠道。
+请先在 [GitHub Issues](https://github.com/weed33834/agentseed/issues) 或 [GitCode Issues](https://gitcode.com/badhope/agentseed/issues) 提交一个标题模糊的 issue（如"安全漏洞报告"），向维护者索取安全联系方式。维护者确认后会提供私密沟通渠道。
 
 我们会尽快确认并修复。
 

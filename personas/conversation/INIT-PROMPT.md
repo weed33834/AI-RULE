@@ -1,13 +1,13 @@
 # 新项目初始化配置指令（复制发给任意 AI 工具）
 
 > 用途：将通用对话规则模板注入任意 AI 工具或项目，让对话质量全面提升。
-> 规则唯一源头：`https://github.com/weed33834/AgentSeed`
+> 规则唯一源头：`https://github.com/weed33834/agentseed`
 
 ## 直接复制下面这段发给智能体
 
 ```
 【任务】初始化通用 AI 对话规则
-【来源】规则模板仓库：https://github.com/weed33834/AgentSeed
+【来源】规则模板仓库：https://github.com/weed33834/agentseed
 【要求】
 1. 把仓库里的以下文件/目录原样拷贝到当前项目根目录（不要改写内容）：
    - AGENTS.md
