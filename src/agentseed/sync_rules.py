@@ -737,6 +737,13 @@ def build_ruleset(profile_id: str, mode: str = "skeleton") -> str:
         "生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->\n\n"
     )
 
+    # ── 会话运行时刷新协议（自动注入，无需每个 profile 手工配置）──
+    # 让 Agent 在会话中检测规则更新并应用（详见 core/session-refresh.md）
+    refresh_path = REPO_ROOT / "core" / "session-refresh.md"
+    if refresh_path.exists():
+        parts.append("\n## [core] core/session-refresh.md\n")
+        parts.append(expand_refs(read_file(Path("core/session-refresh.md")), refresh_path.parent, inline=False))
+
     # skeleton 模式下引用保留为路径提示，agent 按需 Read；full 模式下递归内联
     inline_mode = (mode == "full")
 
