@@ -1,5 +1,5 @@
 """
-Rule Hub 规则冲突形式化检测
+AgentSeed 规则冲突形式化检测
 使用 z3-solver 检测 Profile 内及全局规则中的逻辑冲突。
 
 用法:
@@ -14,9 +14,9 @@ from collections import defaultdict
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-MANIFEST_DIR = REPO_ROOT / "manifests"
+PERSONAS_DIR = REPO_ROOT / "personas"
 CORE_DIR = REPO_ROOT / "core"
-PROFILES_DIR = REPO_ROOT / "profiles"
+PERSONAS_DIR = REPO_ROOT / "personas"
 CAPABILITIES_DIR = REPO_ROOT / "capabilities"
 
 # 冲突模式定义：(触发词, 反义词) 对，用于检测显式矛盾
@@ -54,7 +54,7 @@ MUTUALLY_EXCLUSIVE: dict[str, set[str]] = {}
 
 def parse_manifest(profile_id: str) -> dict:
     """简单解析 manifest YAML"""
-    manifest_path = MANIFEST_DIR / f"{profile_id}.yaml"
+    manifest_path = PERSONAS_DIR / f"{profile_id}.yaml"
     if not manifest_path.exists():
         return {}
     text = manifest_path.read_text(encoding="utf-8")
@@ -269,7 +269,7 @@ def check_capability_whitelist_conflicts(profile_id: str) -> list[dict]:
 
 def check_mutual_exclusion():
     """检查互斥 Profile 间共享的能力包冲突"""
-    profiles = [p.stem for p in MANIFEST_DIR.glob("*.yaml") if not p.name.startswith(".")]
+    profiles = [p.stem for p in PERSONAS_DIR.glob("*.yaml") if not p.name.startswith(".")]
     profile_caps: dict[str, set[str]] = {}
 
     for pid in profiles:
@@ -306,7 +306,7 @@ def check_profile_consistency():
     - 是否存在 manifest 引用文件缺失
     - Profile 声明的 anchors/keywords 是否与实际规则匹配
     """
-    profiles = [p.stem for p in MANIFEST_DIR.glob("*.yaml") if not p.name.startswith(".")]
+    profiles = [p.stem for p in PERSONAS_DIR.glob("*.yaml") if not p.name.startswith(".")]
     issues = []
 
     for pid in profiles:
@@ -350,13 +350,13 @@ def check_profile_consistency():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Rule Hub 规则冲突形式化检测")
+    parser = argparse.ArgumentParser(description="AgentSeed 规则冲突形式化检测")
     parser.add_argument("--profile", type=str, help="仅验证指定 Profile")
     parser.add_argument("--verbose", "-v", action="store_true", help="详细输出")
     args = parser.parse_args()
 
     profiles = [args.profile] if args.profile else [
-        p.stem for p in MANIFEST_DIR.glob("*.yaml") if not p.name.startswith(".")
+        p.stem for p in PERSONAS_DIR.glob("*.yaml") if not p.name.startswith(".")
     ]
 
     all_conflicts: list[dict] = []

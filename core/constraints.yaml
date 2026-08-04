@@ -24,7 +24,7 @@
 
 version: 1
 source: core/governance.md
-generated_by: ai-rule (hand-authored, do not auto-regenerate)
+generated_by: agentseed (hand-authored, do not auto-regenerate)
 
 constraints:
 
@@ -122,8 +122,8 @@ constraints:
       [P1 SCOPE_LIMITED_CHANGES] 修改文件需用户确认（仅本次会话用户明确指定的文件直接放行）。
       参见 governance.md §4。
     whitelist:
-      session_allowed_file: ".ai-rule/session-allowed.txt"
-      path_patterns: [".ai-rule/**", "tests/**", "tmp/**", "temp/**"]
+      session_allowed_file: ".agentseed/session-allowed.txt"
+      path_patterns: [".agentseed/**", "tests/**", "tmp/**", "temp/**"]
 
   - id: NO_LARGE_FILE_REWRITE
     description: "大文件（>100 行）禁用全量重写，必须用行级/函数级替换"
@@ -233,7 +233,7 @@ constraints:
     action: deny
     message: >-
       [P1 NO_EDIT_GENERATED_FILES] 该文件由 sync_rules.py 自动生成（文件头含"禁止手工编辑"标记），
-      手改会被下次同步覆盖。请改源文件后运行 ai-rule apply。
+      手改会被下次同步覆盖。请改源文件后运行 agentseed apply。
       参见 governance.md §8。
 
   # ─── Runtime 检测（不拦截，仅注入提示）──────────────

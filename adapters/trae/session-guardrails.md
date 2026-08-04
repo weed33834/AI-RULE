@@ -1,7 +1,7 @@
 # Trae 会话护栏 (Trae Session Guardrails)
 
 > 本文件定义 **Trae 平台专属**的会话护栏规则。仅在检测到当前运行环境为 Trae 时生效。
-> 跨平台通用的远程沙箱工程规范见 `profiles/coding/docs/skills/remote-sandbox-sop.md`，本文件只补充 Trae 独有的陷阱。
+> 跨平台通用的远程沙箱工程规范见 `personas/coding/skills/remote-sandbox-sop.md`，本文件只补充 Trae 独有的陷阱。
 > 来源：真实 Trae 会话复盘，非臆测。
 
 ## 0. 平台检测（何时应用本文件）
@@ -99,6 +99,6 @@
 
 ## 参考
 
-- 通用工程规范：`profiles/coding/docs/skills/remote-sandbox-sop.md`
+- 通用工程规范：`personas/coding/skills/remote-sandbox-sop.md`
 - Trae 沙箱策略配置：`adapters/hooks/trae/sandbox-policy.json`
-- Git 提交规范：`profiles/coding/docs/skills/git-sop.md`
+- Git 提交规范：`personas/coding/skills/git-sop.md`

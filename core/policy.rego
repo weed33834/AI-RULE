@@ -1,4 +1,4 @@
-# Rule Hub Policy — Rego
+# AgentSeed Policy — Rego
 #
 # 这是 core/constraints.yaml 的 OPA/Rego 升级版，支持更复杂的上下文判断。
 # 与 constraints.yaml 同源同义（YAML 给简单 hook 用，Rego 给装了 OPA 的用户用）。
@@ -10,13 +10,13 @@
 #   - 可审计（每次决策有完整 reasoning）
 #
 # 用法（需先装 OPA: https://www.openpolicyagent.org/docs/#1-download-opa）：
-#   opa eval -d core/policy.rego -i input.json 'data.ai_rule.allow'
+#   opa eval -d core/policy.rego -i input.json 'data.agentseed.allow'
 #
 # Python API（需装 opa-python 或调 opa binary）：
-#   from ai_rule.policy_engine import decide_with_opa
+#   from agentseed.policy_engine import decide_with_opa
 #   result = decide_with_opa(tool_name="Bash", tool_input={"command": "git push"})
 
-package ai_rule
+package agentseed
 
 # ─── 默认决策 ───────────────────────────────────────
 
@@ -138,7 +138,7 @@ deny {
 
 deny {
   deny_edit_generated
-  reason := "NO_EDIT_GENERATED_FILES: 该文件由 ai-rule 自动生成，禁止手改"
+  reason := "NO_EDIT_GENERATED_FILES: 该文件由 agentseed 自动生成，禁止手改"
   matched_constraint := "NO_EDIT_GENERATED_FILES"
 }
 

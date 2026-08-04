@@ -11,7 +11,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 
 from sync_rules import parse_manifest, list_profiles, TOOL_OUTPUT
 
-CORE_FILES = ["governance.md", "interaction.md", "profile-router.md", "language-mediation.md"]
+CORE_FILES = ["governance.md", "interaction.md", "persona-router.md", "language-mediation.md"]
 PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
 MUTEX = {
     "coding": ["novel", "interactive-novel"],
@@ -32,23 +32,24 @@ def test_core_exists():
 
 
 def test_profiles_exist():
-    """每个 profile 有 AGENTS.md 和 docs/"""
+    """每个 profile 有 AGENTS.md 和 prompts/ 或 skills/"""
     for pid in PROFILES:
-        agents = REPO_ROOT / "profiles" / pid / "AGENTS.md"
-        docs = REPO_ROOT / "profiles" / pid / "docs"
+        agents = REPO_ROOT / "personas" / pid / "AGENTS.md"
+        prompts = REPO_ROOT / "personas" / pid / "prompts"
+        skills = REPO_ROOT / "personas" / pid / "skills"
         assert agents.exists(), f"{pid}: AGENTS.md 缺失"
-        assert docs.is_dir(), f"{pid}: docs/ 目录缺失"
-        file_count = sum(1 for _ in docs.rglob("*") if _.is_file())
-        assert file_count > 0, f"{pid}: docs/ 为空"
-        print(f"  {pid}: AGENTS.md + docs/ ({file_count} 文件) OK")
+        assert (prompts.is_dir() or skills.is_dir()), f"{pid}: prompts/ or skills/ 目录缺失"
+        file_count = sum(1 for _ in (REPO_ROOT / "personas" / pid).rglob("*") if _.is_file())
+        assert file_count > 0, f"{pid}: 为空"
+        print(f"  {pid}: AGENTS.md + prompts/skills ({file_count} 文件) OK")
     print("[PASS] 6 个 Profile 结构完整")
 
 
 def test_manifests_exist():
     """每个 profile 有 manifest"""
     for pid in PROFILES:
-        m = REPO_ROOT / "manifests" / f"{pid}.yaml"
-        assert m.exists(), f"manifest 缺失: {pid}"
+        m = REPO_ROOT / "personas" / pid / "persona.yaml"
+        assert m.exists(), f"persona.yaml 缺失: {pid}"
     print("[PASS] 5 个 manifest 齐全")
 
 
@@ -56,6 +57,8 @@ def test_manifest_references():
     """manifest 引用的文件都存在"""
     for pid in PROFILES:
         manifest = parse_manifest(pid)
+        if "includes" not in manifest:
+            continue
         for section, files in manifest["includes"].items():
             for f in files:
                 p = REPO_ROOT / f

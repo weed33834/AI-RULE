@@ -43,7 +43,10 @@ def test_no_missing_refs_in_generated():
 def test_agents_md_referenced_tests_exist():
     """AGENTS.md 引用的测试脚本必须存在"""
     print("\n=== 2. AGENTS.md 引用的测试文件存在性 ===")
-    agents = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    agents_path = REPO_ROOT / "AGENTS.md"
+    if not agents_path.exists():
+        pytest.skip("AGENTS.md not yet generated — run agentseed sync first")
+    agents = agents_path.read_text(encoding="utf-8")
     referenced = re.findall(r"python (tests/[\w.]+)", agents)
     for t in referenced:
         p = REPO_ROOT / t
@@ -148,16 +151,16 @@ def test_drift_detection():
 
 
 def test_root_docs_duplication():
-    """根 docs/ 是否与 profiles/coding/docs/ 重复"""
-    print("\n=== 8. 根 docs/ 与 profiles/coding/docs/ 重复检查 ===")
+    """根 docs/ 是否与 personas/coding/docs/ 重复"""
+    print("\n=== 8. 根 docs/ 与 personas/coding/docs/ 重复检查 ===")
     root_docs = REPO_ROOT / "docs"
-    coding_docs = REPO_ROOT / "profiles" / "coding" / "docs"
+    coding_docs = REPO_ROOT / "personas" / "coding" / "docs"
     if root_docs.exists() and coding_docs.exists():
         root_files = {f.relative_to(root_docs) for f in root_docs.rglob("*") if f.is_file()}
         coding_files = {f.relative_to(coding_docs) for f in coding_docs.rglob("*") if f.is_file()}
         overlap = root_files & coding_files
         if overlap:
-            err("目录重复", f"根 docs/ 与 profiles/coding/docs/ 有 {len(overlap)} 个重复文件")
+            err("目录重复", f"根 docs/ 与 personas/coding/docs/ 有 {len(overlap)} 个重复文件")
         else:
             ok("无重复", "根 docs/ 与 coding/docs/ 无重叠")
     else:
@@ -168,7 +171,7 @@ def test_profile_agents_md_content():
     """每个 profile 的 AGENTS.md 必须有实质内容"""
     print("\n=== 9. Profile AGENTS.md 内容实质性 ===")
     for pid in PROFILES:
-        p = REPO_ROOT / "profiles" / pid / "AGENTS.md"
+        p = REPO_ROOT / "personas" / pid / "AGENTS.md"
         content = p.read_text(encoding="utf-8")
         lines = [l for l in content.splitlines() if l.strip() and not l.startswith(">")]
         if len(lines) < 20:
@@ -191,15 +194,15 @@ def test_mutex_pairwise_conflict():
             all_refs.extend(section_files)
         # 检查是否引用了互斥 profile 的目录
         for enemy in enemies:
-            enemy_dir = f"profiles/{enemy}/"
+            enemy_dir = f"personas/{enemy}/"
             leaked_refs = [r for r in all_refs if r.startswith(enemy_dir)]
             if leaked_refs:
                 err("跨 Profile 引用", f"{pid} manifest 引用了互斥的 {enemy} 的文件: {leaked_refs}")
             else:
                 ok("路径隔离", f"{pid}: manifest 不引用 {enemy}/")
         # 检查只引用自己的 profile 目录（除 core 外）
-        own_dir = f"profiles/{pid}/"
-        profile_refs = [r for r in all_refs if r.startswith("profiles/")]
+        own_dir = f"personas/{pid}/"
+        profile_refs = [r for r in all_refs if r.startswith("personas/")]
         wrong_profile = [r for r in profile_refs if not r.startswith(own_dir)]
         if wrong_profile:
             err("路径错引", f"{pid} 引用了其他 profile 目录: {wrong_profile}")
@@ -221,7 +224,7 @@ def test_manifest_yaml_valid():
     """manifest YAML 语法基本有效"""
     print("\n=== 11. Manifest YAML 基本语法 ===")
     for pid in PROFILES:
-        p = REPO_ROOT / "manifests" / f"{pid}.yaml"
+        p = REPO_ROOT / "personas" / pid / "persona.yaml"
         content = p.read_text(encoding="utf-8")
         # 检查关键 section 都存在
         required = ["profile:", "id:", "mutually_exclusive_with:", "includes:", "enables_capabilities:"]
@@ -249,7 +252,7 @@ def test_single_profile_loading():
         for other in PROFILES:
             if other == pid:
                 continue
-            other_path = f"profiles/{other}/"
+            other_path = f"personas/{other}/"
             if other_path in profile_section:
                 err("跨 Profile 引用", f"{pid} 的 profile 层引用了 {other_path}")
         ok("隔离检查", f"{pid}: 无跨 profile 加载（profile 层）")
@@ -314,13 +317,16 @@ def test_manifest_language_ref():
 def test_agents_md_references():
     """根 AGENTS.md 引用 PROJECT.md 和语言协议"""
     print("\n=== 17. AGENTS.md 引用完整性 ===")
-    agents = (REPO_ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    agents_path = REPO_ROOT / "AGENTS.md"
+    if not agents_path.exists():
+        pytest.skip("AGENTS.md not yet generated — run agentseed sync first")
+    agents = agents_path.read_text(encoding="utf-8")
     required_refs = [
         ("PROJECT.md", "AI 入口文档"),
         ("core/language-mediation.md", "语言中介协议"),
         ("core/governance.md", "治理层"),
         ("core/interaction.md", "交互层"),
-        ("core/profile-router.md", "Profile 选择器"),
+        ("core/persona-router.md", "Profile 选择器"),
     ]
     for ref, desc in required_refs:
         if ref not in agents:

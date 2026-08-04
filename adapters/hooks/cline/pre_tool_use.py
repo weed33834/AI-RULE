@@ -63,22 +63,22 @@ def main():
     try:
         result = decide(mapped, tool_input)
     except Exception as e:
-        print(f"[Rule Hub hook] 决策异常：{e}", file=sys.stderr)
+        print(f"[AgentSeed hook] 决策异常：{e}", file=sys.stderr)
         print(json.dumps({}))
         return 0
 
     if result["deny"]:
-        print(f"\n🚫 [Rule Hub] DENY: {result['reason']}\n", file=sys.stderr)
+        print(f"\n🚫 [AgentSeed] DENY: {result['reason']}\n", file=sys.stderr)
         print(json.dumps({"deny": True, "reason": result["reason"]}, ensure_ascii=False))
         return 0
 
     if result["require_approval"]:
-        print(f"\n⚠️ [Rule Hub] APPROVAL: {result['reason']}\n", file=sys.stderr)
+        print(f"\n⚠️ [AgentSeed] APPROVAL: {result['reason']}\n", file=sys.stderr)
         print(json.dumps({"requireApproval": True, "reason": result["reason"]}, ensure_ascii=False))
         return 0
 
     if result["warn"]:
-        print(f"\n⚠️ [Rule Hub] WARN: {result['warn']}\n", file=sys.stderr)
+        print(f"\n⚠️ [AgentSeed] WARN: {result['warn']}\n", file=sys.stderr)
         print(json.dumps({"warn": result["warn"]}, ensure_ascii=False))
         return 0
 

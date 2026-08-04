@@ -8,7 +8,7 @@ Validates:
 - Freshness tables have >=3 entries
 - Routing rules have >=3 rules
 - Domain knowledge has terminology, conventions, pitfalls
-- All manifests enable dar capability
+- All personas enable dar capability
 - Spec defines integration points
 """
 
@@ -23,7 +23,7 @@ except ImportError:
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DAR_DIR = os.path.join(REPO_ROOT, "capabilities", "dar")
 SPEC_FILE = os.path.join(REPO_ROOT, "core", "dar-spec.md")
-MANIFEST_DIR = os.path.join(REPO_ROOT, "manifests")
+MANIFEST_DIR = os.path.join(REPO_ROOT, "personas")
 
 DOMAINS = ["paper", "coding", "conversation", "novel", "interactive-novel", "agent-builder"]
 
@@ -46,7 +46,7 @@ def test_dar_spec_integration_points():
     assert "deep-search" in content.lower()
     assert "truth-protocol" in content.lower()
     assert "source-credibility" in content.lower()
-    assert "profile-router" in content.lower()
+    assert "persona-router" in content.lower()
 
 
 # --- Config existence ---
@@ -133,10 +133,10 @@ def test_dar_conflict_policy():
 
 # --- Manifests enable dar ---
 
-def test_manifests_enable_dar():
+def test_personas_enable_dar():
     for domain in DOMAINS:
         path = os.path.join(MANIFEST_DIR, f"{domain}.yaml")
         with open(path, "r", encoding="utf-8") as f:
             manifest = yaml.safe_load(f)
         caps = manifest.get("enables_capabilities", [])
-        assert "dar" in caps, f"manifests/{domain}.yaml must enable 'dar' capability"
+        assert "dar" in caps, f"personas/{domain}.yaml must enable 'dar' capability"

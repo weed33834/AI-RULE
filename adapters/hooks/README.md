@@ -1,4 +1,4 @@
-# Rule Hub Hook 适配器
+# AgentSeed Hook 适配器
 
 把 `core/constraints.yaml` 里的 P0 红线翻译成各 AI 编程工具的 PreToolUse hook，
 让规则从"软引导"升级为"硬拦截"——AI 想违规也做不到。
@@ -41,20 +41,20 @@ adapters/hooks/
 
 ## 部署步骤
 
-### 1. 安装 Rule Hub
+### 1. 安装 AgentSeed
 
 ```bash
-pip install ai-rule
+pip install agentseed
 # 或
-git clone https://gitcode.com/badhope/AI-RULE.git
-export AI_RULE_REPO=/path/to/AI-RULE
+git clone https://github.com/weed33834/AgentSeed.git
+export AGENTSEED_REPO=/path/to/AgentSeed
 ```
 
 ### 2. 复制适配器到你的项目
 
 ```bash
 # 假设你在 ~/my-project/ 里开发
-cp -r $AI_RULE_REPO/adapters/hooks/ ~/my-project/.ai-rule-hooks/
+cp -r $AGENTSEED_REPO/adapters/hooks/ ~/my-project/.agentseed-hooks/
 ```
 
 ### 3. 启用对应平台的 hook
@@ -69,7 +69,7 @@ cp -r $AI_RULE_REPO/adapters/hooks/ ~/my-project/.ai-rule-hooks/
 
 ```bash
 # 测试 MCP 安装拦截
-echo '{"tool_name": "Bash", "tool_input": {"command": "npm install @modelcontextprotocol/server-filesystem"}}' | python .ai-rule-hooks/claude-code/pre_tool_use.py
+echo '{"tool_name": "Bash", "tool_input": {"command": "npm install @modelcontextprotocol/server-filesystem"}}' | python .agentseed-hooks/claude-code/pre_tool_use.py
 
 # 应输出：{"deny": true, "reason": "[P0 MCP_NO_AUTO_INSTALL] ..."}
 ```
@@ -101,7 +101,7 @@ python adapters/hooks/shared/check.py
 
 ## 边界说明
 
-- **stateful 约束（FAILURE_CIRCUIT_BREAKER）**：当前版本未实现，需要 hook 维护跨工具调用状态。下一版本计划用本地状态文件（`.ai-rule/session-state.json`）支持。
+- **stateful 约束（FAILURE_CIRCUIT_BREAKER）**：当前版本未实现，需要 hook 维护跨工具调用状态。下一版本计划用本地状态文件（`.agentseed/session-state.json`）支持。
 - **runtime 约束（PROMPT_INJECTION_GUARD）**：当前版本未实现，需要平台支持 UserPromptSubmit hook。Claude Code 支持，下一版本接入。
 - **Trae 沙箱**：只能配置平台固定策略，不能跑自定义脚本。所以 Trae 适配器是 `.json` 不是 `.py`。
-- **白名单**：可在 `.ai-rule/session-allowed.txt` 里写文件路径（每行一个），这些文件不会被 SCOPE_LIMITED_CHANGES 拦截。
+- **白名单**：可在 `.agentseed/session-allowed.txt` 里写文件路径（每行一个），这些文件不会被 SCOPE_LIMITED_CHANGES 拦截。

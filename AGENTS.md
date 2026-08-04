@@ -1,5 +1,5 @@
-<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-07-29 04:54:25 | hash: 8198e411d84b | 禁止手工编辑 -->
-<!-- 源: core/*.md + profiles/<id>/{AGENTS.md,docs/} + capabilities/*.md + manifests/*.yaml | 生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->
+<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-08-04 01:52:20 | hash: 8198e411d84b | 禁止手工编辑 -->
+<!-- 源: core/*.md + personas/<id>/{AGENTS.md,prompts/} + capabilities/<cap>/  + personas/*.yaml | 生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->
 
 # === CORE LAYER (P0 红线，始终生效) ===
 
@@ -8,6 +8,10 @@
 
 > 本文件是所有 Profile 共享的 P0 硬约束。任何 Profile 不得覆盖此层规则。
 > 冲突时优先级：P0 安全/权限 > P1 用户明确确认 > P2 主 Profile > P3 能力包 > P4 默认行为。
+>
+> **I-HIERARCHY ANCHOR**: 本文件中 `<!-- P0:ANCHOR -->...<!-- /P0 -->` 包裹的规则块在 sync 时会被复制到规则集末尾，利用首尾锚定效应强化模型对 System Prompt 的遵从度（Anthropic Instruction Hierarchy, Wallace et al. 2025）。
+
+<!-- P0:ANCHOR-START -->
 
 ## Instruction Budget
 
@@ -20,6 +24,13 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 - **Soft rules** (preferences, style guidelines): Not counted toward the budget — these are advisory, not enforced.
 - **When budget is exceeded**: Drop lowest-priority rules first (P4 → P3), never P0.
 - **Rationale for every rule**: Always explain *why* a rule exists, not just *what* it requires. Claude 4.x / GPT-4.1 follow rules better when they understand the reasoning behind them.
+
+### RT Budget（推理深度预算）
+
+- `RT:QUICK`：不触发 extended thinking，最大输出 token ≤ 当前模型默认上限的 30%。
+- `RT:STANDARD`：标准 thinking，无额外约束。
+- `RT:DEEP`：触发 extended thinking / CoT 模式，允许最大 thinking token = 当前模型上限。
+- RT 预算由 `sync_rules.py --rt` 参数控制，默认 `STANDARD`。
 
 ## 1. 安全与保密
 
@@ -107,10 +118,14 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 - 生成文件头部必须带来源、生成时间、输入哈希与"禁止手工编辑"标记。
   // Rationale: Provenance headers make it obvious which file is generated and which is the source, preventing accidental edits.
 
+<!-- /P0:ANCHOR-END -->
+
 ## [core] core/interaction.md
 # Core Interaction（核心交互层）
 
 > 所有 Profile 共享的沟通与意图处理规则。
+
+<!-- P1:ANCHOR-START -->
 
 ## 1. 意图归一化
 
@@ -168,6 +183,8 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 
 必须主动做：错误预警、风险提示、信息补充、矛盾检测。
 禁止主动做：修改用户没提到的文件、添加用户没要求的功能、替用户做决定、过度展开。
+
+<!-- /P1:ANCHOR-END -->
 
 ## [core] core/language-mediation.md
 # Language Mediation Protocol（语言中介协议）
@@ -252,7 +269,7 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 
 # === PROFILE LAYER ===
 
-## [profile] profiles/coding/AGENTS.md
+## [profile] personas/coding/AGENTS.md
 > 本文件是规则唯一源头。其他工具配置文件（CLAUDE.md、GEMINI.md 等）由 `python scripts/sync_rules.py` 从本文件同步生成，请勿直接编辑它们。
 
 # Project Rules & Safety Protocol
@@ -261,7 +278,7 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 - Start replies directly with the answer or code. Drop all filler phrases like "好的"、"没问题"、"当然可以"、"我将为您...".
 - When requirements are ambiguous or information is missing, stop immediately and ask the user rather than filling in assumptions.
 - 回复必须精炼，使用中文。代码注释必须使用中文，且只写"为什么这么写"，聚焦于原因而非描述代码功能。
-- 每次任务前先读取本文件及所有 `@docs/prompts/*.md` 引用文件。
+- 每次任务前先读取本文件及所有 `@prompts/*.md` 引用文件。
 - 先规划、后实现；没有确认的需求不脑补代码。
 - 联网优先于内部知识，尤其版本和新 API。
 - 有成熟库必须用库，prefer using established libraries over hand-rolling low-level logic.
@@ -281,8 +298,8 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 - Use precise line-number or function-level replacement for large files; reserve full rewrites for cases with explicit user approval.
 
 ## 协作规则与项目隔离 (Collaboration Rule Isolation)
-- 本文件及其引用的 `docs/prompts/*.md` 仅定义 AI 与用户的协作规则，不属于任何具体开发项目的业务代码、配置或交付物。
-- Keep rule files separate from project files: modify `AGENTS.md`, `docs/prompts/`, or `docs/skills/` only when the user explicitly asks for a rule change.
+- 本文件及其引用的 `prompts/*.md` 仅定义 AI 与用户的协作规则，不属于任何具体开发项目的业务代码、配置或交付物。
+- Keep rule files separate from project files: modify `AGENTS.md`, `prompts/`, or `skills/` only when the user explicitly asks for a rule change.
 - 执行具体项目任务前，先确认项目根目录；项目代码、依赖文件、环境文件、测试结果和 Git 操作仅在该项目根目录内进行。
 - Keep collaboration rules in the rule directory and project artifacts in the project directory: copy rules into project dirs only on explicit request, and keep project dependencies, env files, configs, build outputs, and Git state out of the rule directory.
 - 同一会话涉及多个项目时，必须按项目根目录分别处理上下文、命令和变更；modify a file only after confirming which project it belongs to.
@@ -292,6 +309,8 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 ## 4. Debugging & Error Handling (防死循环与求助机制)
 - 失败熔断：修复同一个 Bug 连续失败 2 次，或终端请求连续失败 3 次，必须立刻停止所有代码修改操作。
 - 停止后动作：After stopping, output a fault report (current error, attempted solutions, suspected root cause) and explicitly request human takeover. Drive the next step from the report rather than blind trial-and-error.
+- 远程沙箱工程规范：在远程沙箱/CI 环境开发时必须查阅 `@personas/coding/skills/remote-sandbox-sop.md` (按需 Read)（工作目录选择、push 时机、命令输出可见性、subagent 拆分等通用教训）。
+- 平台专属护栏：检测到 Trae 沙箱环境（见 `adapters/trae/session-guardrails.md` §0 检测条件）时，额外应用 `adapters/trae/session-guardrails.md` 的 Trae 专属条款。
 
 ## 5. Security & Secrets (安全与保密)
 - API Keys, passwords, tokens, and database connection strings must be read from `os.getenv()` or `python-dotenv`, never hardcoded in source.
@@ -308,15 +327,15 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 
 ## 7. Shell & Git Constraints (Windows/PowerShell 环境)
 - OS: Windows。必须使用 PowerShell 语法（`Remove-Item` 代替 `rm`，`$env:VAR` 代替 `$VAR`）。Use Windows PowerShell conventions exclusively.
-- Git 操作前必须查阅: `@profiles/coding/docs/skills/git-sop.md` (按需 Read)
+- Git 操作前必须查阅: `@personas/coding/skills/git-sop.md` (按需 Read)
 - 提交前必须 `git status` + `git diff`。
 - Wait for explicit user confirmation before any `git push`. Reserve `git push -f` for cases with explicit user approval. Stage files with targeted `git add <path>` rather than blanket `git add .`.
 
 ## 8. Skill Acquisition (技能获取协议)
 - 基础功能必须优先使用 `pip install`。
-- 复杂脚本/工具必须查阅授权白名单: `@profiles/coding/docs/skills/registry.md` (按需 Read)
+- 复杂脚本/工具必须查阅授权白名单: `@personas/coding/skills/registry.md` (按需 Read)
 - 若需从 GitHub 下载脚本，必须先展示 URL 和 Star 数，经用户同意后下载至临时目录，审查后使用。
-- 获取层级（标准库 → 包管理器 → 本地注册表 → 优先厂商官方仓库 → 受限自主搜索）：详见 `@profiles/coding/docs/skills/registry.md` (按需 Read)。
+- 获取层级（标准库 → 包管理器 → 本地注册表 → 优先厂商官方仓库 → 受限自主搜索）：详见 `@personas/coding/skills/registry.md` (按需 Read)。
 - **MCP 不在技能获取范围内**（见 §5 红线）。
 
 ## 意图识别与澄清协议 (Intent Recognition & Clarification)
@@ -327,10 +346,10 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 
 ## Tool / Skill / MCP 管理策略
 - **Tool（内置工具）= 手和脚**：Terminal、文件读写等内置工具开箱即用，Skill 的落地必须靠它们。
-- **Skill（说明书）= 菜谱**：`docs/skills/` 下的文本/脚本教 AI 怎么做复杂事。AI 按需读取，不自动执行未知脚本。`docs/skills/` 现含：`registry.md`(工具白名单)、`git-sop.md`(Git 规范)、`powershell-tips.md`(PowerShell 要点)、`mcp-registry.md`(MCP 清单)、`tool-skill-mcp.md`(三者关系与落地结构)。
+- **Skill（说明书）= 菜谱**：`skills/` 下的文本/脚本教 AI 怎么做复杂事。AI 按需读取，不自动执行未知脚本。`skills/` 现含：`registry.md`(工具白名单)、`git-sop.md`(Git 规范)、`powershell-tips.md`(PowerShell 要点)、`mcp-registry.md`(MCP 清单)、`tool-skill-mcp.md`(三者关系与落地结构)。
 - **MCP（外部直连通道）= 输血管**：高频对接外部系统（数据库、GitHub API、Notion）强烈建议配 MCP，比 AI 拼命令行更安全稳定；但配置权在你手里。
-- 允许的 MCP 服务清单与配置说明见 `@profiles/coding/docs/skills/mcp-registry.md` (按需 Read)（仅参考，手动配置）。
-- 三者关系与落地结构详解见 `@profiles/coding/docs/skills/tool-skill-mcp.md` (按需 Read)。
+- 允许的 MCP 服务清单与配置说明见 `@personas/coding/skills/mcp-registry.md` (按需 Read)（仅参考，手动配置）。
+- 三者关系与落地结构详解见 `@personas/coding/skills/tool-skill-mcp.md` (按需 Read)。
 
 ## Default Tool Sources & Deep Search Protocol
 
@@ -373,15 +392,17 @@ When the user's task requires factual support, dependency verification, or error
 - 优先 httpx 而非 requests，优先 pendulum 而非 datetime。
 
 ## References
-- 智能体提示词: `@profiles/coding/docs/prompts/system-prompt.md` (按需 Read)
-- 架构师角色: `@profiles/coding/docs/prompts/architect-subagent.md` (按需 Read)
-- 工程师角色: `@profiles/coding/docs/prompts/engineer-subagent.md` (按需 Read)
-- 审查官角色: `@profiles/coding/docs/prompts/critic-subagent.md` (按需 Read)
-- 验证员角色: `@profiles/coding/docs/prompts/verifier-subagent.md` (按需 Read)
-- 交付角色: `@profiles/coding/docs/prompts/final-subagent.md` (按需 Read)
-- 技能注册表: `@profiles/coding/docs/skills/registry.md` (按需 Read)
+- 智能体提示词: `@personas/coding/prompts/system-prompt.md` (按需 Read)
+- 架构师角色: `@personas/coding/prompts/architect-subagent.md` (按需 Read)
+- 工程师角色: `@personas/coding/prompts/engineer-subagent.md` (按需 Read)
+- 审查官角色: `@personas/coding/prompts/critic-subagent.md` (按需 Read)
+- 验证员角色: `@personas/coding/prompts/verifier-subagent.md` (按需 Read)
+- 交付角色: `@personas/coding/prompts/final-subagent.md` (按需 Read)
+- 技能注册表: `@personas/coding/skills/registry.md` (按需 Read)
+- 远程沙箱工程规范: `@personas/coding/skills/remote-sandbox-sop.md` (按需 Read)
+- Trae 平台专属护栏（条件激活）: `adapters/trae/session-guardrails.md`
 
-## [profile] profiles/coding/docs/prompts/system-prompt.md
+## [profile] personas/coding/prompts/system-prompt.md
 # System Prompt
 
 ## Language Mediation (Input Stage)
@@ -471,6 +492,8 @@ For every task, simulate the following sub-agent workflow:
 1. If your approach is blocked, do not brute force. Consider alternatives.
 2. If still stuck, stop and ask the user with clear options.
 3. Never fabricate APIs or libraries. Verify via terminal or web search if unsure.
+4. In remote sandbox / CI environments, consult `@personas/coding/skills/remote-sandbox-sop.md` (按需 Read) for common pitfalls (working dir, push timing, output visibility, subagent splitting).
+5. When Trae sandbox is detected (cwd=/workspace, CI=true, Edit rejects /tmp, or RunCommand output cleared by system-reminders), also apply adapters/trae/session-guardrails.md.
 </when_blocked>
 
 <engineering_hygiene>
@@ -483,8 +506,8 @@ For every task, simulate the following sub-agent workflow:
 <skill_acquisition>
 1. **Stdlib First** — evaluate Python standard library before considering any third-party dependency.
 2. **Package Manager First** — prefer `pip install` / `npm install` over cloning GitHub repos directly.
-3. **Registry Lookup** — before installing, check `docs/skills/registry.md`. Pick from the curated whitelist by 11 categories.
-4. **Preferred Vendor Orgs** — if registry has no match, search the "Trusted Vendor Orgs" list in `docs/skills/registry.md` FIRST (Alibaba, Tencent, ByteDance, Baidu, Google, Microsoft, Meta, OpenAI, Anthropic, DeepSeek, etc.). Vendor repos are code-reviewed, routinely 10k+ stars, actively maintained — prefer them over generic high-star repos.
+3. **Registry Lookup** — before installing, check `skills/registry.md`. Pick from the curated whitelist by 11 categories.
+4. **Preferred Vendor Orgs** — if registry has no match, search the "Trusted Vendor Orgs" list in `skills/registry.md` FIRST (Alibaba, Tencent, ByteDance, Baidu, Google, Microsoft, Meta, OpenAI, Anthropic, DeepSeek, etc.). Vendor repos are code-reviewed, routinely 10k+ stars, actively maintained — prefer them over generic high-star repos.
 5. **Constrained Autonomous Search** (enable ONLY when registry AND vendor orgs have no match):
    a. GitHub search allowed only if: Star > 1000 OR commits within last 3 months. (Vendor org repos exempt from the star floor.)
    b. Before downloading: show the user the repo URL, star count, and brief description. Wait for explicit confirmation.
@@ -497,7 +520,7 @@ For every task, simulate the following sub-agent workflow:
 2. AI MUST NOT download, install, start, or auto-configure MCP servers by itself.
 3. MCP must be configured manually by the user in each AI tool's MCP settings (Trae / Claude Desktop / Cursor / VS Code, etc.).
 4. AI may only output install commands and config JSON for the user to review and paste.
-5. Approved MCP servers are listed in `docs/skills/mcp-registry.md` for manual reference only — no auto-download instructions.
+5. Approved MCP servers are listed in `skills/mcp-registry.md` for manual reference only — no auto-download instructions.
 </mcp_policy>
 
 <change_scope>
@@ -516,7 +539,7 @@ For every task, simulate the following sub-agent workflow:
 
 <shell_git>
 1. OS: Windows. Use PowerShell syntax (`Remove-Item` not `rm`, `$env:VAR` not `$VAR`). No Linux Bash syntax.
-2. Before any git operation, read `@profiles/coding/docs/skills/git-sop.md` (按需 Read).
+2. Before any git operation, read `@personas/coding/skills/git-sop.md` (按需 Read).
 3. Before committing: `git status` + `git diff`.
 4. Never auto `git push`, never `git push -f`, never blind `git add .`.
 </shell_git>
@@ -531,57 +554,58 @@ Before producing your final output:
 
 # === ON-DEMAND INDEX (按需加载，不预载) ===
 > 以下内容默认**不加载**。Agent 在对话中遇到对应触发条件时，必须主动用 `Read` 工具读取对应文件后再行动。
-> 资源根绝对路径（生成时记录）: `/workspace/AI-rule`
-> 资源来源: Rule Hub 仓库 dev 模式（ai_rule/ 在仓库内）
-> 远程仓库: https://gitcode.com/badhope/AI-RULE.git
+> 资源根绝对路径（生成时记录）: `C:\Users\Administrator\.qclaw\workspace-tfxjjhfnjialcuju\AI-RULE`
+> 资源来源: cwd 祖先链中找到的 AgentSeed 仓库
+> 远程仓库: https://github.com/weed33834/AgentSeed.git
 > 预算对齐 governance.md §Instruction Budget：不预载是为避免指令过载导致 P0 红线失守。
 
 > **路径解析协议（agent 必读，按顺序尝试，首个成功即用）**:
 > 1. 优先尝试 `<资源根绝对路径>/<表中相对路径>`
-> 2. 若上条路径不存在（如入口文件被复制到其他机器/项目），尝试环境变量 `AI_RULE_REPO` 指向的目录
-> 3. 若是 pip 安装的 ai-rule 包，规则源已随包分发，可从 Python 解释器内查：`python -c "import ai_rule, pathlib; print(pathlib.Path(ai_rule.__file__).parent / '_resources')"`，得到路径后拼接表中相对路径
-> 4. 若仍不存在，从 https://gitcode.com/badhope/AI-RULE.git 重新 clone 到 `~/.cache/ai-rule/`，再从该目录 Read
-> 5. 若网络不可用且本地无仓库，**直接告知用户**：「我需要访问 Rule Hub 仓库才能加载该 skill，请执行 `pip install ai-rule` 或 `git clone https://gitcode.com/badhope/AI-RULE.git` 并设置 `AI_RULE_REPO` 环境变量」，不要跳过或自行编造规则内容
+> 2. 若上条路径不存在（如入口文件被复制到其他机器/项目），尝试环境变量 `AGENTSEED_REPO` 指向的目录
+> 3. 若是 pip 安装的 agentseed 包，规则源已随包分发，可从 Python 解释器内查：`python -c "import agentseed, pathlib; print(pathlib.Path(agentseed.__file__).parent / '_resources')"`，得到路径后拼接表中相对路径
+> 4. 若仍不存在，从 https://github.com/weed33834/AgentSeed.git 重新 clone 到 `~/.cache/agentseed/`，再从该目录 Read
+> 5. 若网络不可用且本地无仓库，**直接告知用户**：「我需要访问 AgentSeed 仓库才能加载该 skill，请执行 `pip install agentseed` 或 `git clone https://github.com/weed33834/AgentSeed.git` 并设置 `AGENTSEED_REPO` 环境变量」，不要跳过或自行编造规则内容
 
 ## Meta Rules (按需，仅切换 profile 时加载)
 | 用途 | 文件路径 |
 |---|---|
-| 本文件定义如何从用户意图或项目锚点确定唯一主 Profile，以及可叠加的能力包白名单。 每次会话只能有一个主 Profile；`novel`、`interactive-novel`、`paper` 两两互斥；`agent-builder` 仅用于构建/评估/部署智能体。 | core/profile-router.md |
+| 本文件定义如何从用户意图或项目锚点确定唯一主 Profile，以及可叠加的能力包白名单。 每次会话只能有一个主 Profile；`novel`、`interactive-novel`、`paper` 两两互斥；`agent-builder` 仅用于构建/评估/部署智能体。 | core/persona-router.md |
 
 ## Subagent Prompts (按需)
 | 触发关键词 | 用途 | 文件路径 | 大小 |
 |---|---|---|---|
-| architect, subagent | Architect Subagent | profiles/coding/docs/prompts/architect-subagent.md | 684B |
-| engineer, subagent | Engineer Subagent | profiles/coding/docs/prompts/engineer-subagent.md | 641B |
-| critic, subagent | Critic Subagent | profiles/coding/docs/prompts/critic-subagent.md | 697B |
-| verifier, subagent | Verifier Subagent | profiles/coding/docs/prompts/verifier-subagent.md | 599B |
-| final, subagent | Final Subagent | profiles/coding/docs/prompts/final-subagent.md | 511B |
+| architect, subagent | Architect Subagent | personas/coding/prompts/architect-subagent.md | 684B |
+| engineer, subagent | Engineer Subagent | personas/coding/prompts/engineer-subagent.md | 641B |
+| critic, subagent | Critic Subagent | personas/coding/prompts/critic-subagent.md | 697B |
+| verifier, subagent | Verifier Subagent | personas/coding/prompts/verifier-subagent.md | 599B |
+| final, subagent | Final Subagent | personas/coding/prompts/final-subagent.md | 511B |
 
-## Skills (按需)
+## SKILLS LAYER (按需)
 | 触发条件 (C) | 终止条件 (T) | 文件路径 | 大小 |
 |---|---|---|---|
-| git, sop | — | profiles/coding/docs/skills/git-sop.md | 719B |
-| registry | — | profiles/coding/docs/skills/registry.md | 7091B |
-| powershell, tips | — | profiles/coding/docs/skills/powershell-tips.md | 1035B |
-| mcp, registry | — | profiles/coding/docs/skills/mcp-registry.md | 1417B |
-| tool, skill, mcp | — | profiles/coding/docs/skills/tool-skill-mcp.md | 1638B |
+| git, sop | — | personas/coding/skills/git-sop.md | 719B |
+| registry | — | personas/coding/skills/registry.md | 7091B |
+| powershell, tips | — | personas/coding/skills/powershell-tips.md | 1035B |
+| mcp, registry | — | personas/coding/skills/mcp-registry.md | 1417B |
+| tool, skill, mcp | — | personas/coding/skills/tool-skill-mcp.md | 1618B |
+| remote, sandbox, sop | — | personas/coding/skills/remote-sandbox-sop.md | 3176B |
 
 ## Capabilities (按需)
 | 能力包 | 用途 | 文件路径 |
 |---|---|---|
-| research | **适用场景**: 需要事实支撑、数据验证、最新信息、版本/API 核实时 **输入/输出契约**: 输入: 问题 + 搜索深度(L1/L2/L3) → 输出: 带来源标注的结论 + 置信度 + 信息缺口 | capabilities/research.md |
-| testing | **适用场景**: 需要编写测试、验证接口、评估覆盖率时 **输入/输出契约**: 输入: 代码 + 接口 + 验收标准 → 输出: 测试用例 + 覆盖率 + 通过/失败报告 | capabilities/testing.md |
-| review | **适用场景**: 代码审查、内容审查、安全审查时 **输入/输出契约**: 输入: 待审文件 + 审查维度 → 输出: 问题清单(含严重度) + 修复建议 | capabilities/review.md |
-| agent-governance | **适用场景**: 评估、观测、安全对齐、对抗测试时 **输入/输出契约**: 输入: Agent 配置 + 日志 → 输出: 评估报告 + 风险项 | capabilities/agent-governance.md |
-| dar | DAR（域权威注册表）为每个领域预置权威源名录、打分规则、检索通道和领域知识。 规范定义见 `core/dar-spec.md`。 | capabilities/dar/README.md + capabilities/dar/dar-coding.yaml |
+| research | 本文件由 `scripts/build_dar_md.py` 自动生成，聚合 6 域配置。禁止手工编辑。 加载后，在 enable_capabilities: [dar] 的 Profile 中生效，提供域感知源路由与打分策略。 | capabilities/research/ |
+| testing | **适用场景**: 需要编写测试、验证接口、评估覆盖率时 **输入/输出契约**: 输入: 代码 + 接口 + 验收标准 → 输出: 测试用例 + 覆盖率 + 通过/失败报告 | capabilities/testing/ |
+| review | **适用场景**: 代码审查、内容审查、安全审查时 **输入/输出契约**: 输入: 待审文件 + 审查维度 → 输出: 问题清单(含严重度) + 修复建议 | capabilities/review/ |
+| agent-governance | **适用场景**: 评估、观测、安全对齐、对抗测试时 **输入/输出契约**: 输入: Agent 配置 + 日志 → 输出: 评估报告 + 风险项 | capabilities/agent-governance/ |
+| dar | DAR（域权威注册表）为每个领域预置权威源名录、打分规则、检索通道和领域知识。 规范定义见 `core/dar-spec.md`。 | capabilities/research/dar/README.md + capabilities/research/dar/dar-coding.yaml |
 
 ## MCP (按需，常驻服务由用户手动配置)
 > ⚠️ MCP 红线：AI 禁止自下载/自安装/自启动/自配置 MCP。仅可输出命令与配置 JSON 供用户审阅后粘贴。
 
 | 用途 | 文件路径 |
 |---|---|
-| ⚠️ **红线**：MCP 是常驻后台服务，涉及环境变量、端口、权限。**AI 禁止自下载、自安装、自启动、自配置 MCP**。 本文件只列出「经过筛选、可放心手动接入」的 MCP 服务，供你在各 AI 工具（Trae / Claude Desktop / Cursor / VS Code 等）里手动配置时参考。 配置权永远在你（用户）手里。 | profiles/coding/docs/skills/mcp-registry.md |
-| 改写自项目架构设计。核心目的：让 AI 清楚「什么该自己干、什么该读说明书、什么必须交给你配」。 | profiles/coding/docs/skills/tool-skill-mcp.md |
+| ⚠️ **红线**：MCP 是常驻后台服务，涉及环境变量、端口、权限。**AI 禁止自下载、自安装、自启动、自配置 MCP**。 本文件只列出「经过筛选、可放心手动接入」的 MCP 服务，供你在各 AI 工具（Trae / Claude Desktop / Cursor / VS Code 等）里手动配置时参考。 配置权永远在你（用户）手里。 | personas/coding/skills/mcp-registry.md |
+| 改写自项目架构设计。核心目的：让 AI 清楚「什么该自己干、什么该读说明书、什么必须交给你配」。 | personas/coding/skills/tool-skill-mcp.md |
 | MCP 配置示例（占位 token） | mcp.example.json |
 
 ## Domain-Specific Quality Gates (本 Profile 特色场景的质量门槛)
@@ -590,9 +614,9 @@ Before producing your final output:
 
 | 场景 | 应 Read skill | 应算公式 | 阈值（高分→低分） |
 |---|---|---|---|
-| 代码审查 | profiles/coding/docs/skills/code-review-quality.md | Code_Review_Quality | ≥0.85 Approve / 0.6-0.85 Comments / <0.6 Reject |
-| bug 排查 | profiles/coding/docs/skills/bug-investigation.md | Root_Cause_Confidence (RCC) | ≥0.8 直接修 / 0.5-0.8 待观察 / <0.5 禁修 |
-| 技术选型/检索 | profiles/conversation/docs/skills/deep-search.md §6 | Search_Quality (通用) | ≥0.8 高 / 0.5-0.8 中 / <0.5 低 |
+| 代码审查 | personas/coding/skills/code-review-quality.md | Code_Review_Quality | ≥0.85 Approve / 0.6-0.85 Comments / <0.6 Reject |
+| bug 排查 | personas/coding/skills/bug-investigation.md | Root_Cause_Confidence (RCC) | ≥0.8 直接修 / 0.5-0.8 待观察 / <0.5 禁修 |
+| 技术选型/检索 | personas/conversation/skills/deep-search.md §6 | Search_Quality (通用) | ≥0.8 高 / 0.5-0.8 中 / <0.5 低 |
 
 强制标注：交付回复时标注本次走了哪些公式及分数，如 `[LSQ: 0.88 / 置信度: 中 / CoV: 已通过]`，便于用户校验。
 

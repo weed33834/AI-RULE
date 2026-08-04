@@ -167,13 +167,13 @@ includes:
   core:
     - core/governance.md
   profile:
-    - profiles/coding/AGENTS.md
+    - personas/coding/AGENTS.md
 enables_capabilities:
   - research
 """
     inc = parse_includes(text)
     assert inc["core"] == ["core/governance.md"], f"core 解析错: {inc['core']}"
-    assert inc["profile"] == ["profiles/coding/AGENTS.md"], f"profile 解析错: {inc['profile']}"
+    assert inc["profile"] == ["personas/coding/AGENTS.md"], f"profile 解析错: {inc['profile']}"
     print("[PASS] parse_includes 正确")
 
 

@@ -1,5 +1,5 @@
 <svg viewBox="0 0 680 390" width="680" height="390" xmlns="http://www.w3.org/2000/svg" role="img">
-<title>Rule Hub 使用思路</title>
+<title>AgentSeed 使用思路</title>
 <desc>克隆仓库 → 确定 Profile → 运行 sync 装配 → 引入项目 → AI 按统一规则工作</desc>
 <defs>
 <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -8,8 +8,8 @@
 </defs>
 
 <rect x="190" y="20" width="300" height="54" rx="10" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
-<text x="340" y="44" text-anchor="middle" font-size="14" fill="#042C53" font-weight="500">1. 克隆 Rule Hub 仓库</text>
-<text x="340" y="62" text-anchor="middle" font-size="11" fill="#0C447C">git clone &amp; cd AI-RULE</text>
+<text x="340" y="44" text-anchor="middle" font-size="14" fill="#042C53" font-weight="500">1. 克隆 AgentSeed 仓库</text>
+<text x="340" y="62" text-anchor="middle" font-size="11" fill="#0C447C">git clone &amp; cd AgentSeed</text>
 <line x1="340" y1="74" x2="340" y2="100" stroke="#64748b" stroke-width="1.5" marker-end="url(#arrow2)"/>
 
 <rect x="190" y="100" width="300" height="54" rx="10" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>

@@ -1,12 +1,12 @@
 # MCP Integration
 
-Rule Hub 能力包 → MCP (Model Context Protocol) 互操作层。
+AgentSeed 能力包 → MCP (Model Context Protocol) 互操作层。
 
 ## 概述
 
 Anthropic MCP 定义了 LLM 应用与外部工具/数据源之间的标准接口（类似于 USB-C）。
-Rule Hub 通过为每个能力包添加 `.mcp.json` 描述符，使支持 MCP 的 Agent 客户端
-能够程序化发现和调用 Rule Hub 定义的工具约束，而无需人工解析 Prompt 文本。
+AgentSeed 通过为每个能力包添加 `.mcp.json` 描述符，使支持 MCP 的 Agent 客户端
+能够程序化发现和调用 AgentSeed 定义的工具约束，而无需人工解析 Prompt 文本。
 
 ## 文件结构
 

@@ -1,8 +1,8 @@
-"""B1: 聚合 dar-*.yaml → capabilities/dar.md"""
+"""B1: 聚合 dar-*.yaml → capabilities/research/prompt.md"""
 import yaml
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parent.parent  # scripts/../ = AI-RULE/
+REPO = Path(__file__).resolve().parent.parent  # scripts/../ = AgentSeed/
 DAR_DIR = REPO / "capabilities" / "dar"
 
 PROFILE_NAMES = {

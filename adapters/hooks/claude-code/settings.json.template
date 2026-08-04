@@ -1,6 +1,6 @@
 {
   "_comment": "Claude Code Hook 配置模板。复制到 ~/.claude/settings.json 或项目根目录 .claude/settings.json。",
-  "_setup": "1) 把 adapters/hooks/ 目录复制到你的项目根目录 2) 安装 Rule Hub: pip install ai-rule 或 git clone 后设置 AI_RULE_REPO 3) 修改下方 command 路径指向你的 adapters/hooks/claude-code/pre_tool_use.py 4) 重启 Claude Code",
+  "_setup": "1) 把 adapters/hooks/ 目录复制到你的项目根目录 2) 安装 AgentSeed: pip install agentseed 或 git clone 后设置 AGENTSEED_REPO 3) 修改下方 command 路径指向你的 adapters/hooks/claude-code/pre_tool_use.py 4) 重启 Claude Code",
   "hooks": {
     "PreToolUse": [
       {

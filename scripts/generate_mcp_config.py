@@ -58,9 +58,9 @@ def generate(profile: str | None = None) -> dict:
             resources.append(f"{cap}/{res}")
 
     return {
-        "name": "rule-hub-capabilities",
+        "name": "agentseed-capabilities",
         "version": "1.0.0",
-        "description": f"Rule Hub 能力包聚合配置" + (f"（profile={profile}）" if profile else ""),
+        "description": f"AgentSeed 能力包聚合配置" + (f"（profile={profile}）" if profile else ""),
         "profile": profile,
         "capabilities_loaded": loaded,
         "tools": tools,

@@ -1,0 +1,62 @@
+# coding Profile 装配清单
+# 来源仓库: badhope/AI
+# 适用场景: 软件开发、Bug 修复、重构、测试、代码审查
+
+profile:
+  id: coding
+  name: 软件开发规则
+  source_repo: badhope/AI
+  mutually_exclusive_with:
+    - novel
+    - interactive-novel
+
+includes:
+  core:
+    - core/governance.md
+    - core/interaction.md
+    - core/persona-router.md
+    - core/language-mediation.md
+  profile:
+    - personas/coding/AGENTS.md
+    - personas/coding/prompts/architect-subagent.md
+    - personas/coding/prompts/engineer-subagent.md
+    - personas/coding/prompts/critic-subagent.md
+    - personas/coding/prompts/verifier-subagent.md
+    - personas/coding/prompts/final-subagent.md
+    - personas/coding/prompts/system-prompt.md
+  skills:
+    - personas/coding/skills/git-sop.md
+    - personas/coding/skills/registry.md
+    - personas/coding/skills/powershell-tips.md
+    - personas/coding/skills/mcp-registry.md
+    - personas/coding/skills/tool-skill-mcp.md
+    - personas/coding/skills/remote-sandbox-sop.md
+
+enables_capabilities:
+  - research
+  - testing
+  - review
+  - agent-governance
+  - dar
+
+forbids_capabilities:
+  - game-engine
+  - worldbuilding
+  - npc-simulation
+
+activation_anchors:
+  - pyproject.toml
+  - package.json
+  - requirements.txt
+  - src/
+  - tests/
+
+intent_keywords:
+  - 修复
+  - 重构
+  - 测试
+  - 部署
+  - 接口
+  - Bug
+  - CI
+  - 代码

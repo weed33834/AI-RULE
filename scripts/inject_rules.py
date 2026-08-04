@@ -88,7 +88,7 @@ def parse_rules_from_markdown(text: str) -> list[dict[str, str]]:
 
 def assemble_rules(profile: str, mode: str) -> str:
     """按优先级装配规则片段。"""
-    profile_agents = ROOT / "profiles" / profile / "AGENTS.md"
+    profile_agents = ROOT / "personas" / profile / "AGENTS.md"
 
     if not profile_agents.exists():
         return f"<!-- ERROR: Profile {profile} not found -->"
@@ -162,11 +162,11 @@ def assemble_rules(profile: str, mode: str) -> str:
 
     # ── 装配输出 ──
     output = f"""<!--
-  规则注入上下文 — AI-RULE v2.0
+  规则注入上下文 — AgentSeed v2.0
   Profile: {profile} | Mode: {mode}
   生成时间: {Path('.').resolve()}
   以下规则已注入上下文，请在执行时严格遵守。
-  来源: core/governance.md + core/interaction.md + profiles/{profile}/AGENTS.md
+  来源: core/governance.md + core/interaction.md + personas/{profile}/AGENTS.md
 -->
 
 ## P0 安全规则（FA — 不可压缩）
@@ -200,7 +200,7 @@ def assemble_rules(profile: str, mode: str) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="AI-RULE 规则注入脚本")
+    parser = argparse.ArgumentParser(description="AgentSeed 规则注入脚本")
     parser.add_argument("--profile", default="coding", help="Profile ID (coding/conversation/...)")
     parser.add_argument("--mode", default="project", choices=["task", "project", "autonomous"], help="Agent 模式")
     parser.add_argument("--output", default=None, help="输出文件路径（默认输出到 stdout）")

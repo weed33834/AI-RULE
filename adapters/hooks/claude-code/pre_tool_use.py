@@ -65,7 +65,7 @@ def main():
         request = json.loads(raw_input)
     except (json.JSONDecodeError, ValueError) as e:
         # 输入无效，记录到 stderr 但放行（避免 hook 失败阻塞 agent）
-        print(f"[Rule Hub hook] 输入解析失败：{e}", file=sys.stderr)
+        print(f"[AgentSeed hook] 输入解析失败：{e}", file=sys.stderr)
         print(json.dumps({}))
         return 0
 
@@ -84,7 +84,7 @@ def main():
         result = decide(mapped_tool, tool_input)
     except Exception as e:
         # 决策失败时降级为放行（避免 hook 异常阻塞 agent）
-        print(f"[Rule Hub hook] 决策异常：{e}", file=sys.stderr)
+        print(f"[AgentSeed hook] 决策异常：{e}", file=sys.stderr)
         print(json.dumps({}))
         return 0
 
@@ -95,7 +95,7 @@ def main():
             "reason": result["reason"] or f"[{result['matched_constraint']}] 拦截",
         }
         # 同时输出到 stderr 让用户能看到
-        print(f"\n🚫 [Rule Hub Hook] DENY: {response['reason']}\n", file=sys.stderr)
+        print(f"\n🚫 [AgentSeed Hook] DENY: {response['reason']}\n", file=sys.stderr)
         print(json.dumps(response, ensure_ascii=False))
         return 0
 
@@ -104,13 +104,13 @@ def main():
             "require_approval": True,
             "reason": result["reason"] or f"[{result['matched_constraint']}] 需用户确认",
         }
-        print(f"\n⚠️ [Rule Hub Hook] REQUIRES APPROVAL: {response['reason']}\n", file=sys.stderr)
+        print(f"\n⚠️ [AgentSeed Hook] REQUIRES APPROVAL: {response['reason']}\n", file=sys.stderr)
         print(json.dumps(response, ensure_ascii=False))
         return 0
 
     if result["warn"]:
         # 警告但不阻止
-        print(f"\n⚠️ [Rule Hub Hook] WARNING: {result['warn']}\n", file=sys.stderr)
+        print(f"\n⚠️ [AgentSeed Hook] WARNING: {result['warn']}\n", file=sys.stderr)
         print(json.dumps({"warn": result["warn"]}, ensure_ascii=False))
         return 0
 

@@ -23,7 +23,7 @@
       ".lingma/rules/project.md",
       ".comate/rules/project.mdr"
     ],
-    "deny_paths_reason": "这些文件由 ai-rule 自动生成，手改会被下次同步覆盖（NO_EDIT_GENERATED_FILES）",
+    "deny_paths_reason": "这些文件由 agentseed 自动生成，手改会被下次同步覆盖（NO_EDIT_GENERATED_FILES）",
     "deny_patterns": [
       "**/.env",
       "**/.env.local",

@@ -1,4 +1,4 @@
-# Rule Hub — 统一 AI 协作规则（中文）
+# AgentSeed — 统一 AI 协作规则（中文）
 
 [English](README.md) | [中文](README.zh.md) | [日本語](README.ja.md)
 
@@ -37,8 +37,8 @@
 ### 1. 克隆仓库
 
 ```bash
-git clone https://gitcode.com/badhope/AI-RULE.git
-cd AI-RULE
+git clone https://github.com/weed33834/agentseed.git
+cd AgentSeed
 ```
 
 ### 2. 选定 Profile 并生成工具入口
@@ -99,7 +99,7 @@ python scripts/generate_mcp_config.py
 ### 4. 告诉 AI 加载哪个 Profile
 
 ```text
-按 Rule Hub 加载 coding Profile。
+按 AgentSeed 加载 coding Profile。
 ```
 
 或由项目锚点自动识别（见下文）。
@@ -109,7 +109,7 @@ python scripts/generate_mcp_config.py
 ### 显式指定（推荐）
 
 ```text
-按 Rule Hub 加载 <profile-id> Profile。
+按 AgentSeed 加载 <profile-id> Profile。
 ```
 
 ### 项目锚点自动识别
@@ -179,32 +179,32 @@ python scripts/generate_mcp_config.py
 
 ## 架构
 
-![Rule Hub 装配模型](docs/architecture.svg)
+![AgentSeed 装配模型](docs/architecture.svg)
 
 单源规则（`core/` 层 + `AGENTS.md` 选择器）按 Profile 装配，再由 `sync_rules.py` 为各 AI 工具生成入口文件。
 
 ## 使用流程
 
-![Rule Hub 使用流程](docs/usage.svg)
+![AgentSeed 使用流程](docs/usage.svg)
 
 克隆仓库 → 选定 Profile → 运行同步 → 引入项目 → AI 按统一规则工作，跨工具保持一致。
 
 ## 仓库结构
 
 ```
-AI-RULE/
+AgentSeed/
 ├── AGENTS.md                    # 规则中枢入口（选择器 + 优先级 + 语言中介）
 ├── core/                        # 所有 Profile 共享的 P0 硬约束
 │   ├── governance.md            # 安全、权限、MCP 红线、失败熔断
 │   ├── interaction.md           # 澄清、意图归一化、输出规范
-│   ├── profile-router.md        # Profile 选择与能力包白名单
+│   ├── persona-router.md        # Profile 选择与能力包白名单
 │   ├── language-mediation.md    # 语言中介协议（英语推理、用户语言输出）
 │   ├── attention-budget.md      # 注意预算分级与 ABA 协议
 │   ├── agent-modes.md           # Task / Project / Autonomous 三模式定义
 │   ├── mode-overrides.yaml      # 边缘场景模式覆写配置
 │   ├── mcp-integration.md       # MCP 集成与配置指南
 │   └── dar-spec.md              # DAR（域权威注册表）统一规范
-├── profiles/                    # 6 套独立规则
+├── personas/                    # 6 套独立规则
 │   ├── coding/          ( 13 文件)
 │   ├── conversation/    ( 19 文件)
 │   ├── novel/           ( 28 文件)
@@ -212,7 +212,7 @@ AI-RULE/
 │   ├── paper/           ( 22 文件)
 │   └── agent-builder/   ( 70 文件)
 ├── capabilities/                # 14 个按需能力包（含 dar/ + MCP JSON 配置）
-├── manifests/                   # 每个 Profile 的装配清单
+├── personas/                   # 每个 Profile 的装配清单
 ├── skills/                      # coding Profile 的 7 个运行时技能（git-sop / workflow-five-roles / skill-acquisition / deep-search-first / frontend-design / backend-scaffold / fullstack-deploy）
 ├── mcp/                         # 4 个 MCP 工具实现（validate_codebase / review_code / git_precommit_check / generate_tests）
 ├── scripts/
@@ -274,7 +274,7 @@ python scripts/sync_rules.py --profile coding --tool all
 - **弃权协议（Abstention Protocol）**：允许说"我不知道"并防止虚张声势，避免自信地编造。
 - **自我精炼（Self-Refinement）**：Reflexion 循环与 Constitutional 自我批评，在输出前做质量自检。
 
-详见 `profiles/agent-builder/docs/skills/`。
+详见 `personas/agent-builder/skills/`。
 
 ## 验证
 
@@ -446,10 +446,10 @@ P0：core/ 安全、权限、真实性、MCP 红线
 
 ## 仓库地址
 
-本仓库在 GitCode 与 GitHub 同步镜像，内容完全一致：
+本仓库在 GitHub 与 GitHub 同步镜像，内容完全一致：
 
-- GitCode（主仓库）：https://gitcode.com/badhope/AI-RULE
-- GitHub（镜像）：https://github.com/weed33834/AI-RULE
+- GitHub（主仓库）：https://github.com/weed33834/AgentSeed
+- GitHub（镜像）：https://github.com/weed33834/AgentSeed
 
 ## 许可证
 
@@ -459,10 +459,10 @@ MIT
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=weed33834/AI-RULE&type=Date)](https://star-history.com/#weed33834/AI-RULE&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=weed33834/AgentSeed&type=Date)](https://star-history.com/#weed33834/AgentSeed&Date)
 
 <div align="center">
 
-[↑ 返回顶部](#rule-hub--统一-ai-协作规则中文)
+[↑ 返回顶部](#agentseed--统一-ai-协作规则中文)
 
 </div>

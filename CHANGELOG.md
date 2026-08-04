@@ -2,6 +2,52 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，版本号参考语义化版本。
 
+## [2.3.0] — 2026-08-04
+
+### 新增
+
+- **画像路由引擎** `src/agentseed/router.py`：实现 `core/persona-router.md` 全部路由逻辑——显式指定 > 目录锚点 > 意图关键词 > fallback；互斥检查（novel ↔ interactive-novel ↔ paper）；能力包白名单；Agent 模式路由（默认模式/推理深度）。
+- **Persona 市场** `src/agentseed/market.py`：`agentseed persona search / install`；安装走 Quality Gate 三关（安全/质量/兼容）；P0 约束（MCP 不自安装、外部内容不可信）。
+- **CLI 新命令**：`agentseed forge`（一键装配：检测环境 → 路由画像 → 生成平台文件，支持 `--dry-run` / `--intent`）、`agentseed switch`（切换画像含互斥检查）、`agentseed persona list/search/install`、`agentseed status`（装配状态）、`agentseed sync`（同步到平台）。
+- **forge 引擎对接 sync_rules**：装配链路真正落地——`forge()` 调用 `build_ruleset` + `write_tool_file` 生成真实平台文件，并集成 GapScore 缺口分析。
+
+### 变更
+
+- `docs/AGENTSEED_ARCHITECTURE.md`：§4.4 结构图与 §5 映射表同步实际仓库结构（`persona.yaml`、`capabilities/<cap>/`、`research/dar/`、src 包文件清单）；§4.2 CLI 命令表对齐实现。
+- `CONTRIBUTING.md`：更新为 v2 工作流（规则源文件编辑、`agentseed sync`、画像开发指南）。
+
+## [2.0.0] — 2026-08-03
+
+### 变更
+
+- **品牌重塑**：`AI-RULE`（Rule Hub）→ **AgentSeed**。包名 `ai-rule` → `agentseed`，CLI 入口 `agentseed`。
+- **目录重构**：
+  - `ai_rule/` → `src/agentseed/`
+  - `profiles/` → `personas/`
+  - `manifests/*.yaml` → `personas/<id>/persona.yaml`
+  - `personas/<id>/docs/prompts/` → `prompts/`（扁平化）
+  - `personas/<id>/docs/skills/` → `skills/`（扁平化）
+  - `capabilities/*.md` → `capabilities/<cap>/`（cap.yaml + prompt.md + mcp.json）
+  - `core/profile-router.md` → `core/persona-router.md`
+  - 删除顶层 `skills/`、`mcp/`、`README.ja.md`
+- **资源根环境变量**：`AI_RULE_REPO` → `AGENTSEED_REPO`；缓存路径 `~/.cache/agentseed/`；clone 回退 URL 指向 `github.com/weed33834/agentseed.git`。
+
+### 新增
+
+- **自进化引擎** `src/agentseed/evolution.py` + `core/self-evolution.md`：GapScore 加权公式（0.35/0.25/0.20/0.10/0.10）、阈值决策树（0.30/0.55/0.75）、Action Decision Matrix、Quality Gate 三关骨架、置信度加权模型。
+- **装配引擎** `src/agentseed/forge.py`：环境检测（锚点/平台）+ CapabilityCheck + GapScore 分析。
+- **画像脚手架** `personas/_template/default/`：AGENTS.md / persona.yaml / prompts/system-prompt.md / skills/.gitkeep / SOUL.md。
+
+### 修复
+
+- 全部 107+ 处旧品牌/旧路径残留（`ai_rule` / `ai-rule` / `AI-RULE` / `Rule Hub` / `profile-router` / `manifests`）清理至零残留。
+- `setup.py` 语法错误（空逗号）；MANIFEST.in 引用不存在的目录/README；`scripts/validate_rules.py` 与测试对 `manifests/` 的路径依赖。
+- 6 个 `persona.yaml` 与 6 个 `core/*.md` 的 GBK 乱码全部修复为 UTF-8。
+
+### 测试
+
+- 69 passed, 1 skipped，零回归。
+
 ## [1.4.0] — 2026-07-25
 
 ### 新增
@@ -27,7 +73,7 @@
 
 ### 变更
 
-- `manifests/coding.yaml`：新增 `runtime_skills` 与 `rule_injection` 段。
+- `personas/coding/persona.yaml`：新增 `runtime_skills` 与 `rule_injection` 段。
 - `README.md` / `README.zh.md` / `README.ja.md`：徽章数 260+→380+；结构树补全 `skills/` / `mcp/` / `agent-modes.md` / `mode-overrides.yaml` / `inject_rules.py`；新增 Runtime Skills 章节。
 - `PROJECT.md`：文件速查表更新。
 - `CONTRIBUTING.md`：修正多语言 README 文件名引用（`README_CN.md`→`README.zh.md`、`README_JA.md`→`README.ja.md`）；新增 Runtime Skills 与 MCP 工具章节。
@@ -75,7 +121,7 @@
 
 ### 变更
 
-- `core/profile-router.md`：能力包白名单所有 Profile 加入 `dar`。
+- `core/persona-router.md`：能力包白名单所有 Profile 加入 `dar`。
 - `deep-search.md`：查询设计阶段加入 DAR 路由规则引用；结果分析阶段加入 DAR 打分公式引用。
 - `truth-protocol.md`：CoV 验证流程加入 DAR T1-T4 分级引用。
 - `source-credibility.md`：来源分级从 A-E 五档统一为 DAR T1-T4 四档。
@@ -94,8 +140,8 @@
 
 ### 变更
 
-- `core/profile-router.md`：主 Profile 表加入 paper；互斥表更新；锚点加入 `manuscript/` 和 `references.bib`；关键词加入论文/文献/引用/投稿/审稿。
-- `manifests/coding.yaml`、`conversation.yaml`、`novel.yaml`、`interactive-novel.yaml`：互斥列表加入 paper。
+- `core/persona-router.md`：主 Profile 表加入 paper；互斥表更新；锚点加入 `manuscript/` 和 `references.bib`；关键词加入论文/文献/引用/投稿/审稿。
+- `personas/coding/persona.yaml`、`conversation.yaml`、`novel.yaml`、`interactive-novel.yaml`：互斥列表加入 paper。
 - 3 个 README：Profile 数 5→6；文件数 209→234；徽章更新。
 - `SECURITY.md`：漏洞披露联系方式改为"在仓库提 issue 向维护者索取"。
 - `tests/conftest.py`：新增 session-scope fixture，测试结束后自动用 coding profile 恢复所有生成文件。

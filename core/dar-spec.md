@@ -2,7 +2,7 @@
 
 > 本文件定义 DAR 的统一规范：来源分级、打分公式、路由规则、冲突策略、动态调整。
 > 所有 Profile 的 DAR 配置（`capabilities/dar/dar-<domain>.yaml`）均遵循本规范。
-> DAR 是深度搜索（`profiles/conversation/docs/skills/deep-search.md`）和真实性协议（`profiles/conversation/docs/skills/truth-protocol.md`）的底层支撑。
+> DAR 是深度搜索（`personas/conversation/skills/deep-search.md`）和真实性协议（`personas/conversation/skills/truth-protocol.md`）的底层支撑。
 
 ## §1 目的
 
@@ -203,11 +203,11 @@ routing_rules:
 
 | 集成文件 | 集成方式 | 说明 |
 |----------|----------|------|
-| `profiles/conversation/docs/skills/deep-search.md` | 查询设计引用 DAR 路由规则；结果分析引用 DAR 打分公式 | Conversation Profile 专属 |
-| `profiles/conversation/docs/skills/truth-protocol.md` | CoV 第 3 步逐条验证使用 DAR T1-T4 分级 | Conversation Profile 专属 |
-| `profiles/conversation/docs/skills/source-credibility.md` | 来源分级统一使用 DAR T1-T4 | Conversation Profile 专属 |
-| `core/profile-router.md` | 所有 Profile 能力包白名单加入 dar | Core 层 |
-| `manifests/*.yaml` | `enables_capabilities` 加入 dar | Core 层 |
+| `personas/conversation/skills/deep-search.md` | 查询设计引用 DAR 路由规则；结果分析引用 DAR 打分公式 | Conversation Profile 专属 |
+| `personas/conversation/skills/truth-protocol.md` | CoV 第 3 步逐条验证使用 DAR T1-T4 分级 | Conversation Profile 专属 |
+| `personas/conversation/skills/source-credibility.md` | 来源分级统一使用 DAR T1-T4 | Conversation Profile 专属 |
+| `core/persona-router.md` | 所有 Profile 能力包白名单加入 dar | Core 层 |
+| `personas/*.yaml` | `enables_capabilities` 加入 dar | Core 层 |
 
 ## §10 完成检查清单
 

@@ -90,28 +90,28 @@ def test_skeleton_has_mcp_section():
 
 
 def test_skeleton_has_meta_rules_when_router_present():
-    """skeleton 模式应把 core/profile-router.md 放到 Meta Rules（不内联）"""
+    """skeleton 模式应把 core/persona-router.md 放到 Meta Rules（不内联）"""
     for pid in PROFILES:
         m = parse_manifest(pid)
-        if "core/profile-router.md" in m["includes"].get("core", []):
+        if "core/persona-router.md" in m["includes"].get("core", []):
             rs = build_ruleset(pid, mode="skeleton")
-            assert "## Meta Rules (按需" in rs, f"{pid}: profile-router 应在 Meta Rules 段"
-            assert "core/profile-router.md" in rs, f"{pid}: Meta Rules 缺 profile-router 路径"
-            # profile-router 内容不应内联到 CORE LAYER
-            router_content = (REPO_ROOT / "core/profile-router.md").read_text(encoding="utf-8")
+            assert "## Meta Rules (按需" in rs, f"{pid}: persona-router 应在 Meta Rules 段"
+            assert "core/persona-router.md" in rs, f"{pid}: Meta Rules 缺 persona-router 路径"
+            # persona-router 内容不应内联到 CORE LAYER
+            router_content = (REPO_ROOT / "core/persona-router.md").read_text(encoding="utf-8")
             # 取一个独特的标题行验证未内联
-            unique = "# Profile Router（Profile 选择器）"
+            unique = "# Persona Router（Profile 选择器）"
             # 它在 ON-DEMAND INDEX 里会出现，但不能在 CORE LAYER 里
             core_layer = rs.split("# === PROFILE LAYER")[0]
-            assert unique not in core_layer, f"{pid}: profile-router 内容被错误内联到 CORE LAYER"
-    print("[PASS] skeleton 模式把 profile-router 移到 Meta Rules")
+            assert unique not in core_layer, f"{pid}: persona-router 内容被错误内联到 CORE LAYER"
+    print("[PASS] skeleton 模式把 persona-router 移到 Meta Rules")
 
 
 def test_skeleton_no_subagent_inline():
     """skeleton 模式不应内联 subagent prompts（如 architect-subagent.md）"""
     # coding profile 有 architect-subagent.md
     rs = build_ruleset("coding", mode="skeleton")
-    sub_path = REPO_ROOT / "profiles/coding/docs/prompts/architect-subagent.md"
+    sub_path = REPO_ROOT / "personas/coding/prompts/architect-subagent.md"
     if sub_path.exists():
         sub_text = sub_path.read_text(encoding="utf-8")
         # 取一个独特句子验证未内联
@@ -123,7 +123,7 @@ def test_skeleton_no_subagent_inline():
         if unique_line:
             assert unique_line not in rs, f"skeleton 不应内联 architect-subagent: {unique_line[:50]}"
         # 但路径应在 INDEX 中
-        assert "profiles/coding/docs/prompts/architect-subagent.md" in rs, "skeleton 应在 INDEX 列出 subagent 路径"
+        assert "personas/coding/prompts/architect-subagent.md" in rs, "skeleton 应在 INDEX 列出 subagent 路径"
     print("[PASS] skeleton 模式不内联 subagent prompts")
 
 
@@ -131,9 +131,9 @@ def test_skeleton_no_capability_inline():
     """skeleton 模式不应内联 capabilities 内容"""
     # coding profile 启用 research 能力包
     rs = build_ruleset("coding", mode="skeleton")
-    cap_path = REPO_ROOT / "capabilities/research.md"
-    if cap_path.exists():
-        cap_text = cap_path.read_text(encoding="utf-8")
+    cap_prompt = REPO_ROOT / "capabilities" / "research" / "prompt.md"
+    if cap_prompt.exists():
+        cap_text = cap_prompt.read_text(encoding="utf-8")
         # 取 H1 验证未内联
         h1 = ""
         for line in cap_text.splitlines():
@@ -143,7 +143,7 @@ def test_skeleton_no_capability_inline():
         if h1:
             assert h1 not in rs, f"skeleton 不应内联 capabilities: {h1}"
         # 但路径应在 INDEX 中
-        assert "capabilities/research.md" in rs, "skeleton 应在 INDEX 列出 capability 路径"
+        assert "capabilities/research/" in rs, "skeleton 应在 INDEX 列出 capability 路径"
     print("[PASS] skeleton 模式不内联 capabilities 内容")
 
 

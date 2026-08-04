@@ -1,10 +1,10 @@
 """
-打包资源检测测试：验证 ai_rule/_resources/ 资源根检测优先级和路径解析协议。
+打包资源检测测试：验证 agentseed/_resources/ 资源根检测优先级和路径解析协议。
 
 测试目标：
 1. dev 模式下（无 _resources/）_packaged_resources_root() 返回 None
 2. 当 _resources/ 存在时（pip 安装模式），_packaged_resources_root() 返回该路径
-3. AI_RULE_REPO 环境变量优先级高于 packaged（让用户能热覆盖规则）
+3. AGENTSEED_REPO 环境变量优先级高于 packaged（让用户能热覆盖规则）
 4. refresh_resources_root() 清缓存后能正确重新检测
 5. build_ruleset 在 packaged 模式下能成功装配规则（包内资源可被 Read）
 
@@ -18,12 +18,12 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-# 直接从 ai_rule.sync_rules 拿到真实模块（含模块级状态 _RESOURCES_ROOT_CACHE 等）
-# scripts/sync_rules.py shim 用 from ai_rule.sync_rules import * 不会带下划线开头的属性
+# 直接从 agentseed.sync_rules 拿到真实模块（含模块级状态 _RESOURCES_ROOT_CACHE 等）
+# scripts/sync_rules.py shim 用 from agentseed.sync_rules import * 不会带下划线开头的属性
 sys.path.insert(0, str(REPO_ROOT))
 
-from ai_rule import sync_rules as _sr  # noqa: E402
-from ai_rule.sync_rules import (  # noqa: E402
+from agentseed import sync_rules as _sr  # noqa: E402
+from agentseed.sync_rules import (  # noqa: E402
     _packaged_resources_root, _find_rule_hub_root, refresh_resources_root,
     resources_source, build_ruleset,
 )
@@ -35,19 +35,19 @@ RESOURCES_DIR = PKG_DIR / "_resources"
 
 @pytest.fixture
 def packaged_resources_dir():
-    """在 ai_rule/_resources/ 创建临时 _resources/ 目录，测试后清理。
+    """在 agentseed/_resources/ 创建临时 _resources/ 目录，测试后清理。
 
-    使用真实 ai_rule/_resources/ 路径而非 tmp_path，因为 _packaged_resources_root()
+    使用真实 agentseed/_resources/ 路径而非 tmp_path，因为 _packaged_resources_root()
     用 Path(__file__).resolve().parent / "_resources" 检测，必须在那里创建。
     """
     # 备份当前 cache 状态
     saved_cache = _sr._RESOURCES_ROOT_CACHE
     saved_source = _sr._RESOURCES_SOURCE
-    saved_env = os.environ.pop("AI_RULE_REPO", None)
+    saved_env = os.environ.pop("AGENTSEED_REPO", None)
 
     # 创建 _resources/ + 拷贝真实源让 build_ruleset 能装配
     RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
-    for src in ["manifests", "core", "profiles", "capabilities", "adapters", "mcp.example.json"]:
+    for src in ["core", "personas", "capabilities", "adapters", "mcp.example.json"]:
         src_path = REPO_ROOT / src
         dst_path = RESOURCES_DIR / src
         if dst_path.exists():
@@ -69,9 +69,9 @@ def packaged_resources_dir():
     _sr._RESOURCES_ROOT_CACHE = saved_cache
     _sr._RESOURCES_SOURCE = saved_source
     if saved_env is not None:
-        os.environ["AI_RULE_REPO"] = saved_env
+        os.environ["AGENTSEED_REPO"] = saved_env
     else:
-        os.environ.pop("AI_RULE_REPO", None)
+        os.environ.pop("AGENTSEED_REPO", None)
     # 重新刷新让其他测试回到 dev 模式
     _sr._RESOURCES_ROOT_CACHE = None
     _sr._RESOURCES_SOURCE = None
@@ -87,7 +87,7 @@ def _clear_cache():
 def test_packaged_resources_root_returns_none_in_dev_mode():
     """dev 模式下 _resources/ 不存在，应返回 None"""
     if RESOURCES_DIR.exists():
-        pytest.skip("ai_rule/_resources/ 已存在（构建环境），跳过 dev 模式测试")
+        pytest.skip("agentseed/_resources/ 已存在（构建环境），跳过 dev 模式测试")
     result = _packaged_resources_root()
     assert result is None, f"dev 模式应返回 None，实际: {result}"
     print("[PASS] dev 模式下 _packaged_resources_root() 返回 None")
@@ -102,39 +102,40 @@ def test_packaged_resources_root_detects_when_exists(packaged_resources_dir):
 
 
 def test_find_rule_hub_root_uses_packaged_when_no_env(packaged_resources_dir):
-    """无 AI_RULE_REPO 时，_find_rule_hub_root 应优先用 packaged"""
-    os.environ.pop("AI_RULE_REPO", None)
+    """无 AGENTSEED_REPO 时，_find_rule_hub_root 应优先用 packaged"""
+    os.environ.pop("AGENTSEED_REPO", None)
     _clear_cache()
 
     root = _find_rule_hub_root()
     assert root == RESOURCES_DIR, f"无 env 时应返回 packaged: {RESOURCES_DIR}，实际: {root}"
     assert _sr.resources_source() == "packaged", \
         f"resources_source 应为 'packaged'，实际: {_sr.resources_source()}"
-    print("[PASS] 无 AI_RULE_REPO 时 _find_rule_hub_root 使用 packaged 资源")
+    print("[PASS] 无 AGENTSEED_REPO 时 _find_rule_hub_root 使用 packaged 资源")
 
 
-def test_ai_rule_repo_env_takes_priority_over_packaged(packaged_resources_dir, tmp_path):
-    """AI_RULE_REPO 优先级高于 packaged（用户热覆盖规则场景）"""
-    # 用 tmp_path 创建一个假的 Rule Hub 仓库
-    fake_repo = tmp_path / "fake-rule-hub"
+def test_agentseed_repo_env_takes_priority_over_packaged(packaged_resources_dir, tmp_path):
+    """AGENTSEED_REPO 优先级高于 packaged（用户热覆盖规则场景）"""
+    # 用 tmp_path 创建一个假的 AgentSeed 仓库
+    fake_repo = tmp_path / "fake-agentseed"
     fake_repo.mkdir()
-    (fake_repo / "manifests").mkdir()
+    (fake_repo / "personas").mkdir()
     (fake_repo / "core").mkdir()
-    # 写一个最小 manifest 让 _find_rule_hub_root 命中
-    (fake_repo / "manifests" / "coding.yaml").write_text(
-        "includes:\n  core:\n    - core/governance.md\n  profile:\n    - profiles/coding/AGENTS.md\n",
+    # 写一个最小 persona.yaml 让 _find_rule_hub_root 命中
+    (fake_repo / "personas" / "coding").mkdir(parents=True, exist_ok=True)
+    (fake_repo / "personas" / "coding" / "persona.yaml").write_text(
+        "includes:\n  core:\n    - core/governance.md\n  profile:\n    - personas/coding/AGENTS.md\n",
         encoding="utf-8",
     )
 
-    os.environ["AI_RULE_REPO"] = str(fake_repo)
+    os.environ["AGENTSEED_REPO"] = str(fake_repo)
     _clear_cache()
 
     root = _find_rule_hub_root()
     assert root.resolve() == fake_repo.resolve(), \
-        f"AI_RULE_REPO 优先级应高于 packaged，期望 {fake_repo}，实际: {root}"
+        f"AGENTSEED_REPO 优先级应高于 packaged，期望 {fake_repo}，实际: {root}"
     assert _sr.resources_source() == "env", \
         f"resources_source 应为 'env'，实际: {_sr.resources_source()}"
-    print("[PASS] AI_RULE_REPO 环境变量优先于 packaged 资源")
+    print("[PASS] AGENTSEED_REPO 环境变量优先于 packaged 资源")
 
 
 def test_refresh_resources_root_clears_cache(packaged_resources_dir):
@@ -152,7 +153,7 @@ def test_refresh_resources_root_clears_cache(packaged_resources_dir):
 
 def test_build_ruleset_works_in_packaged_mode(packaged_resources_dir):
     """packaged 模式下 build_ruleset 应能成功装配规则（核心/governance 可被读）"""
-    os.environ.pop("AI_RULE_REPO", None)
+    os.environ.pop("AGENTSEED_REPO", None)
     _clear_cache()
     refresh_resources_root()
 
@@ -172,13 +173,13 @@ def test_build_ruleset_works_in_packaged_mode(packaged_resources_dir):
 
 def test_packaged_index_protocol_includes_path_resolution():
     """ON-DEMAND INDEX 路径解析协议文本必须包含包内资源查找步骤"""
-    os.environ.pop("AI_RULE_REPO", None)
+    os.environ.pop("AGENTSEED_REPO", None)
     _clear_cache()
     refresh_resources_root()
 
     rs = build_ruleset("coding", mode="skeleton")
-    # 协议文本必须提到通过 python -c "import ai_rule" 找包内 _resources 路径
-    assert "import ai_rule" in rs, "ON-DEMAND INDEX 路径协议缺包内查找步骤"
+    # 协议文本必须提到通过 python -c "import agentseed" 找包内 _resources 路径
+    assert "import agentseed" in rs, "ON-DEMAND INDEX 路径协议缺包内查找步骤"
     assert "_resources" in rs, "ON-DEMAND INDEX 路径协议缺 _resources 引用"
     assert "git clone" in rs.lower() or "clone" in rs.lower(), "协议缺 clone fallback"
     print("[PASS] ON-DEMAND INDEX 含完整路径解析协议（含包内资源查找步骤）")

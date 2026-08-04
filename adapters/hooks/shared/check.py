@@ -1,5 +1,5 @@
 """
-Rule Hub 通用 Hook 拦截逻辑（适配所有支持 PreToolUse 的平台）。
+AgentSeed 通用 Hook 拦截逻辑（适配所有支持 PreToolUse 的平台）。
 
 设计原则：
 - 单一职责：本模块只做"读 constraints.yaml + 给定工具调用 → 决策（deny/approve/warn）"
@@ -240,24 +240,24 @@ def _parse_yaml(text: str) -> dict:
 def load_constraints(yaml_path: Path | None = None) -> list[dict]:
     """加载 constraints.yaml，返回 constraints 列表。
     若未提供路径，按以下顺序查找：
-      1. 环境变量 AI_RULE_REPO 指向的目录下的 core/constraints.yaml
-      2. ~/.cache/ai-rule/core/constraints.yaml（pip 包默认安装路径）
+      1. 环境变量 AGENTSEED_REPO 指向的目录下的 core/constraints.yaml
+      2. ~/.cache/agentseed/core/constraints.yaml（pip 包默认安装路径）
       3. 当前工作目录的 core/constraints.yaml
     """
     if yaml_path is None:
         candidates = []
-        env_repo = os.environ.get("AI_RULE_REPO")
+        env_repo = os.environ.get("AGENTSEED_REPO")
         if env_repo:
             candidates.append(Path(env_repo) / "core" / "constraints.yaml")
-        candidates.append(Path.home() / ".cache" / "ai-rule" / "core" / "constraints.yaml")
+        candidates.append(Path.home() / ".cache" / "agentseed" / "core" / "constraints.yaml")
         candidates.append(Path.cwd() / "core" / "constraints.yaml")
-        candidates.append(Path.cwd() / "ai-rule" / "core" / "constraints.yaml")
+        candidates.append(Path.cwd() / "agentseed" / "core" / "constraints.yaml")
         for c in candidates:
             if c.exists():
                 yaml_path = c
                 break
         if yaml_path is None:
-            raise FileNotFoundError("找不到 core/constraints.yaml，请设置 AI_RULE_REPO 环境变量")
+            raise FileNotFoundError("找不到 core/constraints.yaml，请设置 AGENTSEED_REPO 环境变量")
 
     text = yaml_path.read_text(encoding="utf-8")
     parsed = _parse_yaml(text)
@@ -404,7 +404,7 @@ def decide(
             return {
                 "deny": False,
                 "require_approval": False,
-                "warn": f"[Rule Hub] {e}（hook 降级为放行）",
+                "warn": f"[AgentSeed] {e}（hook 降级为放行）",
                 "reason": "",
                 "matched_constraint": "",
             }

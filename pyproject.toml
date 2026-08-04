@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ai-rule"
+name = "agentseed"
 version = "2.3.0"
-description = "Rule Hub — unified AI collaboration rules with skeleton + on-demand loading"
+description = "AgentSeed — One command to give your AI agent a brain. Persona Packs + Governance Engine + Self-Evolution + 13-platform sync."
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.8"
@@ -19,25 +19,25 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://gitcode.com/badhope/AI-RULE"
-Repository = "https://gitcode.com/badhope/AI-RULE"
+Homepage = "https://github.com/weed33834/AgentSeed"
+Repository = "https://github.com/weed33834/AgentSeed"
 
 [project.scripts]
-ai-rule = "ai_rule.cli:main"
+agentseed = "agentseed.cli:main"
 
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["ai_rule*"]
+where = ["src"]
+include = ["agentseed*"]
 
 # 规则源文件随包分发：setup.py 的 build_py/sdist 子类会在构建前把
-# 仓库根的 core/ profiles/ capabilities/ manifests/ adapters/ mcp.example.json
-# 同步到 ai_rule/_resources/，下面声明让 setuptools 把它们打进 wheel。
+# 仓库根的 core/ personas/ capabilities/ personas/ adapters/ mcp.example.json
+# 同步到 agentseed/_resources/，下面声明让 setuptools 把它们打进 wheel。
 [tool.setuptools.package-data]
-ai_rule = [
+agentseed = [
     "_resources/**/*",
     "_resources/*",
 ]
 
 # 注：dev 模式（pip install -e .）下 _resources/ 不存在，
 # sync_rules._packaged_resources_root() 返回 None，自动回退到 dev 模式
-# （ai_rule/sync_rules.py 的 parent.parent = REPO_ROOT，那里有 manifests/）。
+# （agentseed/sync_rules.py 的 parent.parent = REPO_ROOT，那里有 personas/）。

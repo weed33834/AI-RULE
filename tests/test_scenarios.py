@@ -14,13 +14,13 @@ from sync_rules import parse_manifest, build_ruleset
 
 
 def load_router():
-    """从 profile-router.md 提取选择规则用于测试"""
-    router_path = REPO_ROOT / "core" / "profile-router.md"
+    """从 persona-router.md 提取选择规则用于测试"""
+    router_path = REPO_ROOT / "core" / "persona-router.md"
     return router_path.read_text(encoding="utf-8")
 
 
 def select_profile_by_keywords(keywords: list) -> str:
-    """模拟 profile-router 的关键词匹配逻辑"""
+    """模拟 persona-router 的关键词匹配逻辑"""
     rules = {
         "coding": ["修复", "重构", "测试", "部署", "接口", "Bug", "CI", "代码"],
         "novel": ["写一章", "续写", "人物", "伏笔", "文风", "世界观", "章节"],
@@ -105,7 +105,7 @@ def scenario_4_design_agent():
     assert check_capability_allowed("agent-builder", "testing"), "应允许 testing"
     assert not check_capability_allowed("agent-builder", "game-engine"), "不应允许 game-engine"
     # 验证模板存在
-    templates_dir = REPO_ROOT / "profiles" / "agent-builder" / "docs" / "templates"
+    templates_dir = REPO_ROOT / "personas" / "agent-builder" / "docs" / "templates"
     assert templates_dir.exists(), "agent-builder 模板目录应存在"
     code_reviewer = templates_dir / "code-reviewer"
     assert (code_reviewer / "config.yaml").exists(), "code-reviewer 模板应存在"
@@ -145,7 +145,7 @@ def scenario_6_ambiguous():
     interactive_score = sum(1 for kw in keywords if kw in ["开始一局", "分支", "存档", "NPC", "回合", "状态", "选项"])
     # "分支"命中 interactive-novel
     assert interactive_score >= 1, "分支应命中 interactive-novel"
-    # 这种模糊情况 profile-router 要求询问
+    # 这种模糊情况 persona-router 要求询问
     router = load_router()
     assert "识别不唯一时必须澄清" in router, "router 应要求模糊时澄清"
     print("[PASS] 场景6 模糊意图 → router 要求澄清而非脑补")

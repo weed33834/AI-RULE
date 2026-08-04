@@ -1,8 +1,8 @@
 """setup.py — 与 pyproject.toml 配合工作，唯一目的是在 build_py 阶段
-把仓库根的规则源文件（core/ profiles/ capabilities/ manifests/ adapters/
-mcp.example.json）拷贝到 ai_rule/_resources/，让它们随 wheel 分发。
+把仓库根的规则源文件（core/ personas/ capabilities/ personas/ adapters/
+mcp.example.json）拷贝到 agentseed/_resources/，让它们随 wheel 分发。
 
-这样 `pip install ai-rule` 后无需外部仓库即可运行（_packaged_resources_root() 检测包内资源）。
+这样 `pip install agentseed` 后无需外部仓库即可运行（_packaged_resources_root() 检测包内资源）。
 
 dev 模式（pip install -e .）不触发 build_py 的拷贝，
 此时 _resources/ 不存在，sync_rules 自动回退到 dev 模式（用 parent.parent = REPO_ROOT 读源）。
@@ -15,21 +15,20 @@ from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
 
 ROOT = Path(__file__).resolve().parent
-PKG_RESOURCES = ROOT / "ai_rule" / "_resources"
+PKG_RESOURCES = ROOT / "src" / "agentseed" / "_resources"
 
 # 必须随包分发的源文件/目录（相对仓库根）
 PACKAGED_SOURCES = [
     "core",
-    "profiles",
+    "personas",
     "capabilities",
-    "manifests",
     "adapters",
     "mcp.example.json",
 ]
 
 
 def _sync_resources() -> None:
-    """把规则源同步到 ai_rule/_resources/。
+    """把规则源同步到 agentseed/_resources/。
 
     幂等：每次构建前清空 _resources/ 重建，避免旧文件残留。
     """

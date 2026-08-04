@@ -1,6 +1,6 @@
 # Mode Overrides — 边缘场景的模式覆写配置
 #
-# 本文件为 agent-modes.md 与 profile-router.md §8 的补充配置层。
+# 本文件为 agent-modes.md 与 persona-router.md §8 的补充配置层。
 # 当 manifest 默认模式或意图推断结果不适用于特定边缘场景时，
 # 通过本文件覆写。优先级高于 manifest 默认值，低于用户显式指定。
 #

@@ -77,4 +77,4 @@
 | `paper` | `project` | task, project, autonomous |
 | `agent-builder` | `project` | task, project, autonomous |
 
-> 各 Profile 可通过 `manifests/<id>.yaml` 的 `agent_mode` 字段覆盖。
+> 各 Profile 可通过 `personas/<id>.yaml` 的 `agent_mode` 字段覆盖。
