@@ -1,0 +1,54 @@
+# Workflow Automator Agent Configuration / 工作流自动化智能体配置
+# 工作流自动化智能体 - 任务管理、通知、调度、API集成和文件操作
+
+agent:
+  name: "workflow-automator-agent"
+  version: "1.0.0"
+  description: "工作流自动化智能体，使用计划-执行模式管理任务、通知、事件调度、API调用和文件操作 / Workflow automator agent using plan-and-execute for task management, notifications, scheduling, API calls, and file operations"
+
+model:
+  provider: "openai"
+  model_name: "gpt-4o"
+  temperature: 0.3
+  max_tokens: 4096
+
+reasoning:
+  pattern: "Plan-and-Execute"
+  description: "理解目标→分解步骤→呈现计划→用户确认→逐步执行→验证结果→总结报告 / Understand → Break down steps → Present plan → User confirms → Execute step by step → Verify → Report"
+
+memory:
+  short_term: true
+  long_term: true
+  episodic: false
+  task_context: true
+  window_budget:
+    system_prompt: 20
+    tools: 15
+    user_input: 25
+    memory: 25
+    output: 15
+
+safety:
+  confirmation_points:
+    - "send_notification"
+    - "call_api"
+    - "write_file"
+    - "schedule_event"
+  injection_defense: true
+  pii_masking: true
+  https_only: true
+  max_api_calls_per_session: 50
+  blocked_http_methods: []
+  file_write_whitelist:
+    - "/workspace/"
+    - "/tmp/"
+    - "/data/user/work/"
+
+tools:
+  - create_task
+  - update_task
+  - send_notification
+  - schedule_event
+  - call_api
+  - read_file
+  - write_file

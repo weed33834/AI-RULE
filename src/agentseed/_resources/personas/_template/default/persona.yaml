@@ -1,0 +1,14 @@
+profile:
+  id: default
+  name: 自定义画像
+  version: "1.0"
+
+includes:
+  core:
+    - core/governance.md
+    - core/persona-router.md
+
+enables_capabilities: []
+forbids_capabilities: []
+activation_anchors: []
+intent_keywords: []

@@ -1,0 +1,165 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "search_web",
+        "description": "Search the web for information. Returns relevant results with titles, URLs, and snippets.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "The search query"
+            },
+            "num_results": {
+              "type": "integer",
+              "description": "Number of results to return. Default: 5.",
+              "default": 5
+            }
+          },
+          "required": ["query"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "send_email",
+        "description": "Compose and send an email. The email content must be reviewed and confirmed by the user before sending.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of recipient email addresses"
+            },
+            "cc": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of CC email addresses"
+            },
+            "subject": {
+              "type": "string",
+              "description": "Email subject line"
+            },
+            "body": {
+              "type": "string",
+              "description": "Email body content"
+            },
+            "attachments": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of file paths to attach"
+            }
+          },
+          "required": ["to", "subject", "body"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "create_calendar_event",
+        "description": "Create a calendar event with title, time, attendees, and description. Requires user confirmation.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Event title"
+            },
+            "start_time": {
+              "type": "string",
+              "description": "Start time in ISO 8601 format with timezone (e.g. '2024-01-15T14:00:00+08:00')"
+            },
+            "end_time": {
+              "type": "string",
+              "description": "End time in ISO 8601 format with timezone"
+            },
+            "timezone": {
+              "type": "string",
+              "description": "Timezone (e.g. 'Asia/Shanghai', 'America/New_York')"
+            },
+            "attendees": {
+              "type": "array",
+              "items": {"type": "string"},
+              "description": "List of attendee email addresses"
+            },
+            "location": {
+              "type": "string",
+              "description": "Event location or meeting link"
+            },
+            "description": {
+              "type": "string",
+              "description": "Event description or agenda"
+            }
+          },
+          "required": ["title", "start_time", "end_time", "timezone"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "set_reminder",
+        "description": "Set a reminder for a specific time. The reminder will notify the user at the specified time.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Reminder title/subject"
+            },
+            "message": {
+              "type": "string",
+              "description": "Reminder message content"
+            },
+            "remind_at": {
+              "type": "string",
+              "description": "When to trigger the reminder, in ISO 8601 format with timezone (e.g. '2024-01-15T15:00:00+08:00')"
+            },
+            "timezone": {
+              "type": "string",
+              "description": "Timezone for the reminder time (e.g. 'Asia/Shanghai')"
+            }
+          },
+          "required": ["title", "remind_at", "timezone"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "summarize_text",
+        "description": "Summarize a long text or document. Extracts key points while preserving important details. Does not add information not present in the source.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string",
+              "description": "The text content to summarize"
+            },
+            "max_length": {
+              "type": "integer",
+              "description": "Maximum summary length in words. Default: 200.",
+              "default": 200
+            },
+            "format": {
+              "type": "string",
+              "description": "Summary format",
+              "enum": ["paragraph", "bullet_points", "structured"],
+              "default": "bullet_points"
+            },
+            "focus": {
+              "type": "string",
+              "description": "Optional focus area for the summary"
+            }
+          },
+          "required": ["text"]
+        }
+      }
+    }
+  ]
+}

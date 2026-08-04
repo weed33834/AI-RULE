@@ -2,7 +2,7 @@
 # setup.py 的 sdist 子类会先把源同步到 agentseed/_resources/，
 # 这里额外保险：把仓库根的源目录也直接 include 到 sdist（便于在 sdist 目录里直接 pip install）。
 
-include README.md README.zh.md 
+include README.md README.zh.md README.ja.md
 include LICENSE
 include pyproject.toml setup.py
 include mcp.example.json

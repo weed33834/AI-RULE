@@ -1,0 +1,4 @@
+# AgentSeed 平台配置 — 由 agentseed platform import/remove 命令管理
+# 格式参考: https://github.com/agentseed/docs/platforms
+
+platforms: {}

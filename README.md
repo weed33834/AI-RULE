@@ -1,6 +1,10 @@
 # AgentSeed — One Command to Give Your Agent a Brain
 
-> **`pip install agentseed && agentseed forge`** → 空白 Agent 立刻拥有完整人格、规则体系、技能和工具配置。
+> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl && agentseed forge`** → A blank agent instantly gains a complete persona, rule system, skills, and tool config.
+
+**🌐 Languages:** [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+
+**📦 Platforms:** [GitHub](https://github.com/weed33834/agentseed) — **Primary** (Releases, pip install, CI/CD) · [Gitee](https://gitee.com/badhope/agentseed) — Backup Mirror · [Gitcode](https://gitcode.com/badhope/agentseed) — Backup Mirror
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
@@ -23,14 +27,15 @@ AgentSeed is a **Persona-Governance Platform for AI Agents**. It's what you inje
 │                 AgentSeed                      │
 │                                               │
 │  ┌─────────────────────────────────────────┐ │
-│  │  ⚡ GOVERNANCE ENGINE (不可插拔)          │ │
-│  │  P0 安全红线 · 决策公式 · 自进化触发     │ │
+│  │  ⚡ GOVERNANCE ENGINE (non-swappable)  │ │
+│  │  P0 red lines · decision formulas ·    │ │
+│  │  self-evolution triggers               │ │
 │  └─────────────────────────────────────────┘ │
 │                    ↓                          │
 │  ┌─────────────────────────────────────────┐ │
-│  │  🎭 PERSONA PACKS (可插拔画像)            │ │
+│  │  🎭 PERSONA PACKS (swappable)            │ │
 │  │  coding · novel · paper · agent-builder   │ │
-│  │  conversation · interactive-novel · 自定义│ │
+│  │  conversation · interactive-novel · custom│ │
 │  └─────────────────────────────────────────┘ │
 │                    ↓                          │
 │  ┌─────────────────────────────────────────┐ │
@@ -38,7 +43,7 @@ AgentSeed is a **Persona-Governance Platform for AI Agents**. It's what you inje
 │  │  Claude Code · Cursor · Copilot · Trae   │ │
 │  │  Gemini · Windsurf · Cline · Continue    │ │
 │  │  Amazon Q · Qodo · Lingma · Comate       │ │
-│  │  AGENTS.md (通用)                         │ │
+│  │  AGENTS.md (universal)                   │ │
 │  └─────────────────────────────────────────┘ │
 └──────────────────────────────────────────────┘
 ```
@@ -49,7 +54,7 @@ AgentSeed is a **Persona-Governance Platform for AI Agents**. It's what you inje
 
 ```bash
 # Install
-pip install agentseed
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl
 
 # Auto-detect → assemble → generate
 agentseed forge
@@ -71,9 +76,39 @@ agentseed list
 
 # Sync to a specific platform
 agentseed sync --platform cursor
+
+# Start MCP Server (stdio mode)
+agentseed serve
+
+# Start MCP Server (HTTP/SSE mode)
+agentseed serve --port 8080
 ```
 
 AgentSeed will detect your project type (pyproject.toml → coding, chapters/ → novel, etc.), select the best Persona Pack, and generate all necessary rule files.
+
+### MCP Server
+
+AgentSeed exposes its governance engine and persona management as MCP tools, enabling any MCP-compatible client to query and enforce AI safety rules programmatically:
+
+| Tool | Description |
+|------|-------------|
+| `governance_check` | Check if a tool call violates P0 security red lines |
+| `persona_list` | List all available persona packs |
+| `persona_activate` | Switch to a specific persona |
+| `gap_detect` | Analyze context for capability gaps |
+
+Configure your MCP client with:
+
+```json
+{
+  "mcpServers": {
+    "agentseed": {
+      "command": "agentseed",
+      "args": ["serve"]
+    }
+  }
+}
+```
 
 ---
 
@@ -145,15 +180,14 @@ Key innovations:
 ## Install
 
 ```bash
-# pip (all platforms)
-pip install agentseed
-
-# pipx (isolated, recommended for non-Python users)
-pipx install agentseed
+# pip — install from GitHub Releases (primary)
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl
 
 # From source
-git clone https://github.com/weed33834/agentseed.git
-cd AgentSeed
+git clone https://github.com/weed33834/agentseed.git     # GitHub (primary)
+git clone https://gitee.com/badhope/agentseed.git        # Gitee (mirror)
+git clone https://gitcode.com/badhope/agentseed.git      # Gitcode (mirror)
+cd agentseed
 pip install -e .
 ```
 
@@ -183,4 +217,4 @@ MIT
 
 ---
 
-*AgentSeed: 宪法教 Agent 何时自己找资源，身份决定擅长领域。*
+*AgentSeed: The constitution teaches an agent when to find its own resources; identity decides what it excels at.*

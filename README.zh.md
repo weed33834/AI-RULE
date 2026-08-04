@@ -2,6 +2,10 @@
 
 > **`pip install agentseed && agentseed forge`** → 空白 Agent 立刻拥有完整人格、规则体系、技能和工具配置。
 
+**🌐 语言:** [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+
+**📦 平台分布:** [GitHub](https://github.com/weed33834/agentseed) — **主平台**（Releases、pip 安装、CI/CD） · [Gitee](https://gitee.com/badhope/agentseed) — 备份镜像 · [Gitcode](https://gitcode.com/badhope/agentseed) — 备份镜像
+
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
 ![Platforms](https://img.shields.io/badge/platforms-13-orange)
@@ -49,7 +53,7 @@ AgentSeed 是一个 **面向 AI Agent 的人格治理平台**。把它注入空�
 
 ```bash
 # 安装
-pip install agentseed
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl
 
 # 自动检测 → 装配 → 生成
 agentseed forge
@@ -71,9 +75,39 @@ agentseed list
 
 # 同步到指定平台
 agentseed sync --platform cursor
+
+# 启动 MCP Server（stdio 模式）
+agentseed serve
+
+# 启动 MCP Server（HTTP/SSE 模式）
+agentseed serve --port 8080
 ```
 
 AgentSeed 会自动检测你的项目类型（pyproject.toml → coding、chapters/ → novel 等），选择最合适的 Persona Pack，并生成所有必要的规则文件。
+
+### MCP Server
+
+AgentSeed 将治理引擎和画像管理能力暴露为 MCP 工具，任何兼容 MCP 的客户端都可以程序化地查询和强制执行 AI 安全规则：
+
+| 工具 | 描述 |
+|------|------|
+| `governance_check` | 检查工具调用是否违反 P0 安全红线 |
+| `persona_list` | 列出所有可用的画像包 |
+| `persona_activate` | 切换到指定画像 |
+| `gap_detect` | 分析上下文是否存在能力缺口 |
+
+在 MCP 客户端中配置：
+
+```json
+{
+  "mcpServers": {
+    "agentseed": {
+      "command": "agentseed",
+      "args": ["serve"]
+    }
+  }
+}
+```
 
 ---
 
@@ -145,14 +179,13 @@ Claude Code, Cursor, Copilot, Trae, Gemini, Windsurf, Cline, Continue, Amazon Q,
 ## 安装
 
 ```bash
-# pip（全平台）
-pip install agentseed
+# pip — 从 GitHub Releases 安装（主平台）
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl
 
-# pipx（隔离，推荐给非 Python 用户）
-pipx install agentseed
-
-# 从源码
-git clone https://github.com/weed33834/agentseed.git
+# 从源码安装
+git clone https://github.com/weed33834/agentseed.git     # GitHub（主平台）
+git clone https://gitee.com/badhope/agentseed.git        # Gitee（镜像）
+git clone https://gitcode.com/badhope/agentseed.git      # Gitcode（镜像）
 cd agentseed
 pip install -e .
 ```

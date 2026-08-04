@@ -1,0 +1,45 @@
+# General Assistant Agent Configuration / 通用办公助手智能体配置
+# 通用办公助手 - 网络搜索、邮件、日历、提醒和文本摘要
+
+agent:
+  name: "general-assistant-agent"
+  version: "1.0.0"
+  description: "通用办公助手智能体，使用Direct+ReAct模式处理网络搜索、邮件发送、日历管理、提醒设置和文本摘要 / General office assistant using Direct+ReAct for web search, email, calendar, reminders, and text summarization"
+
+model:
+  provider: "openai"
+  model_name: "gpt-4o"
+  temperature: 0.5
+  max_tokens: 4096
+
+reasoning:
+  pattern: "Direct+ReAct"
+  description: "简单请求直接响应，复杂请求使用推理-行动-观察循环 / Direct response for simple requests, ReAct loop for complex requests"
+
+memory:
+  short_term: true
+  long_term: false
+  episodic: false
+  user_preferences: true
+  window_budget:
+    system_prompt: 20
+    tools: 15
+    user_input: 30
+    memory: 20
+    output: 15
+
+safety:
+  confirmation_points:
+    - "send_email"
+    - "create_calendar_event"
+  injection_defense: true
+  pii_masking: true
+  email_draft_review: true
+  timezone_aware: true
+
+tools:
+  - search_web
+  - send_email
+  - create_calendar_event
+  - set_reminder
+  - summarize_text

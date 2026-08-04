@@ -419,9 +419,9 @@ AgentSeed/
 ├── tests/
 ├── docs/
 │   ├── AGENTSEED_ARCHITECTURE.md # 架构设计文档
-│   ├── DIRECTORY_TREE.md         # 目录树
-│   ├── V2_REFACTOR_REPORT.md     # v2 重构报告
-│   └── AUDIT_LEGACY.md           # 遗留审计
+│   ├── FORGE_WORKFLOW.md         # 装配工作流
+│   ├── architecture.svg          # 架构图
+│   └── usage.svg                 # 使用流程图
 │
 └── scripts/
     ├── sync_rules.py            # shim（转发到 agentseed.sync_rules）
