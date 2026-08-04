@@ -1278,6 +1278,41 @@ def setup_default(
         reset_output_root()
 
 
+def merge_user_platforms() -> None:
+    """将用户添加的平台并入 TOOL_OUTPUT / TOOL_CHAR_LIMIT（幂等）。
+
+    用户平台默认按 markdown 格式写入口文件；若配置了 hooks 目录则登记到
+    HOOK_PLATFORMS 以便 emit_constraints 分发钩子配置。
+    """
+    try:
+        from .platforms import load_user_platforms
+    except ImportError:
+        return
+    user_p = load_user_platforms()
+    if not user_p:
+        return
+    changed = False
+    for pid, p in user_p.items():
+        if pid in TOOL_OUTPUT:
+            continue  # 内置优先，不覆盖
+        entry = p.get("entry")
+        if not entry:
+            continue
+        TOOL_OUTPUT[pid] = entry
+        if p.get("char_limit"):
+            TOOL_CHAR_LIMIT[pid] = int(p["char_limit"])
+        if p.get("hooks", {}).get("enabled") and p.get("hooks", {}).get("dir"):
+            # 用户平台钩子：配置文件模板不存在，登记空条目（emit 时跳过）
+            HOOK_PLATFORMS[pid] = {
+                "settings": None,
+                "scripts": [],
+                "constraints": None,
+                "dir": p["hooks"]["dir"],
+            }
+        changed = True
+    return changed
+
+
 def _shard_root(tool: str) -> Path:
     """限长平台的分片目录根（写入位置由 OUTPUT_ROOT 决定）"""
     out_rel = TOOL_OUTPUT[tool]
@@ -1669,6 +1704,9 @@ def list_profiles() -> list:
 
 
 def main():
+    # 合并用户添加的平台（幂等）
+    merge_user_platforms()
+
     parser = argparse.ArgumentParser(description="统一规则中枢同步 v2")
     parser.add_argument("--list", action="store_true", help="列出可用 profile")
     parser.add_argument("--profile", type=str, help="选择主 profile")

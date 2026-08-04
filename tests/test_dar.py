@@ -21,7 +21,7 @@ except ImportError:
     pytest.skip("pyyaml not installed", allow_module_level=True)
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DAR_DIR = os.path.join(REPO_ROOT, "capabilities", "dar")
+DAR_DIR = os.path.join(REPO_ROOT, "capabilities", "research", "dar")
 SPEC_FILE = os.path.join(REPO_ROOT, "core", "dar-spec.md")
 MANIFEST_DIR = os.path.join(REPO_ROOT, "personas")
 
@@ -135,8 +135,8 @@ def test_dar_conflict_policy():
 
 def test_personas_enable_dar():
     for domain in DOMAINS:
-        path = os.path.join(MANIFEST_DIR, f"{domain}.yaml")
+        path = os.path.join(MANIFEST_DIR, domain, "persona.yaml")
         with open(path, "r", encoding="utf-8") as f:
             manifest = yaml.safe_load(f)
         caps = manifest.get("enables_capabilities", [])
-        assert "dar" in caps, f"personas/{domain}.yaml must enable 'dar' capability"
+        assert "dar" in caps, f"personas/{domain}/persona.yaml must enable 'dar' capability"

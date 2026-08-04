@@ -367,7 +367,7 @@ AgentSeed/
 │
 ├── personas/                    # ★ 重命名 profiles → personas
 │   ├── coding/
-│   │   ├── manifest.yaml        # 画像声明
+│   │   ├── persona.yaml        # 画像声明（manifest.yaml → persona.yaml v2 迁移）
 │   │   ├── SOUL.md              # 角色身份
 │   │   ├── AGENTS.md            # 领域规则
 │   │   └── docs/
@@ -418,7 +418,7 @@ AgentSeed/
 │
 ├── tests/
 ├── docs/
-│   ├── AGENTSEED_ARCHITECTURE.md # 本文档
+│   ├── AGENTSEED_ARCHITECTURE.md # 架构设计文档
 │   ├── DIRECTORY_TREE.md         # 目录树
 │   ├── V2_REFACTOR_REPORT.md     # v2 重构报告
 │   └── AUDIT_LEGACY.md           # 遗留审计
@@ -442,7 +442,7 @@ AgentSeed/
 | `ai_rule/` | `src/agentseed/` | 包名改为 agentseed |
 | `manifests/*.yaml` | `personas/<id>/persona.yaml` | 清单合并进画像目录 |
 | `personas/<id>/docs/prompts/` | `prompts/`（画像内） | 扁平化 |
-| `personas/<id>/docs/skills/` | `skills/`（画像内） | 扁平化 |
+| `personas/<id>/skills/` | `skills/`（画像内） | 扁平化提升一级 |
 | `capabilities/*.md` | `capabilities/<cap>/{cap.yaml,prompt.md,mcp.json}` | 能力包目录化 |
 | `core/profile-router.md` | `core/persona-router.md` | 改名 |
 | `adapters/` | `adapters/` | 保持 |

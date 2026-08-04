@@ -11,8 +11,12 @@
     agentseed persona list                   # 列出画像
     agentseed persona search <query>         # 搜索社区画像
     agentseed persona install <name>         # 安装社区画像
+    agentseed platform list                  # 列出平台
+    agentseed platform import                # 交互式导入新平台
+    agentseed platform import my-editor --entry .myeditor/rules.md
     agentseed status                         # 查看当前装配状态
-    agentseed sync                           # 同步到所有平台
+    agentseed sync                           # 同步到所有平台（含用户平台）
+    agentseed sync --platform my-editor      # 同步到用户平台
     agentseed apply --profile coding --tool claude-code
     agentseed apply --profile coding --tool all
     agentseed apply --profile coding --tool claude-code --mode full
@@ -31,6 +35,7 @@ from . import sync_rules as _sr
 def cmd_list(args) -> int:
     # 刷新资源根，响应当前 AGENTSEED_REPO 环境变量
     _sr.refresh_resources_root()
+    _sr.merge_user_platforms()
     profiles = _sr.list_profiles()
     print("可用 Profile:")
     for p in profiles:
@@ -179,6 +184,7 @@ def cmd_sync(args) -> int:
     from .forge import detect_environment
     from .router import default_mode, default_rt
     _sr.refresh_resources_root()
+    _sr.merge_user_platforms()
 
     # 推断当前画像
     ctx = detect_environment()
@@ -217,6 +223,7 @@ def cmd_setup(args) -> int:
     用户口语化请求"帮我配置规则"时走这条路径。
     """
     _sr.refresh_resources_root()
+    _sr.merge_user_platforms()
     user_intent = args.intent or ""
     output_dir = Path(args.output).resolve() if args.output else None
 
@@ -255,6 +262,7 @@ def cmd_apply(args) -> int:
 
     # 刷新资源根，响应当前 AGENTSEED_REPO 环境变量
     _sr.refresh_resources_root()
+    _sr.merge_user_platforms()
 
     if profile not in _sr.list_profiles():
         print(f"error: 未知 profile '{profile}'，可用: {_sr.list_profiles()}", file=sys.stderr)
@@ -444,6 +452,103 @@ def cmd_judge(args) -> int:
     return 0 if result.is_compliant else 1
 
 
+def cmd_platform(args) -> int:
+    """agentseed platform — 平台管理：list / import / remove / validate / export。"""
+    from . import platforms as _pf
+
+    sub = args.platform_cmd
+
+    if sub == "list":
+        print("已注册平台:")
+        print(_pf.format_platform_table(_pf.list_platforms()))
+        print()
+        print(f"共 {len(_pf.list_platforms())} 个平台（内置 + 用户添加）")
+        print("提示: 用 `agentseed platform import` 添加自定义平台")
+        return 0
+
+    if sub == "import":
+        pid = getattr(args, "id", None)
+        if not pid:
+            # 交互式引导
+            info = _pf.interactive_import()
+            if info is None:
+                return 0
+            try:
+                _pf.add_platform(
+                    info["id"],
+                    info["name"],
+                    info["entry"],
+                    format=info["format"],
+                    char_limit=info["char_limit"],
+                    hook_dir=info["hook_dir"],
+                )
+            except ValueError as e:
+                print(f"error: {e}", file=sys.stderr)
+                return 1
+            print(f"\n✅ 平台 {info['id']} 已添加！")
+            print(f"  用 `agentseed sync --platform {info['id']}` 同步规则到该平台")
+            return 0
+        # 非交互
+        if not getattr(args, "entry", None):
+            print("error: 非交互模式需提供 --entry", file=sys.stderr)
+            return 1
+        try:
+            _pf.add_platform(
+                pid,
+                args.name or pid.title(),
+                args.entry,
+                format=args.format,
+                char_limit=args.char_limit,
+                hook_dir=args.hook_dir,
+            )
+        except ValueError as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 1
+        print(f"✅ 平台 {pid} 已添加！")
+        print(f"  用 `agentseed sync --platform {pid}` 同步规则到该平台")
+        return 0
+
+    if sub == "remove":
+        try:
+            _pf.remove_platform(args.id)
+        except ValueError as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 1
+        print(f"已移除平台 {args.id}")
+        return 0
+
+    if sub == "validate":
+        p = _pf.get_platform(args.id)
+        if not p:
+            print(f"error: 平台 {args.id} 不存在", file=sys.stderr)
+            return 1
+        print(f"平台 {args.id}:")
+        print(f"  名称     : {p.get('name', args.id)}")
+        print(f"  入口文件 : {p['entry']}")
+        print(f"  格式     : {p.get('format', 'markdown')}")
+        if p.get("char_limit"):
+            print(f"  字符限制 : {p['char_limit']}")
+        print(f"  钩子     : {'启用' if p.get('hooks', {}).get('enabled') else '未启用'}")
+        print(f"  来源     : {'内置' if p.get('builtin') else '用户配置'}")
+        # 校验入口文件格式
+        entry = p["entry"]
+        if entry.startswith("/") or "\\" in entry:
+            print(f"  ⚠ 入口文件路径可能不合法: {entry}")
+        print("✅ 配置有效")
+        return 0
+
+    if sub == "export":
+        try:
+            yaml_text = _pf.export_platform(args.id)
+        except ValueError as e:
+            print(f"error: {e}", file=sys.stderr)
+            return 1
+        print(yaml_text)
+        return 0
+
+    return 1
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="agentseed",
@@ -538,6 +643,30 @@ def main():
                          help="规则列表（逗号分隔），如 no_pii_in_commit,language_match_user")
     p_judge.add_argument("--language", default="", help="用户语言提示（如 '中文'/'English'）")
     p_judge.set_defaults(func=cmd_judge)
+
+    p_platform = sub.add_parser("platform", help="平台管理：list / import / remove / validate / export")
+    p_platform_sub = p_platform.add_subparsers(dest="platform_cmd", required=True)
+    p_platform_list = p_platform_sub.add_parser("list", help="列出所有已注册平台")
+    p_platform_list.set_defaults(func=cmd_platform)
+    p_platform_import = p_platform_sub.add_parser("import", help="导入新平台（交互式或参数指定）")
+    p_platform_import.add_argument("id", nargs="?", default=None, help="平台 ID（省略则交互式引导）")
+    p_platform_import.add_argument("--name", default=None, help="显示名称")
+    p_platform_import.add_argument("--entry", default=None, help="入口文件路径（相对项目根）")
+    p_platform_import.add_argument("--format", default="markdown",
+                                   choices=["markdown", "cursor", "comate"],
+                                   help="文件格式（默认 markdown）")
+    p_platform_import.add_argument("--char-limit", type=int, default=None, help="骨架分片阈值")
+    p_platform_import.add_argument("--hook-dir", default=None, help="钩子目录名（如 .myeditor）")
+    p_platform_import.set_defaults(func=cmd_platform)
+    p_platform_remove = p_platform_sub.add_parser("remove", help="移除用户添加的平台")
+    p_platform_remove.add_argument("id", help="平台 ID")
+    p_platform_remove.set_defaults(func=cmd_platform)
+    p_platform_validate = p_platform_sub.add_parser("validate", help="验证平台配置")
+    p_platform_validate.add_argument("id", help="平台 ID")
+    p_platform_validate.set_defaults(func=cmd_platform)
+    p_platform_export = p_platform_sub.add_parser("export", help="导出平台配置为 YAML")
+    p_platform_export.add_argument("id", help="平台 ID")
+    p_platform_export.set_defaults(func=cmd_platform)
 
     args = parser.parse_args()
     return args.func(args)
