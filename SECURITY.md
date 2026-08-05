@@ -1,19 +1,29 @@
-# 安全政策
+# Security Policy
 
-## 漏洞披露
-如发现本仓库相关的安全漏洞（如规则导致密钥泄露风险、MCP 红线被绕过等），**请勿在公开 Issue 中附带漏洞详情**。
+## Reporting a Vulnerability
 
-请先在 [GitHub Issues](https://github.com/weed33834/agentseed/issues) 或 [GitCode Issues](https://gitcode.com/badhope/agentseed/issues) 提交一个标题模糊的 issue（如"安全漏洞报告"），向维护者索取安全联系方式。维护者确认后会提供私密沟通渠道。
+If you discover a security issue related to this repository (e.g., rules that
+could leak secrets, MCP red-line bypasses), **do not include vulnerability
+details in a public issue**.
 
-我们会尽快确认并修复。
+Instead, open a vaguely-titled issue (e.g., "Security report") on
+[GitHub Issues](https://github.com/weed33834/agentseed/issues) or
+[GitCode Issues](https://gitcode.com/badhope/agentseed/issues) and ask the
+maintainers for a secure contact channel. We will confirm and provide a
+private channel, then fix the issue as soon as possible.
 
-## 密钥与 Token
-- 本仓库绝不硬编码任何 API Key / Token / 密码；一律使用环境变量。
-- 若你 Fork 后不慎提交了密钥，立即撤销该密钥，并清理提交历史（`git filter-repo` 或 BFG）。
-- 报告漏洞时请勿在公开渠道附带真实密钥。
+## Secrets & Tokens
 
-## MCP 红线
-MCP 涉及常驻进程与权限，**AI 不得自下载、自安装、自启动、自配置**。任何涉及 MCP 自动化的 PR 将直接被拒。详见 `AGENTS.md` §5。
+- This repository never hardcodes API keys, tokens, or passwords; always use environment variables.
+- If you accidentally commit a secret in a fork, revoke it immediately and scrub the history (`git filter-repo` or BFG).
+- Never attach real secrets to public reports.
 
-## 支持版本
-仅最新 `main` 分支接收安全更新。
+## MCP Red Line
+
+MCP involves long-running processes and permissions. **AI must not
+self-download, self-install, self-start, or self-configure MCP servers.**
+Any PR that automates MCP setup will be rejected outright. See `AGENTS.md` §5.
+
+## Supported Versions
+
+Only the latest `main` branch receives security updates.

@@ -52,3 +52,6 @@ dist/
 build/
 *.whl
 *.egg-info/
+
+# setup.py 构建时自动生成（从 core/personas/capabilities/adapters 同步，不入库）
+src/agentseed/_resources/

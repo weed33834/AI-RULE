@@ -549,6 +549,20 @@ def cmd_platform(args) -> int:
     return 1
 
 
+# ─── serve: MCP Server ───
+
+def cmd_serve(args) -> int:
+    """agentseed serve — 启动 MCP Server。"""
+    from . import mcp_server
+
+    port = getattr(args, "port", None)
+    if port:
+        mcp_server.run_http(port)
+    else:
+        mcp_server.run_stdio()
+    return 0
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="agentseed",
@@ -667,6 +681,10 @@ def main():
     p_platform_export = p_platform_sub.add_parser("export", help="导出平台配置为 YAML")
     p_platform_export.add_argument("id", help="平台 ID")
     p_platform_export.set_defaults(func=cmd_platform)
+
+    p_serve = sub.add_parser("serve", help="启动 MCP Server（stdio 模式，--port 启用 HTTP/SSE）")
+    p_serve.add_argument("--port", type=int, default=None, help="HTTP/SSE 端口（默认 stdio）")
+    p_serve.set_defaults(func=cmd_serve)
 
     args = parser.parse_args()
     return args.func(args)

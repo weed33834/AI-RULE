@@ -1,6 +1,6 @@
 # 贡献指南
 
-本仓库是一套**通用 AI 协作规则模板**。`AGENTS.md` 是所有规则的**唯一源头**，其余工具配置文件由同步脚本生成，请勿手工修改。
+本仓库是 **AgentSeed — AI Agent 人格治理平台**。规则源文件位于 `core/`、`personas/<id>/`、`capabilities/<cap>/`，平台入口文件（AGENTS.md / CLAUDE.md 等）由 `agentseed sync` 生成，请勿手工修改。
 
 ## 快速上手
 
@@ -30,7 +30,7 @@ agentseed sync
 
 ## 多语言 README
 
-`README.md`（英文，默认）、`README.zh.md`（中文）内容需保持一致。改动其中一份的说明性内容时，请同步另一份；若暂时只改英文，在 PR 描述里注明「zh 待补」。（`README.ja.md` 已在 v2 重构中删除。）
+`README.md`（英文，默认）、`README.zh.md`（中文）、`README.ja.md`（日文）内容需保持一致。改动其中一份的说明性内容时，请同步其他两份；若暂时只改英文，在 PR 描述里注明「zh/ja 待补」。
 
 ## 目录结构与新画像开发
 

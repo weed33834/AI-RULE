@@ -1,31 +1,49 @@
-# 贡献者行为准则
+# Contributor Covenant Code of Conduct
 
-## 我们的承诺
-为营造开放、友好的环境，我们作为贡献者和维护者承诺：无论年龄、体型、残疾、族群、性别、经验水平、国籍、外貌、宗教或性取向，都让每个人参与本项目时免受骚扰。
+## Our Pledge
 
-## 我们的准则
-有助于创造正面环境的行为包括：
-- 使用友好、包容的语言
-- 尊重不同的观点与经验
-- 优雅地接受建设性批评
-- 以社区整体利益为重
-- 对其他社区成员保持同理心
+We as members, contributors, and leaders pledge to make participation in our
+community a harassment-free experience for everyone, regardless of age, body
+size, visible or invisible disability, ethnicity, sex characteristics, gender
+identity and expression, level of experience, education, socio-economic status,
+nationality, personal appearance, race, religion, or sexual identity
+and orientation.
 
-不可接受的行为包括：
-- 性化语言或图像、不受欢迎的性关注
-- 挑衅、侮辱性评论、人身或政治攻击
-- 公开或私下的骚扰
-- 未经许可公开他人私人信息
-- 其他在专业场合不合理的行为
+## Our Standards
 
-## 我们的责任
-维护者有责任制裁任何不当行为，有权删除、编辑或拒绝与此准则不符的评论、提交、代码、wiki 编辑、issue 等。
+Examples of behavior that contributes to a positive environment:
 
-## 适用范围
-本准则适用于所有项目空间，以及当个人代表项目在公共空间活动时。
+- Using welcoming and inclusive language
+- Being respectful of differing viewpoints and experiences
+- Gracefully accepting constructive criticism
+- Focusing on what is best for the community
+- Showing empathy towards other community members
 
-## 执行
-可向维护者举报。所有投诉将得到及时、公正的审查与处理。
+Examples of unacceptable behavior:
 
-## 署名
-本准则改编自 [Contributor Covenant](https://www.contributor-covenant.org) 2.1 版。
+- The use of sexualized language or imagery, and sexual attention or advances
+- Trolling, insulting/derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information without explicit permission
+- Other conduct which could reasonably be considered inappropriate in a professional setting
+
+## Our Responsibilities
+
+Project maintainers are responsible for clarifying and enforcing our standards
+and will take appropriate and fair corrective action in response to any
+behavior that they deem inappropriate, threatening, offensive, or harmful.
+
+## Scope
+
+This Code of Conduct applies within all community spaces, and also applies
+when an individual is officially representing the community in public spaces.
+
+## Enforcement
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be
+reported to the maintainers. All complaints will be reviewed and investigated
+promptly and fairly.
+
+## Attribution
+
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.1.

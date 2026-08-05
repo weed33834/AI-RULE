@@ -2,6 +2,22 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，版本号参考语义化版本。
 
+## [2.4.0] — 2026-08-04
+
+### 新增
+
+- **MCP Server** `src/agentseed/mcp_server.py`：通过 `agentseed serve` 启动，暴露治理引擎和画像管理能力为 MCP 工具。
+- **4 个 MCP 工具**：
+  - `governance_check`：检查工具调用是否违反 core/constraints.yaml 中的 P0 安全红线
+  - `persona_list`：列出 personas/ 目录下所有可用画像包
+  - `persona_activate`：切换到指定画像并返回配置摘要
+  - `gap_detect`：基于 core/self-evolution.md 的 GapScore 公式分析上下文能力缺口
+- **CLI 新命令** `agentseed serve`：支持 stdio 模式（默认）和 HTTP/SSE 模式（--port）。
+
+### 变更
+
+- 安装方式从 PyPI 切换到 GitHub Releases（README.md / README.zh.md）
+
 ## [2.3.0] — 2026-08-04
 
 ### 新增
