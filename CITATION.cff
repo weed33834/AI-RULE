@@ -1,39 +1,23 @@
 cff-version: 1.2.0
-title: "AgentSeed — Unified AI Collaboration Rules"
-message: "If you use this repository in your research or project, please cite it as below."
-type: software
+message: "If you use AgentSeed in your research or project, please cite it as below."
+title: "AgentSeed: A Persona-Governance Platform for AI Agents"
+version: 2.4.1
+date-released: 2026-08-05
 authors:
-  - alias: badhope
-    website: "https://github.com/weed33834"
-repository-code: "https://github.com/weed33834/AgentSeed"
-url: "https://github.com/weed33834/AI-RULE"
-abstract: >-
-  A single repository integrating 6 independent AI rule systems (coding,
-  conversation, novel, interactive-novel, paper, agent-builder) with a shared
-  core layer, 14 composable capability packs (incl. DAR domain authority
-  registry), and multi-tool sync to 13 platforms (Claude Code, Gemini, Cursor,
-  GitHub Copilot, Trae, Windsurf, Cline, Continue, Amazon Q, Qodo, Tongyi
-  Lingma, Comate, plus cross-tool AGENTS.md standard). Incorporates
-  research-backed prompt engineering and safety guardrails.
-keywords:
-  - prompt-engineering
-  - ai-agents
-  - llm
-  - guardrails
-  - ai-safety
-  - prompt-patterns
-  - ai-alignment
-  - domain-authority-registry
+  - family-names: "AgentSeed"
+    given-names: "Project"
+repository-code: "https://github.com/weed33834/agentseed"
+repository-artifact: "https://github.com/weed33834/agentseed/releases"
 license: MIT
-version: "1.5.0"
-date-released: "2026-07-20"
-preferred-citation:
-  type: software
-  title: "AgentSeed — Unified AI Collaboration Rules"
-  authors:
-    - alias: badhope
-  repository-code: "https://github.com/weed33834/AgentSeed"
-  url: "https://github.com/weed33834/AI-RULE"
-  version: "1.5.0"
-  date-released: "2026-07-20"
-  license: MIT
+keywords:
+  - ai-agent
+  - agent-framework
+  - model-context-protocol
+  - persona-governance
+  - ai-rules
+  - system-prompt
+  - prompt-engineering
+  - developer-tools
+  - automation
+  - open-source
+type: software

@@ -1,6 +1,8 @@
 # AgentSeed — One Command to Give Your Agent a Brain
 
-> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl && agentseed forge`** → A blank agent instantly gains a complete persona, rule system, skills, and tool config.
+> **AgentSeed is an open-source AI agent framework and persona-governance platform.** One command turns a blank AI coding assistant into a fully-configured agent with safety rules, swappable personalities, and 13-platform sync.
+>
+> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl && agentseed forge`** → A blank agent instantly gains a complete persona, rule system, skills, and tool config.
 
 **🌐 Languages:** [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)
 
@@ -12,24 +14,30 @@
 ![Tests](https://img.shields.io/badge/tests-144%20passing-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%2B-informational)
 
-AgentSeed is a **Persona-Governance Platform for AI Agents**. It's what you inject into a blank AI coding assistant (Claude Code, Cursor, Copilot, Trae, Gemini, Windsurf, and more) to give it:
+AgentSeed is a **Persona-Governance Platform for AI Agents** — an open-source agent framework that injects governance, personality, and tooling into any blank AI assistant. It's what you use to give your Claude Code, Cursor, Copilot, Trae, Gemini, Windsurf, Cline, Continue, Amazon Q, Qodo, Lingma, or Comate a permanent brain:
 
-- 🧬 **A Permanent Brain (Governance Engine)** — safety boundaries, decision formulas, self-evolution triggers
-- 🎭 **A Swappable Personality (Persona Packs)** — coding, writing, research, game design, and custom
-- 🚀 **Zero-Config Platform Sync** — 13 platforms, one command
+- 🧬 **Governance Engine (Constitution Layer)** — safety boundaries, decision formulas, self-evolution triggers, prompt engineering guardrails
+- 🎭 **Swappable Persona Packs** — coding, writing, research, game design, and custom personalities
+- 🚀 **Zero-Config 13-Platform Sync** — one command line tool, all IDEs covered
+- 🔍 **Self-Evolution** — auto-detect capability gaps, search, fetch, install
+- 🛡️ **MCP (Model Context Protocol) Server** — expose governance as programmatic tools
 
 ---
 
 ## How It Works
 
+AgentSeed is a **command-line AI agent framework** that solves the blank-agent problem: every time you start a new AI coding assistant, you shouldn't have to re-teach it how to behave. AgentSeed automates this with a three-layer architecture:
+
 ```
 ┌──────────────────────────────────────────────┐
 │                 AgentSeed                      │
+│         AI Agent Framework & Persona           │
+│          Governance Platform                   │
 │                                               │
 │  ┌─────────────────────────────────────────┐ │
 │  │  ⚡ GOVERNANCE ENGINE (non-swappable)  │ │
 │  │  P0 red lines · decision formulas ·    │ │
-│  │  self-evolution triggers               │ │
+│  │  self-evolution triggers · rule engine │ │
 │  └─────────────────────────────────────────┘ │
 │                    ↓                          │
 │  ┌─────────────────────────────────────────┐ │
@@ -53,38 +61,38 @@ AgentSeed is a **Persona-Governance Platform for AI Agents**. It's what you inje
 ## Quick Start
 
 ```bash
-# Install
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl
+# Install AgentSeed (AI agent framework CLI)
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
 
-# Auto-detect → assemble → generate
+# Auto-detect → assemble → generate (blank agent → full brain)
 agentseed forge
 
 # Interactive mode: choose your persona
 agentseed forge --interactive
 
-# Specify a persona
+# Specify a persona for your workflow
 agentseed forge --profile coding
 
 # Preview without writing
 agentseed forge --dry-run
 
-# Switch persona
+# Switch persona mid-project
 agentseed switch --profile novel
 
 # List all available personas
 agentseed list
 
-# Sync to a specific platform
+# Sync AI rules to a specific IDE or platform
 agentseed sync --platform cursor
 
-# Start MCP Server (stdio mode)
+# Start MCP Server (stdio mode) — Model Context Protocol
 agentseed serve
 
 # Start MCP Server (HTTP/SSE mode)
 agentseed serve --port 8080
 ```
 
-AgentSeed will detect your project type (pyproject.toml → coding, chapters/ → novel, etc.), select the best Persona Pack, and generate all necessary rule files.
+AgentSeed will detect your project type (`pyproject.toml` → coding, `chapters/` → novel, etc.), select the best Persona Pack, and generate all necessary AI rule files, system prompts, and tool configurations.
 
 ### MCP Server
 
@@ -218,3 +226,34 @@ MIT
 ---
 
 *AgentSeed: The constitution teaches an agent when to find its own resources; identity decides what it excels at.*
+
+<!-- SEO Keywords Block — helps search engines and package registries index this project -->
+## Keywords
+
+`ai-agent`, `agent-framework`, `persona-governance`, `mcp`, `model-context-protocol`, `ai-rules`, `system-prompt`, `prompt-engineering`, `claude-code`, `cursor`, `copilot`, `trae`, `gemini`, `windsurf`, `cline`, `continue`, `amazon-q`, `ai-personality`, `agent-brain`, `blank-agent`, `coding-assistant`, `developer-tools`, `automation`, `workflow`, `cli`, `python`, `open-source`
+
+<!-- JSON-LD Structured Data for schema.org / Google Rich Snippets -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AgentSeed",
+  "description": "One command to give your AI agent a brain. Persona-Governance Platform with safety rules, swappable personalities, and 13-platform sync.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "softwareVersion": "2.4.1",
+  "license": "https://github.com/weed33834/agentseed/blob/main/LICENSE",
+  "codeRepository": "https://github.com/weed33834/agentseed",
+  "downloadUrl": "https://github.com/weed33834/agentseed/releases",
+  "author": {
+    "@type": "Organization",
+    "name": "AgentSeed Project"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>

@@ -217,3 +217,35 @@ MIT
 ---
 
 *AgentSeed: 宪法教 Agent 何时自己找资源，身份决定擅长领域。*
+
+<!-- SEO 关键词区块 — 帮助搜索引擎索引 -->
+## 关键词
+
+`AI Agent`, `Agent 框架`, `人格治理`, `MCP`, `Model Context Protocol`, `AI 规则`, `系统提示词`, `提示工程`, `Claude Code`, `Cursor`, `Copilot`, `Trae`, `Gemini`, `Windsurf`, `AI 人格`, `Agent 大脑`, `空白 Agent`, `编程助手`, `开发者工具`, `自动化`, `工作流`, `命令行工具`, `Python`, `开源`
+
+<!-- JSON-LD 结构化数据 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AgentSeed",
+  "description": "一条命令，给你的 AI Agent 一个大脑。人格治理平台：安全规则 + 可插拔人格 + 13 平台同步 + 自进化引擎。",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "跨平台",
+  "programmingLanguage": "Python",
+  "softwareVersion": "2.4.1",
+  "license": "https://github.com/weed33834/agentseed/blob/main/LICENSE",
+  "codeRepository": "https://github.com/weed33834/agentseed",
+  "downloadUrl": "https://github.com/weed33834/agentseed/releases",
+  "inLanguage": "zh-CN",
+  "author": {
+    "@type": "Organization",
+    "name": "AgentSeed Project"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "CNY"
+  }
+}
+</script>

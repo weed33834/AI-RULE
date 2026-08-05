@@ -186,3 +186,35 @@ MIT
 ---
 
 *AgentSeed: 憲法は Agent に「いつ自分でリソースを探すか」を教え、アイデンティティが得意分野を決める。*
+
+<!-- SEO キーワードブロック -->
+## キーワード
+
+`AIエージェント`, `エージェントフレームワーク`, `ペルソナガバナンス`, `MCP`, `Model Context Protocol`, `AIルール`, `システムプロンプト`, `プロンプトエンジニアリング`, `Claude Code`, `Cursor`, `Copilot`, `Trae`, `Gemini`, `Windsurf`, `AIパーソナリティ`, `エージェントブレイン`, `空白エージェント`, `コーディングアシスタント`, `開発者ツール`, `自動化`, `ワークフロー`, `CLI`, `Python`, `オープンソース`
+
+<!-- JSON-LD 構造化データ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "AgentSeed",
+  "description": "たった1コマンドで、AI Agentに脳を。Persona-Governanceプラットフォーム：安全ルール + 差し替え可能な人格 + 13プラットフォーム同期 + 自己進化エンジン。",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Cross-platform",
+  "programmingLanguage": "Python",
+  "softwareVersion": "2.4.1",
+  "license": "https://github.com/weed33834/agentseed/blob/main/LICENSE",
+  "codeRepository": "https://github.com/weed33834/agentseed",
+  "downloadUrl": "https://github.com/weed33834/agentseed/releases",
+  "inLanguage": "ja",
+  "author": {
+    "@type": "Organization",
+    "name": "AgentSeed Project"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "JPY"
+  }
+}
+</script>

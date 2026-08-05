@@ -1,0 +1,28 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "AgentSeed",
+  "description": "One command to give your AI agent a brain. Persona-Governance Platform with safety rules, swappable personalities, and 13-platform sync.",
+  "version": "2.4.1",
+  "license": "https://spdx.org/licenses/MIT",
+  "codeRepository": "https://github.com/weed33834/agentseed",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "Python",
+    "version": ">=3.8"
+  },
+  "runtimePlatform": "Python 3",
+  "author": {
+    "@type": "Organization",
+    "name": "AgentSeed Project"
+  },
+  "keywords": [
+    "ai-agent", "agent-framework", "mcp", "model-context-protocol",
+    "persona", "governance", "ai-rules", "system-prompt",
+    "prompt-engineering", "claude-code", "cursor", "copilot",
+    "developer-tools", "automation", "workflow", "open-source"
+  ],
+  "developmentStatus": "active",
+  "issueTracker": "https://github.com/weed33834/agentseed/issues",
+  "downloadUrl": "https://github.com/weed33834/agentseed/releases"
+}

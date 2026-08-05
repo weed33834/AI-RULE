@@ -1,0 +1,31 @@
+# GitHub Repository Topics (20 max) — live as of 2026-08-06
+# Set via: gh api repos/weed33834/agentseed/topics -X PUT
+#          -H "Accept: application/vnd.github.mercy-preview+json"
+#
+# Priority ranking (by search volume & relevance):
+# Tier 1: ai-agent, mcp, agent-framework, persona, governance
+# Tier 2: ai-rules, model-context-protocol, system-prompt, prompt-engineering
+# Tier 3: claude-code, cursor, copilot, trae, windsurf
+# Tier 4: developer-tools, automation, workflow, cli, python, open-source
+
+topics:
+  - ai-agent
+  - agent-framework
+  - mcp
+  - model-context-protocol
+  - persona
+  - governance
+  - ai-rules
+  - system-prompt
+  - prompt-engineering
+  - claude-code
+  - cursor
+  - copilot
+  - trae
+  - windsurf
+  - developer-tools
+  - automation
+  - workflow
+  - cli
+  - python
+  - open-source
