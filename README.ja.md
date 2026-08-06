@@ -1,159 +1,70 @@
-# AgentSeed — たった1コマンドで、Agentに脳を。
+# AgentSeed
 
-> **`pip install agentseed && agentseed forge`** → まっさらな Agent に、人格・ルール・スキル・ツール設定を即座に注入。
+> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl && agentseed forge`**
 
-**🌐 言語:** [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+**🌐 [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)**
+
+**📦 [GitHub](https://github.com/weed33834/agentseed) (メイン) · [Gitee](https://gitee.com/badhope/agentseed) · [Gitcode](https://gitcode.com/badhope/agentseed)**
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
-![Platforms](https://img.shields.io/badge/platforms-13-orange)
-![Tests](https://img.shields.io/badge/tests-144%20passing-brightgreen)
+![Platforms](https://img.shields.io/badge/platforms-14-orange)
+![Tests](https://img.shields.io/badge/tests-143%20passing-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%2B-informational)
 
-AgentSeed は、AI Agent のための **Persona-Governance プラットフォーム** です。空白の AI コーディングアシスタント（Claude Code、Cursor、Copilot、Trae、Gemini、Windsurf など）に注入するだけで、次の3つを手に入れられます：
-
-- 🧬 **永続的な脳（ガバナンスエンジン）** — 安全境界・意思決定フォーミュラ・自己進化トリガー
-- 🎭 **差し替え可能な人格（Persona Packs）** — coding・novel・paper・conversation・interactive-novel・agent-builder
-- 🚀 **ゼロコンフィグ同期** — 13 プラットフォーム、1コマンド
-
 ---
 
-## 仕組み
+AIコーディングツールを開くたびに「rm -rf するな」「APIキーをベタ書きするな」「今のスタックは何」って毎回言ってませんか。AgentSeed はそれを一度書いて、使ってる全ツールに同期します。
 
-```
-┌──────────────────────────────────────────────┐
-│                 AgentSeed                      │
-│                                               │
-│  ┌─────────────────────────────────────────┐ │
-│  │  ⚡ ガバナンスエンジン（差し替え不可）    │ │
-│  │  P0 安全レッドライン・決定式・自己進化   │ │
-│  └─────────────────────────────────────────┘ │
-│                    ↓                          │
-│  ┌─────────────────────────────────────────┐ │
-│  │  🎭 ペルソナパック（差し替え可能）        │ │
-│  │  coding · novel · paper · agent-builder   │ │
-│  │  conversation · interactive-novel · カスタム│ │
-│  └─────────────────────────────────────────┘ │
-│                    ↓                          │
-│  ┌─────────────────────────────────────────┐ │
-│  │  🚀 13 プラットフォーム同期               │ │
-│  │  Claude Code · Cursor · Copilot · Trae   │ │
-│  │  Gemini · Windsurf · Cline · Continue    │ │
-│  │  Amazon Q · Qodo · Lingma · Comate       │ │
-│  │  AGENTS.md（汎用）                        │ │
-│  └─────────────────────────────────────────┘ │
-└──────────────────────────────────────────────┘
-```
-
----
-
-## クイックスタート
+プロジェクトを自動検出して、最適なペルソナを選び、Claude Code にも Cursor にも Copilot にも Windsurf にも Trae にも、全部にルールファイルを生成します。
 
 ```bash
-# インストール
-pip install agentseed
-
-# 自動検出 → アセンブル → 生成
 agentseed forge
-
-# 対話モード：ペルソナを選択
-agentseed forge --interactive
-
-# ペルソナを指定
-agentseed forge --profile coding
-
-# プレビュー（ファイル書き込みなし）
-agentseed forge --dry-run
-
-# ペルソナを切り替え
-agentseed switch --profile novel
-
-# 利用可能なペルソナ一覧
-agentseed list
-
-# 特定プラットフォームへ同期
-agentseed sync --platform cursor
 ```
 
-AgentSeed がプロジェクトの種類を自動検出し（pyproject.toml → coding、chapters/ → novel など）、最適な Persona Pack を選んで必要なルールファイルをすべて生成します。
+この一行だけ。空のディレクトリに1200行のAGENTS.mdができて、安全ルール、プロジェクト用スキル、各プラットフォーム設定が全部入ります。コード書いてても小説書いてても論文書いてても、同じコマンド。
 
 ---
 
-## なぜ AgentSeed なのか？
+## なにができるか
 
-| 課題 | AgentSeed の解決策 |
-|---------|-------------------|
-| AI Agent に一貫した行動ルールがない | **P0 ガバナンス** — どこでも同じ安全基準 |
-| タスクごとに違う人格が必要 | **Persona Packs** — 安全を失わずに人格を交換 |
-| 複数ツールのルール設定が面倒 | **13プラットフォーム同期** — 1コマンドで全部 |
-| プリセットツールが失敗すると止まる | **自己進化エンジン** — ギャップ検出と自己修復 |
-| カスタムペルソナの作成・共有が難しい | **ペルソナマーケット** — 一度作ればコミュニティで共有 |
+**安全ベースラインは上書き不可。** コアの安全ルール（rm -rf禁止、キーの捏造禁止、無断インストール禁止）は AgentSeed 本体に組み込まれていて、どのペルソナでも消せません。
 
-### 競合との比較
+**6つのペルソナ、いつでも切替。** `coding`（デフォルト）、`novel`、`paper`、`conversation`、`interactive-novel`、`agent-builder`。それぞれにプロンプト・スキル・ツール設定が入ってます。途中で気分変えたくなったら `agentseed switch --profile novel`。
 
-| プロジェクト | 内容 | AgentSeed との違い |
-|---------|-------------|---------------------|
-| agent-rules (steipete) | Cursor/Claude 用の統一 .mdc ルール | アーカイブ済み；コーディングのみ |
-| agent-rules-books | ソフトウェア書籍から抽出したルール | コーディングのみ；ペルソナなし |
-| ACP | Agent 設定 + MCP 管理 | ガバナンスなし；自己進化なし |
-| agents.md | AGENTS.md フォーマット標準 | フォーマットのみ；中身なし |
-| chatgpt_system_prompt | システムプロンプト集 | 収集のみ；ツールチェーンなし |
-| **AgentSeed** | **完全な人格 + ガバナンス + 同期プラットフォーム** | **完全な Agent の脳** |
+**14プラットフォーム、一発同期。** ツールごとにフォーマット違う問題、AgentSeedが吸収：
+- Claude Code → `CLAUDE.md`
+- Cursor → `.cursor/rules/project.mdc`
+- Copilot → `.github/copilot-instructions.md`
+- Windsurf → `.windsurfrules`
+- Gemini → `GEMINI.md`
+- Trae → `.trae/rules/project_rules.md`
+- Cline → `.clinerules/project.md`
+- Continue → `.continue/rules/project.md`
+- Amazon Q → `.amazonq/rules/project.md`
+- Qodo → `best_practices.md`
+- 通義霊碼 → `.lingma/rules/project.md`
+- 腾讯云コードアシスタント → `.comate/rules/project.mdr`
+- Codex → `.codex/rules.md`
+- AGENTS.md（20以上のツールがネイティブ読取）
 
----
+**全プラットフォームにフック付き。** `adapters/hooks/` 以下、14の `pre_tool_use.py` が危険な操作を実行前にブロック。fail-open設計：フックがクラッシュしても操作は通る。
 
-## 中身
+**MCPサーバー。** `agentseed serve` で起動。MCP対応クライアントなら `governance_check`（安全チェック）、`persona_list`、`persona_activate`、`gap_detect` がそのまま使える。
 
-### 🧬 ガバナンスエンジン（憲法レイヤー）
-永続的な脳。どの Persona Pack にも上書きされません。
-
-- `core/governance.md` — P0 レッドライン（安全・真実・境界）
-- `core/constraints.yaml` — 機械実行可能なフック
-- `core/agent-modes.md` — Task / Project / Autonomous モード
-- `core/self-evolution.md` — ★ ギャップ検出 + 自己修復
-- `core/dar-spec.md` — ドメイン権威スコアリング（検索品質）
-- `core/persona-router.md` — ペルソナルーティングと選択
-
-### 🎭 ペルソナパック（差し替え可能）
-各パック = SOUL + ルール + スキル + MCP + プロンプト
-
-| ペルソナ | 対象 | 主な特性 |
-|---------|-----|-----------|
-| `coding` | ソフトウェアエンジニア | リファクタリング、テスト、CI/CD |
-| `novel` | 小説家 | 章、キャラクター、世界観 |
-| `paper` | アカデミック研究者 | 文献レビュー、LaTeX、投稿 |
-| `conversation` | 汎用アシスタント | Q&A、調査、分析 |
-| `interactive-novel` | ゲームライター | 分岐ストーリー、ステートマシン |
-| `agent-builder` | Agent デザイナー | Agent の構築・評価・デプロイ |
-
-### 🚀 プラットフォーム同期
-**13 プラットフォーム**向けにネイティブなルールファイルを生成：
-
-Claude Code, Cursor, Copilot, Trae, Gemini, Windsurf, Cline, Continue, Amazon Q, Qodo, Lingma, Comate、そして AGENTS.md（汎用）。
-
----
-
-## アーキテクチャ
-
-完全な設計は [docs/AGENTSEED_ARCHITECTURE.md](docs/AGENTSEED_ARCHITECTURE.md) を参照してください。
-
-主な革新：
-- **スケルトンモード**：コアルールをインライン化、スキルはオンデマンド読み込み — プロンプトを軽量に維持
-- **自己進化エンジン**：Agent が自身の能力ギャップを検出し自己修復
-- **品質ゲート**：自動取得したコンテンツはすべて 安全 → 品質 → 互換性 チェックを通過
+**自己進化。** プロジェクトの足りないところ（ツール不足、知らない分野）をスコア化して、何を入れればいいか提案します。魔法じゃない、加重計算式。スキル増やすほど精度上がる。
 
 ---
 
 ## インストール
 
 ```bash
-# pip（全プラットフォーム）
-pip install agentseed
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
+```
 
-# pipx（分離環境、非 Python ユーザーに推奨）
-pipx install agentseed
+ソースから：
 
-# ソースから
+```bash
 git clone https://github.com/weed33834/agentseed.git
 cd agentseed
 pip install -e .
@@ -161,60 +72,71 @@ pip install -e .
 
 ---
 
-## 開発
+## 使い方
 
 ```bash
-# 新しいペルソナを作成
-agentseed persona new my-role
+agentseed forge              # 検出 → 組立 → 生成
+agentseed forge --dry-run    # プレビュー（書込なし）
+agentseed forge --profile coding
+agentseed forge --profile novel
 
-# ルールを検証
-agentseed verify
+agentseed switch --profile paper
 
-# テスト実行
-python -m pytest tests/
+agentseed sync               # 全プラットフォーム同期
+agentseed sync --platform cursor
 
-# ルール品質チェック
-python scripts/validate_rules.py
+agentseed status             # いま何が入ってる？
+
+agentseed serve              # MCPサーバー起動 (stdio)
+agentseed serve --port 8080  # MCPサーバー起動 (HTTP)
+
+agentseed platform list      # 14の内蔵プラットフォーム
+agentseed platform import my-ide --entry .myide/rules.md --format markdown
+
+agentseed persona list       # 使えるペルソナ一覧
+agentseed persona search "product manager"
 ```
 
 ---
 
-## ライセンス
+## 自分のプラットフォームを追加
 
-MIT
+```bash
+agentseed platform import my-editor --entry .myeditor/rules.md --format markdown --hook-dir .myeditor
+```
+
+これで登録＋フック生成＋毎回の `agentseed sync` に含まれる。
 
 ---
 
-*AgentSeed: 憲法は Agent に「いつ自分でリソースを探すか」を教え、アイデンティティが得意分野を決める。*
+## ディレクトリ構成
 
-<!-- SEO キーワードブロック -->
-## キーワード
+```
+core/                  安全ベースライン（P0レッドライン、判定式、ルーター）
+personas/              ペルソナごとのディレクトリ（coding, novel, paper...）
+capabilities/          モジュール型スキルパック（testing, research, creative...）
+adapters/hooks/        プラットフォーム別のツール実行前フック
+src/agentseed/         CLI、同期エンジン、ルーター、forge、自己進化
+```
 
-`AIエージェント`, `エージェントフレームワーク`, `ペルソナガバナンス`, `MCP`, `Model Context Protocol`, `AIルール`, `システムプロンプト`, `プロンプトエンジニアリング`, `Claude Code`, `Cursor`, `Copilot`, `Trae`, `Gemini`, `Windsurf`, `AIパーソナリティ`, `エージェントブレイン`, `空白エージェント`, `コーディングアシスタント`, `開発者ツール`, `自動化`, `ワークフロー`, `CLI`, `Python`, `オープンソース`
+---
 
-<!-- JSON-LD 構造化データ -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "AgentSeed",
-  "description": "たった1コマンドで、AI Agentに脳を。Persona-Governanceプラットフォーム：安全ルール + 差し替え可能な人格 + 13プラットフォーム同期 + 自己進化エンジン。",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Cross-platform",
-  "programmingLanguage": "Python",
-  "softwareVersion": "2.4.1",
-  "license": "https://github.com/weed33834/agentseed/blob/main/LICENSE",
-  "codeRepository": "https://github.com/weed33834/agentseed",
-  "downloadUrl": "https://github.com/weed33834/agentseed/releases",
-  "inLanguage": "ja",
-  "author": {
-    "@type": "Organization",
-    "name": "AgentSeed Project"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "JPY"
-  }
-}
-</script>
+## 類似プロジェクトとの違い
+
+- **agent-rules (steipete)** — アーカイブ済。Cursor用コーディングルールのみ。
+- **agents.md** — フォーマット提案。中身もツールチェーンもなし。
+- **ACP** — エージェント設定マネージャ。ガバナンスも自己進化もなし。
+- **Cursor Directory** — コミュニティのルール断片集。マルチプラットフォーム同期なし。
+- **AgentSeed** — 安全ルール＋6ペルソナ＋14プラットフォーム同期＋フック＋自己進化。CLI一つで全部。
+
+---
+
+## コントリビューション
+
+[CONTRIBUTING.md](CONTRIBUTING.md) 参照。基本：ソース（`core/`、`personas/`、`capabilities/`）を編集 → `agentseed sync` → 生成ファイルは手編集しない。
+
+テスト：`python -m pytest tests/`（143件パス）。
+
+---
+
+MIT

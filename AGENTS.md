@@ -1,4 +1,4 @@
-<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-08-06 14:55:18 | hash: 8198e411d84b | 禁止手工编辑 -->
+<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-08-06 15:42:53 | hash: 8198e411d84b | 禁止手工编辑 -->
 <!-- 源: core/*.md + personas/<id>/{AGENTS.md,prompts/} + capabilities/<cap>/  + personas/*.yaml | 生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->
 
 

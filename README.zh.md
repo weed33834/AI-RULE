@@ -1,251 +1,148 @@
-# AgentSeed — 一条命令，给你的 Agent 一个大脑
+# AgentSeed
 
-> **`pip install agentseed && agentseed forge`** → 空白 Agent 立刻拥有完整人格、规则体系、技能和工具配置。
+> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl && agentseed forge`**
 
-**🌐 语言:** [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+**🌐 [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)**
 
-**📦 平台分布:** [GitHub](https://github.com/weed33834/agentseed) — **主平台**（Releases、pip 安装、CI/CD） · [Gitee](https://gitee.com/badhope/agentseed) — 备份镜像 · [Gitcode](https://gitcode.com/badhope/agentseed) — 备份镜像
+**📦 [GitHub](https://github.com/weed33834/agentseed) (主站) · [Gitee](https://gitee.com/badhope/agentseed) · [Gitcode](https://gitcode.com/badhope/agentseed)**
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
-![Platforms](https://img.shields.io/badge/platforms-13-orange)
-![Tests](https://img.shields.io/badge/tests-144%20passing-brightgreen)
+![Platforms](https://img.shields.io/badge/platforms-14-orange)
+![Tests](https://img.shields.io/badge/tests-143%20passing-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%2B-informational)
 
-AgentSeed 是一个 **面向 AI Agent 的人格治理平台**。把它注入空白 AI 编程助手（Claude Code、Cursor、Copilot、Trae、Gemini、Windsurf 等），立刻获得：
-
-- 🧬 **永久大脑（治理引擎）** — 安全边界、决策公式、自进化触发
-- 🎭 **可插拔人格（Persona Packs）** — coding、novel、paper、conversation、interactive-novel、agent-builder
-- 🚀 **零配置平台同步** — 13 个平台，一条命令
-
 ---
 
-## 工作原理
+每次开一个新的 AI 编程会话，前十分钟都在干同一件事：告诉它别幻觉、别跑 `rm -rf`、你的技术栈是什么。AgentSeed 把这件事做一遍，然后同步到你用的所有工具里。
 
-```
-┌──────────────────────────────────────────────┐
-│                 AgentSeed                      │
-│                                               │
-│  ┌─────────────────────────────────────────┐ │
-│  │  ⚡ 治理引擎（不可插拔）                  │ │
-│  │  P0 安全红线 · 决策公式 · 自进化触发     │ │
-│  └─────────────────────────────────────────┘ │
-│                    ↓                          │
-│  ┌─────────────────────────────────────────┐ │
-│  │  🎭 人格包（可插拔画像）                  │ │
-│  │  coding · novel · paper · agent-builder   │ │
-│  │  conversation · interactive-novel · 自定义│ │
-│  └─────────────────────────────────────────┘ │
-│                    ↓                          │
-│  ┌─────────────────────────────────────────┐ │
-│  │  🚀 13 平台同步                           │ │
-│  │  Claude Code · Cursor · Copilot · Trae   │ │
-│  │  Gemini · Windsurf · Cline · Continue    │ │
-│  │  Amazon Q · Qodo · Lingma · Comate       │ │
-│  │  AGENTS.md（通用）                        │ │
-│  └─────────────────────────────────────────┘ │
-└──────────────────────────────────────────────┘
-```
-
----
-
-## 快速开始
+一条命令检测你的项目类型，选好对应的"人设"，给你用的 Claude Code、Cursor、Copilot、Windsurf、Trae 全部生成好规则文件。
 
 ```bash
-# 安装
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
-
-# 自动检测 → 装配 → 生成
 agentseed forge
-
-# 交互模式：选择你的画像
-agentseed forge --interactive
-
-# 指定画像
-agentseed forge --profile coding
-
-# 预览（不写文件）
-agentseed forge --dry-run
-
-# 切换画像
-agentseed switch --profile novel
-
-# 列出所有可用画像
-agentseed list
-
-# 同步到指定平台
-agentseed sync --platform cursor
-
-# 启动 MCP Server（stdio 模式）
-agentseed serve
-
-# 启动 MCP Server（HTTP/SSE 模式）
-agentseed serve --port 8080
 ```
 
-AgentSeed 会自动检测你的项目类型（pyproject.toml → coding、chapters/ → novel 等），选择最合适的 Persona Pack，并生成所有必要的规则文件。
-
-### MCP Server
-
-AgentSeed 将治理引擎和画像管理能力暴露为 MCP 工具，任何兼容 MCP 的客户端都可以程序化地查询和强制执行 AI 安全规则：
-
-| 工具 | 描述 |
-|------|------|
-| `governance_check` | 检查工具调用是否违反 P0 安全红线 |
-| `persona_list` | 列出所有可用的画像包 |
-| `persona_activate` | 切换到指定画像 |
-| `gap_detect` | 分析上下文是否存在能力缺口 |
-
-在 MCP 客户端中配置：
-
-```json
-{
-  "mcpServers": {
-    "agentseed": {
-      "command": "agentseed",
-      "args": ["serve"]
-    }
-  }
-}
-```
+就这一条。空目录进去，出来一个 1200 行的 AGENTS.md，包含安全规则、项目专属技能、各平台配置。不管你是在写代码、写小说、写论文、还是写另一个 agent，都一样用。
 
 ---
 
-## 为什么用 AgentSeed？
+## 它能干什么
 
-| 问题 | AgentSeed 方案 |
-|---------|-------------------|
-| AI Agent 缺乏一致的行为规则 | **P0 治理** — 处处相同的安全基线 |
-| 不同任务需要不同人格 | **Persona Packs** — 切换身份而不丢失安全 |
-| 为多个工具配置规则很繁琐 | **13 平台同步** — 一条命令全覆盖 |
-| Agent 在预设工具失败时卡住 | **自进化引擎** — 自动检测缺口，搜索/获取/安装 |
-| 自定义人格难以创建和分享 | **Persona 市场** — 创建一次，社区共享 |
+**安全底线不会丢。** 核心安全规则（禁止 `rm -rf`、禁止捏造密钥、禁止不经确认装东西）是写死在 AgentSeed 里的，换什么人设都覆盖不掉。
 
-### 对比竞品
+**六个预设人设，随时切。** `coding`（默认）、`novel`、`paper`、`conversation`、`interactive-novel`、`agent-builder`。每个自带提示词、技能列表、工具偏好。项目做到一半想换口味？`agentseed switch --profile novel`。
 
-| 项目 | 做什么 | AgentSeed 差异 |
-|---------|-------------|---------------------|
-| agent-rules (steipete) | Cursor/Claude 的统一 .mdc 规则 | 已归档；仅编码 |
-| agent-rules-books | 从软件书籍提炼的规则 | 仅编码；无人格 |
-| ACP | Agent 配置 + MCP 管理 | 无治理；无自进化 |
-| agents.md | AGENTS.md 格式标准 | 仅格式；无内容 |
-| chatgpt_system_prompt | 系统提示词合集 | 仅收藏；无工具链 |
-| **AgentSeed** | **完整人格 + 治理 + 同步平台** | **完整的 Agent 大脑** |
+**14 个平台，一次同步。** 不同工具要不同格式，AgentSeed 自己搞定：
+- Claude Code → `CLAUDE.md`
+- Cursor → `.cursor/rules/project.mdc`
+- Copilot → `.github/copilot-instructions.md`
+- Windsurf → `.windsurfrules`
+- Gemini → `GEMINI.md`
+- Trae → `.trae/rules/project_rules.md`
+- Cline → `.clinerules/project.md`
+- Continue → `.continue/rules/project.md`
+- Amazon Q → `.amazonq/rules/project.md`
+- Qodo → `best_practices.md`
+- 通义灵码 → `.lingma/rules/project.md`
+- 腾讯云代码助手 → `.comate/rules/project.mdr`
+- Codex → `.codex/rules.md`
+- AGENTS.md（20+ 工具原生读取）
 
----
+**每个平台都有拦截钩子。** `adapters/hooks/` 下 14 个平台的 `pre_tool_use.py`，在危险操作执行前拦截。fail-open 设计：钩子崩了操作照常，不会误伤。
 
-## 内含什么
+**MCP Server。** `agentseed serve` 启动，任何支持 MCP 的客户端可以直接调用 `governance_check`（安全红线检查）、`persona_list`（人设列表）、`persona_activate`（切换人设）、`gap_detect`（能力缺口检测）。
 
-### 🧬 治理引擎（宪法层）
-永久大脑。任何 Persona Pack 都不能覆盖它。
-
-- `core/governance.md` — P0 红线（安全、真实、边界）
-- `core/constraints.yaml` — 机器可执行的钩子
-- `core/agent-modes.md` — Task / Project / Autonomous 模式
-- `core/self-evolution.md` — ★ 缺口检测 + 自愈
-- `core/dar-spec.md` — 领域权威评分（搜索质量）
-- `core/persona-router.md` — 人格路由与选择
-
-### 🎭 人格包（可插拔）
-每个包 = SOUL + 规则 + 技能 + MCP + 提示词
-
-| 画像 | 适用 | 关键特质 |
-|---------|-----|-----------|
-| `coding` | 软件工程师 | 重构、测试、CI/CD |
-| `novel` | 小说家 | 章节、人物、世界观 |
-| `paper` | 学术研究者 | 文献综述、LaTeX、投稿 |
-| `conversation` | 通用助手 | 问答、调研、分析 |
-| `interactive-novel` | 游戏编剧 | 分支叙事、状态机 |
-| `agent-builder` | Agent 设计师 | 构建、评估、部署 Agent |
-
-### 🚀 平台同步
-为 **13 个平台**生成平台原生规则文件：
-
-Claude Code, Cursor, Copilot, Trae, Gemini, Windsurf, Cline, Continue, Amazon Q, Qodo, Lingma, Comate，以及 AGENTS.md（通用）。
-
----
-
-## 架构
-
-完整架构设计见 [docs/AGENTSEED_ARCHITECTURE.md](docs/AGENTSEED_ARCHITECTURE.md)。
-
-关键创新：
-- **骨架模式**：核心规则内联，技能按需加载 — 保持提示词精简
-- **自进化引擎**：Agent 检测自身能力缺口并自愈
-- **质量门禁**：所有自动获取的内容都通过 安全 → 质量 → 兼容 检查
+**自进化。** AgentSeed 会给你的项目打分——缺什么工具、哪些领域不懂——然后告诉你该装什么。不是魔法，就是一个加权公式，你装的能力越多它建议越准。
 
 ---
 
 ## 安装
 
 ```bash
-# pip — 从 GitHub Releases 安装（主平台）
 pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
+```
 
-# 从源码安装
-git clone https://github.com/weed33834/agentseed.git     # GitHub（主平台）
-git clone https://gitee.com/badhope/agentseed.git        # Gitee（镜像）
-git clone https://gitcode.com/badhope/agentseed.git      # Gitcode（镜像）
+源码安装：
+
+```bash
+git clone https://github.com/weed33834/agentseed.git
 cd agentseed
 pip install -e .
 ```
 
----
-
-## 开发
+国内网络慢的话用 Gitee 镜像：
 
 ```bash
-# 创建新画像
-agentseed persona new my-role
-
-# 验证规则
-agentseed verify
-
-# 运行测试
-python -m pytest tests/
-
-# 检查规则质量
-python scripts/validate_rules.py
+git clone https://gitee.com/badhope/agentseed.git
 ```
 
 ---
 
-## 许可证
+## 常用命令
 
-MIT
+```bash
+agentseed forge              # 检测项目 → 装配 → 生成
+agentseed forge --dry-run    # 预览，不写文件
+agentseed forge --profile coding
+agentseed forge --profile novel
+
+agentseed switch --profile paper
+
+agentseed sync               # 同步到所有平台
+agentseed sync --platform cursor
+
+agentseed status             # 看看装了啥、缺啥
+
+agentseed serve              # 启动 MCP server (stdio)
+agentseed serve --port 8080  # 启动 MCP server (HTTP)
+
+agentseed platform list      # 14 个内置平台
+agentseed platform import my-ide --entry .myide/rules.md --format markdown
+
+agentseed persona list       # 当前所有人设
+agentseed persona search "产品经理"
+```
 
 ---
 
-*AgentSeed: 宪法教 Agent 何时自己找资源，身份决定擅长领域。*
+## 接入你自己的平台
 
-<!-- SEO 关键词区块 — 帮助搜索引擎索引 -->
-## 关键词
+```bash
+agentseed platform import my-editor --entry .myeditor/rules.md --format markdown --hook-dir .myeditor
+```
 
-`AI Agent`, `Agent 框架`, `人格治理`, `MCP`, `Model Context Protocol`, `AI 规则`, `系统提示词`, `提示工程`, `Claude Code`, `Cursor`, `Copilot`, `Trae`, `Gemini`, `Windsurf`, `AI 人格`, `Agent 大脑`, `空白 Agent`, `编程助手`, `开发者工具`, `自动化`, `工作流`, `命令行工具`, `Python`, `开源`
+一步注册平台 + 生成拦截钩子 + 纳入每次 `agentseed sync`。
 
-<!-- JSON-LD 结构化数据 -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "AgentSeed",
-  "description": "一条命令，给你的 AI Agent 一个大脑。人格治理平台：安全规则 + 可插拔人格 + 13 平台同步 + 自进化引擎。",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "跨平台",
-  "programmingLanguage": "Python",
-  "softwareVersion": "2.4.1",
-  "license": "https://github.com/weed33834/agentseed/blob/main/LICENSE",
-  "codeRepository": "https://github.com/weed33834/agentseed",
-  "downloadUrl": "https://github.com/weed33834/agentseed/releases",
-  "inLanguage": "zh-CN",
-  "author": {
-    "@type": "Organization",
-    "name": "AgentSeed Project"
-  },
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "CNY"
-  }
-}
-</script>
+---
+
+## 目录结构
+
+```
+core/                  安全底线（P0 红线、决策公式、路由规则）
+personas/              各人设独立目录（coding、novel、paper...）
+capabilities/          模块化能力包（testing、research、creative...）
+adapters/hooks/        各平台的工具拦截钩子
+src/agentseed/         CLI、同步引擎、路由、装配、自进化
+```
+
+---
+
+## 跟同类项目比
+
+- **agent-rules (steipete)** — 已归档，只做 Cursor 编码规则。
+- **agents.md** — 文件格式提案，只有格式没内容没工具链。
+- **ACP** — agent 配置管理器，没治理没自进化。
+- **Cursor Directory** — 社区规则片段合集，不支持多平台同步。
+- **AgentSeed** — 安全规则 + 六种人设 + 14 平台同步 + 拦截钩子 + 自进化，一个 CLI 全包。
+
+---
+
+## 参与开发
+
+看 [CONTRIBUTING.md](CONTRIBUTING.md)。简单说：改源文件（`core/`、`personas/`、`capabilities/`）→ 跑 `agentseed sync` 重生成平台文件 → 别手动改生成产物。
+
+跑测试：`python -m pytest tests/`（143 通过）。
+
+---
+
+MIT
