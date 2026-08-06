@@ -11,7 +11,7 @@ AIGC:
 
 # AgentSeed MCP Server 接入教程
 
-> 版本：AgentSeed v2.4.0 | 最后更新：2026-08-04
+> 版本：AgentSeed v2.4.1 | 最后更新：2026-08-04
 
 ---
 
@@ -77,7 +77,7 @@ AgentSeed MCP Server 在整个系统中处于以下架构位置：
 AgentSeed 通过 GitHub Releases 分发 whl 包，**不发布到 PyPI**。使用 `pip` 直接安装：
 
 ```bash
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
 ```
 
 > **要求**：Python 3.10+
@@ -97,7 +97,7 @@ agentseed serve
 成功输出示例：
 
 ```
-AgentSeed MCP Server v2.4.0 starting in stdio mode...
+AgentSeed MCP Server v2.4.1 starting in stdio mode...
 ```
 
 ---
@@ -615,7 +615,7 @@ MCP Server 以 stdio 模式运行，仅在客户端发送请求时占用 CPU，�
 
 ---
 
-> **参考**：本文档基于 AgentSeed v2.4.0 编写，项目仓库：[GitHub](https://github.com/weed33834/agentseed)（主仓库）· [Gitee](https://gitee.com/badhope/agentseed)（镜像）· [Gitcode](https://gitcode.com/badhope/agentseed)（镜像）
+> **参考**：本文档基于 AgentSeed v2.4.1 编写，项目仓库：[GitHub](https://github.com/weed33834/agentseed)（主仓库）· [Gitee](https://gitee.com/badhope/agentseed)（镜像）· [Gitcode](https://gitcode.com/badhope/agentseed)（镜像）
 >
 > 更多信息请参阅 [README.md](../README.md) 和 [AGENTSEED_ARCHITECTURE.md](AGENTSEED_ARCHITECTURE.md)。
 *（内容由AI生成，仅供参考）*

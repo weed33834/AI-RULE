@@ -2,7 +2,7 @@
 
 本项目遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/)，版本号参考语义化版本。
 
-## [2.4.0] — 2026-08-04
+## [2.4.1] — 2026-08-05
 
 ### 新增
 

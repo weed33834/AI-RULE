@@ -1,5 +1,7 @@
 """AgentSeed CLI：分发层入口。
 
+__version__ = "2.4.1"
+
 用法：
     agentseed list
     agentseed setup                          # 零配置默认链路（推荐入门）

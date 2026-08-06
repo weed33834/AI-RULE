@@ -446,7 +446,7 @@ AgentSeed/
 | `capabilities/*.md` | `capabilities/<cap>/{cap.yaml,prompt.md,mcp.json}` | 能力包目录化 |
 | `core/profile-router.md` | `core/persona-router.md` | 改名 |
 | `adapters/` | `adapters/` | 保持 |
-| `scripts/sync_rules.py` | `src/agentseed/cli.py` | CLI 统一入口 |
+| `scripts/sync_rules.py` | `src/agentseed/sync_rules.py` → `src/agentseed/cli.py` | sync_rules 核心逻辑保留，CLI 统一入口 |
 | `tests/` | `tests/` | 保持，更新 import 路径 |
 
 ---

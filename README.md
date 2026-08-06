@@ -189,7 +189,7 @@ Key innovations:
 
 ```bash
 # pip — install from GitHub Releases (primary)
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.0/agentseed-2.4.0-py3-none-any.whl
+pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
 
 # From source
 git clone https://github.com/weed33834/agentseed.git     # GitHub (primary)

@@ -4,7 +4,7 @@ from .core import (
     TOOL_OUTPUT, TOOL_CHAR_LIMIT, SKELETON_BUDGET_BYTES,
 )
 
-__version__ = "2.3.0"
+__version__ = "2.4.1"
 __all__ = [
     "REPO_ROOT", "build_ruleset", "write_tool_file", "list_profiles",
     "TOOL_OUTPUT", "TOOL_CHAR_LIMIT", "SKELETON_BUDGET_BYTES",

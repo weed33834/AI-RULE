@@ -7,6 +7,8 @@ Usage:
     agentseed serve --port N # HTTP/SSE mode (optional stub)
 """
 
+__version__ = "2.4.1"
+
 import json
 import sys
 import os
