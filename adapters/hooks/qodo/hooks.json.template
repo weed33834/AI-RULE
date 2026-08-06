@@ -1,0 +1,7 @@
+{
+  "_comment": "Cline Hook 配置模板。复制到 .cline/hooks.json 或 ~/.cline/settings.json",
+  "_setup": "1) 把 adapters/hooks/ 目录复制到你的项目根目录 2) 安装 AgentSeed（pip install agentseed 或设 AGENTSEED_REPO）3) 重启 Cline",
+  "preToolUse": [
+    {"command": "python ./adapters/hooks/qodo/pre_tool_use.py"}
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "preToolUse": [
+    {
+      "command": "python ./adapters/hooks/claude-code/pre_tool_use.py"
+    }
+  ]
+}

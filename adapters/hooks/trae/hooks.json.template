@@ -1,0 +1,7 @@
+{
+  "preToolUse": [
+    {
+      "command": "python ./adapters/hooks/trae/pre_tool_use.py"
+    }
+  ]
+}
