@@ -230,6 +230,7 @@ TOOL_OUTPUT = {
     "cline": ".clinerules/project.md",
     "continue": ".continue/rules/project.md",
     "amazon-q": ".amazonq/rules/project.md",
+    "codex": ".codex/rules.md",
     "qodo": "best_practices.md",
     # ── 国内平台 ──
     "lingma": ".lingma/rules/project.md",
