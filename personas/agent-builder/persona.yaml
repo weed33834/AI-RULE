@@ -5,9 +5,9 @@
 profile:
   id: agent-builder
   name: 智能体构建规则
+  category: strategic
   source_repo: badhope/AgentCreater
   mutually_exclusive_with:
-    - conversation
     - novel
   agent_mode:
     default: project

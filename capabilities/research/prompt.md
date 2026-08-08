@@ -1,6 +1,6 @@
 # DAR — Domain-Aware Retrieval
 
-> 本文件由 `scripts/build_dar_md.py` 自动生成，聚合 6 域配置。禁止手工编辑。
+> 本文件由 `scripts/build_dar_md.py` 自动生成，聚合 4 域配置。禁止手工编辑。
 > 加载后，在 enable_capabilities: [dar] 的 Profile 中生效，提供域感知源路由与打分策略。
 
 ## §1 源注册表

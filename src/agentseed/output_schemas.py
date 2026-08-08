@@ -146,7 +146,7 @@ class NovelChapterSchema:
 
 
 class ConversationResponseSchema:
-    """conversation profile：事实回答 schema（CoV 5 步流程）"""
+    """通用（default/内核）事实回答 schema（CoV 5 步流程）"""
     id = "conversation_response_v1"
     required_steps = ["claim", "verification", "sources", "confidence", "answer"]
 
@@ -185,8 +185,9 @@ class AgentDesignSchema:
         return r
 
 
-# Profile → Schema 映射表
+# Profile → Schema 映射表（conversation 已并入内核 default，键保留兼容）
 PROFILE_SCHEMAS = {
+    "default": {"conversation_response": ConversationResponseSchema},
     "coding": {"code_change": CodeChangeSchema},
     "paper": {"paper_outline": PaperOutlineSchema},
     "novel": {"novel_chapter": NovelChapterSchema},

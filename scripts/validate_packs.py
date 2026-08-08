@@ -26,7 +26,10 @@ CAPABILITIES_DIR = REPO_ROOT / "capabilities"
 VALID_MODES = {"task", "project", "autonomous"}
 
 # 市场已知场景包（仓库即市场）：本地未安装但存在于市场时，互斥引用只警告不报错
-MARKET_KNOWN_PACKS = {"coding", "conversation", "novel", "paper", "agent-builder"}
+MARKET_KNOWN_PACKS = {"coding", "novel", "paper", "agent-builder"}
+
+# 场景包分类（可选字段，PACK_CONTRIBUTING.md §类型体系）
+PACK_CATEGORIES = {"general", "dev", "creative", "research", "strategic"}
 
 
 def _load_manifest(path: Path):
@@ -82,6 +85,9 @@ def validate_pack(pack_id: str, personas_dir: Path = None, ref_root: Path = None
         errors.append("profile.name 缺失")
     if not profile.get("source_repo"):
         errors.append("profile.source_repo 缺失")
+    category = profile.get("category")
+    if category is not None and category not in PACK_CATEGORIES:
+        errors.append(f"profile.category 非法: {category!r}（可选: {sorted(PACK_CATEGORIES)}）")
 
     # 2) agent_mode
     mode = profile.get("agent_mode", {})

@@ -32,6 +32,7 @@ personas/<id>/
 profile:                       # ← 兼容键名保留；语义 = pack
   id: coding                   # 必填，== 目录名，小写连字符
   name: 软件开发规则             # 必填，显示名
+  category: dev                # 可选：general/dev/creative/research/strategic（PACK_CONTRIBUTING.md §1）
   source_repo: badhope/xxx      # 必填，内容来源仓库
   mutually_exclusive_with:      # 必填，互斥清单（需对称：A 列 B，B 必列 A）
     - novel

@@ -70,8 +70,8 @@
 
 | Profile | 默认模式 | 允许模式 |
 |---------|---------|---------|
+| `default` | `task` | task, project |
 | `coding` | `project` | task, project, autonomous |
-| `conversation` | `task` | task, project |
 | `novel` | `project` | task, project, autonomous |
 | `paper` | `project` | task, project, autonomous |
 | `agent-builder` | `project` | task, project, autonomous |

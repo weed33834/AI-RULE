@@ -222,7 +222,7 @@ def cmd_status(args) -> int:
         "resources_source": _sr.resources_source(),
         "cwd": str(ctx.cwd),
         "anchors_found": sorted(ctx.anchors_found),
-        "suggested_persona": ctx.suggested_persona or "conversation",
+        "suggested_persona": ctx.suggested_persona or "default",
         "default_mode": default_mode(ctx.suggested_persona) if ctx.suggested_persona else None,
         "default_rt": default_rt(ctx.suggested_persona) if ctx.suggested_persona else None,
         "platforms_detected": sorted(ctx.platforms_detected),
@@ -235,7 +235,7 @@ def cmd_status(args) -> int:
     print(f"  资源根    : {_sr.RESOURCES_ROOT} ({_sr.resources_source()})")
     print(f"  工作目录  : {ctx.cwd}")
     print(f"  检测锚点  : {', '.join(sorted(ctx.anchors_found)) or '(无)'}")
-    print(f"  推断场景规则包 : {ctx.suggested_persona or 'conversation (默认)'}")
+    print(f"  推断场景规则包 : {ctx.suggested_persona or 'default (内核通用)'}")
     if ctx.suggested_persona:
         print(f"  默认模式  : {default_mode(ctx.suggested_persona)}")
         print(f"  默认推理  : {default_rt(ctx.suggested_persona)}")
@@ -256,7 +256,7 @@ def cmd_sync(args) -> int:
 
     # 推断当前画像
     ctx = detect_environment()
-    persona = args.profile or ctx.suggested_persona or "conversation"
+    persona = args.profile or ctx.suggested_persona or "default"
     if persona not in _sr.list_profiles():
         print(f"error: 未知 profile '{persona}'，可用: {_sr.list_profiles()}", file=sys.stderr)
         return 1
@@ -668,7 +668,8 @@ def cmd_pack(args) -> int:
 
     if sub == "new":
         result = _pk.new_pack(args.id, name=args.name or "",
-                              scenario=args.scenario or "")
+                              scenario=args.scenario or "",
+                              category=args.category)
         if not result.ok:
             print(f"error: {result.message}", file=sys.stderr)
             return 1
@@ -859,6 +860,9 @@ def main():
     p_pack_new.add_argument("id", help="新包 ID（小写字母/数字/连字符）")
     p_pack_new.add_argument("--name", default="", help="显示名称")
     p_pack_new.add_argument("--scenario", default="", help="适用场景描述")
+    p_pack_new.add_argument("--category", default="general",
+                            choices=sorted(["general", "dev", "creative", "research", "strategic"]),
+                            help="包分类（general/dev/creative/research/strategic）")
     p_pack_new.add_argument("--json", action="store_true", default=False,
                             help="输出 JSON（供脚本/Agent 消费）")
     p_pack_new.set_defaults(func=cmd_pack)

@@ -32,10 +32,18 @@ from .market import run_gates
 
 MARKET_DEFAULT_URL = "https://github.com/weed33834/agentseed.git"
 
+# 场景包分类（PACK_CONTRIBUTING.md §类型体系）
+PACK_CATEGORIES = {
+    "general": "通用（未归类/综合）",
+    "dev": "开发（编码/工程/运维）",
+    "creative": "创作（小说/文案/设计）",
+    "research": "研究（论文/调研/分析）",
+    "strategic": "战略（Agent 构建/架构/治理）",
+}
+
 # 内置市场清单（离线兜底；联网时以市场仓库 personas/ 目录为准）
 MARKET_PACKS: Dict[str, str] = {
     "coding": "软件开发（基础包）",
-    "conversation": "通用对话/调研/方案对比",
     "novel": "小说创作、章节、角色/世界观",
     "paper": "学术论文、文献综述、投稿",
     "agent-builder": "设计/评估/部署智能体",
@@ -233,6 +241,7 @@ PACK_TEMPLATE_PERSONA_YAML = """\
 profile:
   id: {pack_id}
   name: {name}
+  category: {category}
   source_repo: {source_repo}
   mutually_exclusive_with: []
   agent_mode:
@@ -310,6 +319,7 @@ You are the {name} specialist. {scenario}
 
 
 def new_pack(pack_id: str, name: str = "", scenario: str = "",
+             category: str = "general",
              dest_root: Optional[Path] = None) -> PackResult:
     """创建新场景包（模板生成 + 校验指引）。"""
     if not re.match(r"^[a-z0-9-]+$", pack_id):
@@ -321,10 +331,13 @@ def new_pack(pack_id: str, name: str = "", scenario: str = "",
 
     display_name = name or pack_id.title()
     scenario_text = scenario or "面向特定任务场景的规则包（请在此补充适用场景描述）"
+    if category not in PACK_CATEGORIES:
+        return PackResult(ok=False, message=f"未知分类 {category!r}，可选: {sorted(PACK_CATEGORIES)}")
 
     files = {
         "persona.yaml": PACK_TEMPLATE_PERSONA_YAML.format(
             pack_id=pack_id, name=display_name, scenario=scenario_text,
+            category=category,
             source_repo="https://github.com/weed33834/agentseed.git"),
         "AGENTS.md": PACK_TEMPLATE_AGENTS.format(
             pack_id=pack_id, name=display_name, scenario=scenario_text),

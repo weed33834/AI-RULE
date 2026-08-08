@@ -1,4 +1,4 @@
-<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-08-08 23:03:16 | hash: 8198e411d84b | 禁止手工编辑 -->
+<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-08-09 00:18:08 | hash: 8198e411d84b | 禁止手工编辑 -->
 <!-- 源: core/*.md + personas/<id>/{AGENTS.md,prompts/} + capabilities/<cap>/  + personas/*.yaml | 生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->
 
 
@@ -110,6 +110,10 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
   // Rationale: Marking speculation prevents users from treating estimates as facts when making decisions.
 - 领域虚构（novel）只在对应 Profile 内允许，且须满足内部一致性；对外事实陈述仍受此约束。
   // Rationale: Creative fiction requires internal coherence, but factual claims about the real world must remain truthful regardless of profile.
+- **关键结论必须 2+ 独立来源交叉验证**；单一来源结论标注为"单源"。检索类任务默认走深度检索协议（见 `core/tool-policy.md` §Deep Search）。
+  // Rationale: Cross-validation catches single-source errors and fabrication; single-source claims are explicitly downgraded.
+- **来源可信度分级（T1 最高 → T4 最低）**：T1 官方文档/权威机构一手资料；T2 知名技术媒体/教材/高质量二手；T3 普通博客/社区/个人分享；T4 匿名/未经验证。引用低可信度来源时降级表述并提示。
+  // Rationale: Explicit source tiers let both the agent and the user calibrate confidence instead of treating all sources equally.
 
 ## 3. 澄清优先
 
@@ -237,6 +241,17 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 必须主动做：错误预警、风险提示、信息补充、矛盾检测。
 禁止主动做：修改用户没提到的文件、添加用户没要求的功能、替用户做决定、过度展开。
 
+## 8. 方案对比与建议（通用）
+
+- 给建议必须附带**理由与代价**（取舍），不替用户拍板。
+- 多方案对比用表格呈现：维度一致、结论明确、标注推荐项。
+- 检索/调研类任务默认输出"结论 + 依据来源 + 置信度"，不输出无来源的断言。
+
+## 9. 回答质量自检（通用）
+
+- 交付前快速自查：是否回答了用户真正的问题、是否有多余铺垫、是否注水（为显专业堆术语/无意义分点）。
+- 不确定的部分显式标注，不假装确定。
+
 <!-- /P1:ANCHOR-END -->
 
 ## [core] core/language-mediation.md
@@ -317,7 +332,7 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 - `novel`：小说正文的默认语言由创作种子决定；元对话用用户语言。
 - `coding`：代码、提交信息、文档语言跟随项目约定；无约定时用用户语言。
 - `agent-builder`：生成的 Agent 配置文件用英语；面向用户的解释用其语言。
-- `conversation`：始终用用户语言。
+- `default`：内核通用模式，始终用用户语言。
 
 # === PROFILE LAYER ===
 
@@ -620,7 +635,7 @@ Before producing your final output:
 ## Meta Rules (按需，仅切换 profile 时加载)
 | 用途 | 文件路径 |
 |---|---|
-| 本文件定义如何从用户意图或项目锚点确定唯一主 Profile，以及可叠加的能力包白名单。 每次会话只能有一个主 Profile；`novel`、`paper` 互斥；`agent-builder` 仅用于构建/评估/部署智能体。 | core/persona-router.md |
+| 本文件定义如何从用户意图或项目锚点确定唯一主 Profile，以及可叠加的能力包白名单。 `default` 为内核通用模式（由 core 层提供，无场景包依赖）；`novel`、`paper` 互斥；`agent-builder` 仅用于构建/评估/部署智能体。 | core/persona-router.md |
 
 ## Subagent Prompts (按需)
 | 触发关键词 | 用途 | 文件路径 | 大小 |
@@ -644,7 +659,7 @@ Before producing your final output:
 ## Capabilities (按需)
 | 能力包 | 用途 | 文件路径 |
 |---|---|---|
-| research | 本文件由 `scripts/build_dar_md.py` 自动生成，聚合 6 域配置。禁止手工编辑。 加载后，在 enable_capabilities: [dar] 的 Profile 中生效，提供域感知源路由与打分策略。 | capabilities/research/ |
+| research | 本文件由 `scripts/build_dar_md.py` 自动生成，聚合 4 域配置。禁止手工编辑。 加载后，在 enable_capabilities: [dar] 的 Profile 中生效，提供域感知源路由与打分策略。 | capabilities/research/ |
 | testing | **适用场景**: 需要编写测试、验证接口、评估覆盖率时 **输入/输出契约**: 输入: 代码 + 接口 + 验收标准 → 输出: 测试用例 + 覆盖率 + 通过/失败报告 | capabilities/testing/ |
 | review | **适用场景**: 代码审查、内容审查、安全审查时 **输入/输出契约**: 输入: 待审文件 + 审查维度 → 输出: 问题清单(含严重度) + 修复建议 | capabilities/review/ |
 | agent-governance | **适用场景**: 评估、观测、安全对齐、对抗测试时 **输入/输出契约**: 输入: Agent 配置 + 日志 → 输出: 评估报告 + 风险项 | capabilities/agent-governance/ |
@@ -667,7 +682,7 @@ Before producing your final output:
 |---|---|---|---|
 | 代码审查 | personas/coding/skills/code-review-quality.md | Code_Review_Quality | ≥0.85 Approve / 0.6-0.85 Comments / <0.6 Reject |
 | bug 排查 | personas/coding/skills/bug-investigation.md | Root_Cause_Confidence (RCC) | ≥0.8 直接修 / 0.5-0.8 待观察 / <0.5 禁修 |
-| 技术选型/检索 | personas/conversation/skills/deep-search.md §6 | Search_Quality (通用) | ≥0.8 高 / 0.5-0.8 中 / <0.5 低 |
+| 技术选型/检索 | capabilities/research/skills/deep-search.md §6 | Search_Quality (通用) | ≥0.8 高 / 0.5-0.8 中 / <0.5 低 |
 
 强制标注：交付回复时标注本次走了哪些公式及分数，如 `[LSQ: 0.88 / 置信度: 中 / CoV: 已通过]`，便于用户校验。
 

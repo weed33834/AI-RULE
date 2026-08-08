@@ -11,7 +11,7 @@
 ┌────────────────────┐          ┌────────────────────────────┐
 │ 最小基础内核          │          │  personas/                 │
 │  core/ 治理内核       │  ──按需──▶ │    coding      ✓ 基础包    │
-│  adapters/ 平台适配   │  pack add  │    conversation 可安装     │
+│  adapters/ 平台适配   │  pack add  │    novel        可安装     │
 │  src/ CLI+引擎       │          │    novel        可安装     │
 │  personas/coding    │          │    paper        可安装     │
 └────────────────────┘          │    agent-builder 可安装     │
@@ -19,7 +19,7 @@
   personas/<自建包>/     ←── pack new + pack publish 回传市场
 ```
 
-- **最小基础**：core + 平台适配 + coding 开发包。开箱即用：`agentseed forge` 即出规则。
+- **最小基础**：core（含内核通用模式 default）+ 平台适配 + coding 开发包。开箱即用：`agentseed forge` 即出规则。
 - **按需增强**：`pack add novel` 只拉取 novel 一个包（sparse 单目录），不克隆全仓库。
 - **自建包**：`pack new` 生成模板 → 编辑 → `pack publish` 校验并生成回传市场的 PR 材料。
 - **互斥引用宽容**：本地未安装但市场存在的包，校验只警告不报错。

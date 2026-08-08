@@ -303,14 +303,14 @@ DOMAIN_QUALITY_GATES = {
     "coding": [
         ("代码审查", "personas/coding/skills/code-review-quality.md", "Code_Review_Quality", "≥0.85 Approve / 0.6-0.85 Comments / <0.6 Reject"),
         ("bug 排查", "personas/coding/skills/bug-investigation.md", "Root_Cause_Confidence (RCC)", "≥0.8 直接修 / 0.5-0.8 待观察 / <0.5 禁修"),
-        ("技术选型/检索", "personas/conversation/skills/deep-search.md §6", "Search_Quality (通用)", "≥0.8 高 / 0.5-0.8 中 / <0.5 低"),
+        ("技术选型/检索", "capabilities/research/skills/deep-search.md §6", "Search_Quality (通用)", "≥0.8 高 / 0.5-0.8 中 / <0.5 低"),
     ],
-    "conversation": [
-        ("事实回答", "personas/conversation/skills/truth-protocol.md §2", "CoV 5 步流程", "全通过=可输出"),
-        ("检索质量", "personas/conversation/skills/deep-search.md §6", "Search_Quality", "≥0.8 高 / 0.5-0.8 中 / <0.5 低"),
-        ("置信度标注", "personas/conversation/skills/truth-protocol.md §8", "Confidence Calibration", "高/中/中-/低/待验证"),
-        ("来源可信度", "personas/conversation/skills/source-credibility.md", "T1-T4 + 三维评估", "T1 最高 → T4 最低"),
-        ("思维深度", "personas/conversation/skills/reasoning-depth.md §7", "元认知检查清单", "4 维全通过"),
+    "default": [
+        ("事实回答", "capabilities/research/skills/truth-protocol.md §2", "CoV 5 步流程", "全通过=可输出"),
+        ("检索质量", "capabilities/research/skills/deep-search.md §6", "Search_Quality", "≥0.8 高 / 0.5-0.8 中 / <0.5 低"),
+        ("置信度标注", "capabilities/research/skills/truth-protocol.md §8", "Confidence Calibration", "高/中/中-/低/待验证"),
+        ("来源可信度", "capabilities/research/skills/source-credibility.md", "T1-T4 + 三维评估", "T1 最高 → T4 最低"),
+        ("思维深度", "capabilities/research/skills/reasoning-depth.md §7", "元认知检查清单", "4 维全通过"),
     ],
     "novel": [
         ("角色一致性", "personas/novel/skills/character-consistency-system.md §5", "Character_Consistency_Score", "≥0.95 优 / 0.85-0.95 良 / <0.7 差"),
@@ -734,12 +734,35 @@ def _split_profile_content(content: str, budget: int, file_path: str) -> tuple:
     return inline_part, deferred
 
 
+def _default_manifest() -> dict:
+    """内核通用模式（default）的合成清单：仅 core 层，无 personas 目录依赖。
+
+    conversation 场景包已并入内核（2026-08-08）：其通用规则沉淀在
+    core/{governance,interaction,tool-policy,language-mediation}.md。
+    """
+    return {
+        "includes": {
+            "core": ["core/governance.md", "core/interaction.md",
+                     "core/persona-router.md", "core/language-mediation.md",
+                     "core/attention-budget.md", "core/agent-modes.md",
+                     "core/tool-policy.md", "core/session-refresh.md"],
+            "profile": [],
+            "skills": [],
+        },
+        "profile": {"id": "default", "name": "内核通用模式",
+                    "default_mode": "task",
+                    "capabilities": ["research", "dar"]},
+        "enables_capabilities": ["research", "dar"],
+    }
+
+
 def build_ruleset(profile_id: str, mode: str = "skeleton") -> str:
     """装配规则集。
     - mode=skeleton（默认）：CORE + PROFILE 主层内联，其余走 ON-DEMAND INDEX。
     - mode=full：旧行为，全部内联（向后兼容）。
+    - profile_id="default"：内核通用模式（无 personas 目录，仅 core 层）。
     """
-    manifest = parse_manifest(profile_id)
+    manifest = _default_manifest() if profile_id == "default" else parse_manifest(profile_id)
     parts = []
 
     # ── 生成头（含正确溯源，修 governance §8 的"AGENTS.md 是源"矛盾）──
@@ -777,8 +800,9 @@ def build_ruleset(profile_id: str, mode: str = "skeleton") -> str:
         parts.append(expand_refs(read_file(Path(core_file)), core_path.parent, inline=inline_mode))
 
     # ── PROFILE LAYER ──
-    parts.append("\n# === PROFILE LAYER ===\n")
     profile_files = manifest["includes"].get("profile", [])
+    if profile_files:
+        parts.append("\n# === PROFILE LAYER ===\n")
     profile_inline = []
     profile_on_demand = []
     deferred_profile_sections = []  # 拆分出的方法论章节 [(file_path, [(title, anchor), ...])]
@@ -921,9 +945,11 @@ def _build_on_demand_index(profile_id: str, manifest: dict, profile_on_demand: l
                 dar_md = dar_path / "README.md"
                 meta = extract_metadata(dar_md)
                 purpose = (meta["purpose"] or "域权威注册表").replace("|", "\\|")
-                parts.append(
-                    f"| dar | {purpose} | capabilities/research/dar/README.md + capabilities/research/dar/dar-{profile_id}.yaml |\n"
-                )
+                dar_cfg = dar_path / f"dar-{profile_id}.yaml"
+                dar_ref = "capabilities/research/dar/README.md"
+                if dar_cfg.exists():
+                    dar_ref += f" + capabilities/research/dar/dar-{profile_id}.yaml"
+                parts.append(f"| dar | {purpose} | {dar_ref} |\n")
             else:
                 cap_prompt = REPO_ROOT / "capabilities" / cap / "prompt.md"
                 meta = extract_metadata(cap_prompt)
@@ -1186,8 +1212,8 @@ PROFILE_ANCHORS = {
 INTENT_KEYWORDS = {
     "coding": ["写代码", "开发", "bug", "重构", "code", "develop", "编程", "修复"],
     "novel": ["写小说", "小说", "章节", "novel", "story", "创作小说"],
+    "default": ["问答", "调研", "对比", "信息检索", "research", "general"],
     "paper": ["论文", "文献综述", "paper", "academic", "research paper", "投稿"],
-    "conversation": ["问答", "调研", "对比", "信息检索", "research", "general"],
     "agent-builder": ["智能体", "agent", "bot", "助手", "构建 agent"],
 }
 

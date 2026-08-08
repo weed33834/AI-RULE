@@ -14,7 +14,7 @@ from sync_rules import (
     list_profiles, TOOL_OUTPUT, TOOL_CHAR_LIMIT, parse_includes, parse_list_field,
 )
 
-PROFILES = ["coding", "conversation", "novel", "paper", "agent-builder"]
+PROFILES = ["coding", "novel", "paper", "agent-builder"]
 
 
 def test_parse_manifest_structure():
@@ -66,9 +66,9 @@ def test_header_present():
 
 def test_all_tools_output():
     """全部工具均能生成"""
-    rs = build_ruleset("conversation")
+    rs = build_ruleset("default")
     for tool in TOOL_OUTPUT:
-        out = write_tool_file(tool, "conversation", rs)
+        out = write_tool_file(tool, "default", rs)
         assert out.exists(), f"{tool} 生成失败"
     print(f"[PASS] {len(TOOL_OUTPUT)} 个工具均能生成")
 

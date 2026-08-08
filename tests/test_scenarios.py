@@ -25,7 +25,6 @@ def select_profile_by_keywords(keywords: list) -> str:
         "coding": ["修复", "重构", "测试", "部署", "接口", "Bug", "CI", "代码"],
         "novel": ["写一章", "续写", "人物", "伏笔", "文风", "世界观", "章节"],
         "agent-builder": ["设计 Agent", "智能体配置", "工具权限", "评估", "部署 Agent"],
-        "conversation": ["查询", "对比", "分析", "调研", "总结", "解释"],
     }
     scores = {pid: 0 for pid in rules}
     for kw in keywords:
@@ -33,7 +32,7 @@ def select_profile_by_keywords(keywords: list) -> str:
             if kw in pid_kws:
                 scores[pid] += 1
     best = max(scores, key=scores.get)
-    return best if scores[best] > 0 else "conversation"
+    return best if scores[best] > 0 else "default"
 
 
 def check_capability_allowed(profile_id: str, capability: str) -> bool:

@@ -238,16 +238,17 @@ def forge(
     #   - 质量关：persona.yaml/SOUL.md/AGENTS.md 结构完整
     #   - 兼容关：与目标项目已有画像互斥检查
     quality_results = []
-    # 画像包本体：全三关（安全/质量/兼容）
-    for gr in run_quality_gates(str(_sr.PERSONAS_DIR / selected), active_persona=selected):
-        quality_results.append({
-            "gate": gr.gate,
-            "passed": gr.passed,
-            "reason": gr.reason,
-            "scope": f"personas/{selected}",
-        })
-        if not gr.passed and gr.gate == "safety":
-            warnings.append(f"[安全关失败:personas/{selected}] {gr.reason} — 规则集仍生成但请检查。")
+    # 画像包本体：全三关（安全/质量/兼容）——default 为内核通用模式（无 personas 目录，跳过）
+    if selected != "default":
+        for gr in run_quality_gates(str(_sr.PERSONAS_DIR / selected), active_persona=selected):
+            quality_results.append({
+                "gate": gr.gate,
+                "passed": gr.passed,
+                "reason": gr.reason,
+                "scope": f"personas/{selected}",
+            })
+            if not gr.passed and gr.gate == "safety":
+                warnings.append(f"[安全关失败:personas/{selected}] {gr.reason} — 规则集仍生成但请检查。")
     # 目标项目：仅兼容关（是否与已有画像冲突）
     for gr in run_quality_gates(str(cwd), active_persona=selected):
         if gr.gate == "compatibility":

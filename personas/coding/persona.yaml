@@ -5,6 +5,7 @@
 profile:
   id: coding
   name: 软件开发规则
+  category: dev
   source_repo: https://github.com/weed33834/agentseed.git
   mutually_exclusive_with:
     - novel

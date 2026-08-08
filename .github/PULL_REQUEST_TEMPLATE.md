@@ -1,11 +1,19 @@
 ## 改动类型
-- [ ] 规则源头 `AGENTS.md` 有改动
+- [ ] **新场景包**（`personas/<id>/`，填下方"场景包贡献"区）
+- [ ] 规则源头（core/ 或 场景包 AGENTS.md）有改动
 - [ ] 仅文档（README / 说明）
 - [ ] 新增文件（模板 / 治理文件）
 - [ ] 其他：
 
+## 场景包贡献（新增/修改场景包时填写）
+- **包 ID / 分类**：`<id>` / `general|dev|creative|research|strategic`
+- **适用场景**：一句话说明
+- **校验**：已运行 `python scripts/validate_packs.py` 且通过
+- **装配验证**：已运行 `agentseed forge --profile <id>` 且产物无 `[missing]`
+- [ ] 互斥清单对称；能力引用存在；无硬编码密钥；不含 `.git`
+
 ## 是否动了规则源头
-- [ ] 是，已编辑 `AGENTS.md` 并运行 `python scripts/sync_rules.py` 重生成工具文件
+- [ ] 是，已编辑源文件（core/ 或 personas/<id>/）并运行 `python scripts/sync_rules.py` 重生成工具文件
 - [ ] 否
 
 ## 同步校验

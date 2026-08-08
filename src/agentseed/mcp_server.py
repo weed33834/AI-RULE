@@ -161,13 +161,18 @@ def _parse_simple_yaml(content: str) -> dict:
 # ── persona helpers ────────────────────────────────────────────────
 
 def _list_personas() -> list:
-    """List scenario packs from the packs directory (scenarios/ or personas/)."""
+    """List scenario packs from the packs directory (scenarios/ or personas/).
+
+    始终包含内核通用模式 "default"（由 core 层提供，无 personas 目录）。
+    """
     root = _resolve_resources_root()
     personas_dir = _pack_dir(root)
-    if not personas_dir.exists():
-        return []
 
-    results = []
+    results = [{"id": "default", "name": "内核通用模式",
+                "description": "内核通用模式（conversation 已并入 core，无场景包依赖）"}]
+    if not personas_dir.exists():
+        return results
+
     for entry in sorted(personas_dir.iterdir()):
         if not entry.is_dir() or entry.name.startswith("_"):
             continue
@@ -205,7 +210,12 @@ def _read_persona_info(yaml_path: Path) -> dict:
 
 
 def _load_persona_config(persona_id: str) -> dict:
-    """Load full persona.yaml for a given scenario pack."""
+    """Load full persona.yaml for a given scenario pack. "default" 返回内核配置。"""
+    if persona_id == "default":
+        return {"id": "default", "name": "内核通用模式",
+                "capabilities": {"enables": ["research", "dar"]},
+                "anchors": [], "keywords": [],
+                "platform_files": [], "kernel_builtin": True}
     root = _resolve_resources_root()
     yaml_path = _pack_dir(root) / persona_id / "persona.yaml"
     if not yaml_path.exists():

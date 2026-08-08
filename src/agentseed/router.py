@@ -9,8 +9,9 @@ Implements the routing logic from core/persona-router.md:
 
 Also exposes:
   - capability whitelist lookup (which capabilities a persona may stack)
-  - mutual-exclusion checks (novel ↔ interactive-novel ↔ paper)
+  - mutual-exclusion checks (novel ↔ paper)
   - agent mode routing (default mode + reasoning depth per persona)
+  - "default" = 内核通用模式（无 personas 目录，由 core 层提供）
 """
 from __future__ import annotations
 
@@ -35,9 +36,9 @@ PERSONAS: Dict[str, dict] = {
         "capabilities": ["research", "testing", "review", "agent-governance", "dar"],
         "forbidden_capabilities": ["worldbuilding"],
     },
-    "conversation": {
-        "name": "通用助手",
-        "mutually_exclusive_with": {"novel", "agent-builder"},
+    "default": {
+        "name": "内核通用模式",
+        "mutually_exclusive_with": set(),
         "anchors": [],
         "keywords": ["查询", "对比", "分析", "调研", "总结", "介绍", "解释",
                      "search", "compare", "explain"],
@@ -45,11 +46,11 @@ PERSONAS: Dict[str, dict] = {
         "allowed_modes": ["task", "project"],
         "default_rt": "QUICK",
         "capabilities": ["research", "dar"],
-        "forbidden_capabilities": ["engineering", "creative"],
+        "forbidden_capabilities": [],
     },
     "novel": {
         "name": "小说家",
-        "mutually_exclusive_with": {"coding", "conversation", "agent-builder", "paper"},
+        "mutually_exclusive_with": {"coding", "agent-builder", "paper"},
         "anchors": [".ai-memory/creative-blueprint.md", "chapters", "outline.md"],
         "keywords": ["写一章", "续写", "人物", "伏笔", "文风", "世界观",
                      "小说", "chapter", "character"],
@@ -73,7 +74,7 @@ PERSONAS: Dict[str, dict] = {
     },
     "agent-builder": {
         "name": "Agent 构建师",
-        "mutually_exclusive_with": {"conversation", "novel"},
+        "mutually_exclusive_with": {"novel"},
         "anchors": ["config.yaml", "tools.json", "test-cases.md"],
         "keywords": ["设计agent", "智能体配置", "工具权限", "评估",
                      "agent", "智能体", "persona"],
@@ -158,7 +159,7 @@ def route(
       1. explicit override (user/config)
       2. directory anchors
       3. intent keywords
-      4. fallback: conversation (no signal) or ambiguous (multiple signals)
+      4. fallback: default (内核通用模式，无信号) or ambiguous (multiple signals)
     """
     cwd = cwd or Path.cwd()
     if explicit:
@@ -189,7 +190,7 @@ def route(
             matched_keywords=keyword_matches,
         )
 
-    return RouteResult(persona="conversation", source="fallback")
+    return RouteResult(persona="default", source="fallback")
 
 
 # ─── Capability checks ───

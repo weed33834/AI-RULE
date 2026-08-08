@@ -18,7 +18,7 @@ from agentseed.router import (
     default_mode, default_rt, list_personas, capability_dir,
 )
 
-PROFILES = ["coding", "conversation", "novel", "paper", "agent-builder"]
+PROFILES = ["coding", "novel", "paper", "agent-builder"]
 
 
 def test_router_md_exists():
@@ -27,8 +27,8 @@ def test_router_md_exists():
 
 
 def test_all_personas_registered():
-    """router.PERSONAS 注册表覆盖全部 6 个画像"""
-    assert set(PERSONAS.keys()) == set(PROFILES)
+    """router.PERSONAS 注册表 = 场景包 + 内核通用模式 default"""
+    assert set(PERSONAS.keys()) == set(PROFILES) | {"default"}
 
 
 def test_explicit_override():
@@ -75,7 +75,7 @@ def test_intent_keywords():
             ("帮我写小说续写人物", "novel"),
             ("修复这个bug然后重构", "coding"),
             ("写一篇论文摘要", "paper"),
-            ("查询对比分析", "conversation"),
+            ("查询对比分析", "default"),
             ("设计一个智能体", "agent-builder"),
         ]
         for intent, expected in cases:
@@ -84,11 +84,11 @@ def test_intent_keywords():
             assert r.source == "keyword"
 
 
-def test_fallback_conversation():
-    """无信号时 fallback 到 conversation"""
+def test_fallback_default():
+    """无信号时 fallback 到内核通用模式 default"""
     with tempfile.TemporaryDirectory() as td:
         r = route(cwd=Path(td))
-        assert r.persona == "conversation" and r.source == "fallback"
+        assert r.persona == "default" and r.source == "fallback"
 
 
 def test_mutex_symmetry():
@@ -128,7 +128,7 @@ def test_capability_dir_mapping():
 def test_default_modes():
     """persona-router.md §8.2 默认模式表"""
     expected = {
-        "coding": "project", "conversation": "task", "novel": "project",
+        "coding": "project", "default": "task", "novel": "project",
         "paper": "project", "agent-builder": "project",
     }
     for pid, mode in expected.items():
@@ -137,9 +137,10 @@ def test_default_modes():
 
 def test_default_rt():
     assert default_rt("coding") == "STANDARD"
-    assert default_rt("conversation") == "QUICK"
+    assert default_rt("default") == "QUICK"
     assert default_rt("paper") == "STANDARD"
 
 
 def test_list_personas():
-    assert list_personas() == PROFILES
+    """列出的 profile = 场景包 + 内核通用模式"""
+    assert set(list_personas()) == set(PROFILES) | {"default"}

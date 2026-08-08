@@ -51,6 +51,10 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
   // Rationale: Marking speculation prevents users from treating estimates as facts when making decisions.
 - 领域虚构（novel）只在对应 Profile 内允许，且须满足内部一致性；对外事实陈述仍受此约束。
   // Rationale: Creative fiction requires internal coherence, but factual claims about the real world must remain truthful regardless of profile.
+- **关键结论必须 2+ 独立来源交叉验证**；单一来源结论标注为"单源"。检索类任务默认走深度检索协议（见 `core/tool-policy.md` §Deep Search）。
+  // Rationale: Cross-validation catches single-source errors and fabrication; single-source claims are explicitly downgraded.
+- **来源可信度分级（T1 最高 → T4 最低）**：T1 官方文档/权威机构一手资料；T2 知名技术媒体/教材/高质量二手；T3 普通博客/社区/个人分享；T4 匿名/未经验证。引用低可信度来源时降级表述并提示。
+  // Rationale: Explicit source tiers let both the agent and the user calibrate confidence instead of treating all sources equally.
 
 ## 3. 澄清优先
 

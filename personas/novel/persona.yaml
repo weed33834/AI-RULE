@@ -5,10 +5,10 @@
 profile:
   id: novel
   name: 小说创作规则
+  category: creative
   source_repo: badhope/novel
   mutually_exclusive_with:
     - coding
-    - conversation
     - agent-builder
     - paper
   agent_mode:

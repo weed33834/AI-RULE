@@ -25,6 +25,7 @@ AgentSeed 首个正式版本。此前内部迭代（2.x / 1.x 实验版本）已
 - **场景协议源文件缺失（基线缺陷）**：6 个 `personas/<id>/AGENTS.md` 此前被 `.gitignore` 无锚定规则静默忽略、从未入库，导致 forge 产物出现 `[missing]` 标记。已补全 6 份源文件并把 `.gitignore` 锚定为 `/AGENTS.md`（根级生成文件）。
 - coding 包 manifest 补 `agent_mode` 声明。
 - 场景包组合精简：移除 `interactive-novel` 与孤儿能力包（`state-machine` / `npc-simulation` / `adaptive-difficulty` / `game-engine` / `novel-chapter-deliverable-mode`），首发场景规则包 6 → 5（coding / conversation / novel / paper / agent-builder）。
+- **conversation 并入内核**：通用规则（来源可信度分级/深度检索/方案对比/Tool-Skill-MCP 三层策略）沉淀进 core（governance/interaction/tool-policy），新增内核通用模式 `default`（无场景包依赖），router fallback 改指 default，删除 personas/conversation 与 dar-conversation.yaml，市场首发 4 包 + 内核 default。
 - **场景包市场机制（仓库即市场）**：`agentseed pack` 子系统（list/add/remove/new/publish）——最小基础内核（core+平台适配+coding）+ 按需单包安装（sparse 拉取 + Quality Gate 前置）+ 自建包向导与发布回路；`docs/PACK_MARKET.md`；validate_packs 市场感知（互斥引用未安装包只警告）。
 
 ### Infrastructure

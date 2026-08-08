@@ -229,11 +229,11 @@ Scenario Pack = 场景协议 + 提示词 + 技能 + 能力白名单 + 路由锚�
 
 | Pack ID | 名称 | 核心能力 | 互斥 |
 |---------|------|---------|------|
+| `default` | 内核通用模式 | 通用问答/调研（conversation 已并入 core） | — |
 | `coding` | 软件工程师 | 开发、重构、测试、CI/CD | novel |
-| `conversation` | 通用助手 | 问答、调研、分析 | novel, agent-builder |
-| `novel` | 小说家 | 章节创作、角色、世界观 | coding, conversation, agent-builder, paper |
+| `novel` | 小说家 | 章节创作、角色、世界观 | coding, agent-builder, paper |
 | `paper` | 学术写手 | 论文、文献综述、投稿 | novel |
-| `agent-builder` | Agent 构建师 | 设计/评估/部署 Agent | conversation, novel |
+| `agent-builder` | Agent 构建师 | 设计/评估/部署 Agent | novel |
 
 ### 3.3 画像装配
 
@@ -370,7 +370,6 @@ AgentSeed/
 │   │       ├── skills/          # 技能
 │   │       ├── prompts/         # 子代理提示词
 │   │       └── mcp/             # 推荐 MCP 配置
-│   ├── conversation/
 │   ├── novel/
 │   ├── paper/
 │   └── agent-builder/

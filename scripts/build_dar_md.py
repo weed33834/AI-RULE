@@ -58,11 +58,11 @@ def gen_freshness(domain: str, table: list) -> str:
     return "\n".join(rows)
 
 def build_dar_md() -> str:
-    domains = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
+    domains = ["coding", "novel", "paper", "agent-builder"]
     parts = []
     parts.append("# DAR — Domain-Aware Retrieval")
     parts.append("")
-    parts.append("> 本文件由 `scripts/build_dar_md.py` 自动生成，聚合 6 域配置。禁止手工编辑。")
+    parts.append("> 本文件由 `scripts/build_dar_md.py` 自动生成，聚合 4 域配置。禁止手工编辑。")
     parts.append("> 加载后，在 enable_capabilities: [dar] 的 Profile 中生效，提供域感知源路由与打分策略。")
     parts.append("")
 

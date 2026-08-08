@@ -1,17 +1,17 @@
 # Persona Router（Profile 选择器）
 
 > 本文件定义如何从用户意图或项目锚点确定唯一主 Profile，以及可叠加的能力包白名单。
-> 每次会话只能有一个主 Profile；`novel`、`paper` 互斥；`agent-builder` 仅用于构建/评估/部署智能体。
+> `default` 为内核通用模式（由 core 层提供，无场景包依赖）；`novel`、`paper` 互斥；`agent-builder` 仅用于构建/评估/部署智能体。
 
 ## 1. 主 Profile 一览
 
 | Profile ID | 来源仓库 | 适用场景 | 互斥 |
 |---|---|---|---|
+| `default` | 内核 | 通用模式（conversation 已并入 core，无包依赖） | — |
 | `coding` | AI | 软件开发、Bug 修复、重构、测试、代码审查 | novel |
-| `conversation` | universal | 通用问答、调研、方案对比、信息检索 | novel、agent-builder |
-| `novel` | novel | 小说写作、章节创作、角色/世界观维护 | coding、conversation、agent-builder、paper |
+| `novel` | novel | 小说写作、章节创作、角色/世界观维护 | coding、agent-builder、paper |
 | `paper` | badhope/paper | 学术论文写作、文献综述、投稿、审稿回复 | novel |
-| `agent-builder` | AgentCreater | 设计/评估/部署智能体，产出 config、工具、测试 | conversation、novel |
+| `agent-builder` | AgentCreater | 设计/评估/部署智能体，产出 config、工具、测试 | novel |
 
 ## 2. 选择优先级
 

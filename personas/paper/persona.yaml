@@ -5,6 +5,7 @@
 profile:
   id: paper
   name: Academic Paper Writing Rules
+  category: research
   source_repo: badhope/paper
   mutually_exclusive_with:
     - novel

@@ -12,13 +12,12 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from sync_rules import parse_manifest, list_profiles, TOOL_OUTPUT
 
 CORE_FILES = ["governance.md", "interaction.md", "persona-router.md", "language-mediation.md"]
-PROFILES = ["coding", "conversation", "novel", "paper", "agent-builder"]
+PROFILES = ["coding", "novel", "paper", "agent-builder"]
 MUTEX = {
     "coding": ["novel"],
-    "conversation": ["novel", "agent-builder"],
-    "novel": ["coding", "conversation", "agent-builder", "paper"],
+    "novel": ["coding", "agent-builder", "paper"],
     "paper": ["novel"],
-    "agent-builder": ["conversation", "novel"],
+    "agent-builder": ["novel"],
 }
 
 
