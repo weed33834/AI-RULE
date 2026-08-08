@@ -225,16 +225,15 @@ Scenario Pack = 场景协议 + 提示词 + 技能 + 能力白名单 + 路由锚�
 | SKILLS | 可执行技能工作流 | skills/*.md |
 | CAPS | 能力白名单（启用/禁用 L2 插件） | persona.yaml (enables/forbids) |
 
-### 3.2 首发场景规则包（当前 6 个，可扩展）
+### 3.2 首发场景规则包（当前 5 个，可扩展）
 
 | Pack ID | 名称 | 核心能力 | 互斥 |
 |---------|------|---------|------|
-| `coding` | 软件工程师 | 开发、重构、测试、CI/CD | novel, interactive-novel |
-| `conversation` | 通用助手 | 问答、调研、分析 | novel, interactive-novel, agent-builder |
-| `novel` | 小说家 | 章节创作、角色、世界观 | coding, conversation, interactive-novel, agent-builder, paper |
-| `interactive-novel` | 互动叙事 | 分支叙事、NPC、状态机 | coding, conversation, novel, agent-builder, paper |
-| `paper` | 学术写手 | 论文、文献综述、投稿 | novel, interactive-novel |
-| `agent-builder` | Agent 构建师 | 设计/评估/部署 Agent | conversation, novel, interactive-novel |
+| `coding` | 软件工程师 | 开发、重构、测试、CI/CD | novel |
+| `conversation` | 通用助手 | 问答、调研、分析 | novel, agent-builder |
+| `novel` | 小说家 | 章节创作、角色、世界观 | coding, conversation, agent-builder, paper |
+| `paper` | 学术写手 | 论文、文献综述、投稿 | novel |
+| `agent-builder` | Agent 构建师 | 设计/评估/部署 Agent | conversation, novel |
 
 ### 3.3 画像装配
 
@@ -373,7 +372,6 @@ AgentSeed/
 │   │       └── mcp/             # 推荐 MCP 配置
 │   ├── conversation/
 │   ├── novel/
-│   ├── interactive-novel/
 │   ├── paper/
 │   └── agent-builder/
 │

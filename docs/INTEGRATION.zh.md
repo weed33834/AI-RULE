@@ -57,7 +57,7 @@ AgentSeed MCP Server 在整个系统中处于以下架构位置：
 │  ┌─────────────────────────────────────────┐ │
 │  │  🎭 PERSONA PACKS (可切换)               │ │
 │  │  coding · novel · paper · agent-builder   │ │
-│  │  conversation · interactive-novel · custom│ │
+│  │  conversation · novel · paper · custom    │ │
 │  └─────────────────────────────────────────┘ │
 │                    ↓                          │
 │  ┌─────────────────────────────────────────┐ │
@@ -254,7 +254,7 @@ curl -X POST http://127.0.0.1:8080/mcp -H "Content-Type: application/json" \
     "content": [
       {
         "type": "text",
-        "text": "[{\"id\": \"coding\", \"name\": \"软件开发规则\", \"description\": \"\"}, {\"id\": \"novel\", \"name\": \"小说创作规则\", \"description\": \"\"}, {\"id\": \"paper\", \"name\": \"Academic Paper Writing Rules\", \"description\": \"\"}, {\"id\": \"conversation\", \"name\": \"通用对话规则\", \"description\": \"\"}, {\"id\": \"interactive-novel\", \"name\": \"互动小说游戏规则\", \"description\": \"\"}, {\"id\": \"agent-builder\", \"name\": \"智能体构建规则\", \"description\": \"\"}]"
+        "text": "[{\"id\": \"coding\", \"name\": \"软件开发规则\", \"description\": \"\"}, {\"id\": \"novel\", \"name\": \"小说创作规则\", \"description\": \"\"}, {\"id\": \"paper\", \"name\": \"Academic Paper Writing Rules\", \"description\": \"\"}, {\"id\": \"conversation\", \"name\": \"通用对话规则\", \"description\": \"\"}, {\"id\": \"agent-builder\", \"name\": \"智能体构建规则\", \"description\": \"\"}]"
       }
     ]
   }

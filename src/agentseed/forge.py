@@ -112,8 +112,6 @@ def detect_environment(start_dir: Optional[Path] = None) -> ForgeContext:
         "references.bib": "research",
         "chapters": "creative",
         "outline.md": "creative",
-        ".game-state": "game-engine",
-        "game-state-machine.md": "state-machine",
     }
     for signal, cap in CAPABILITY_SIGNALS.items():
         if (cwd / signal).exists():

@@ -24,7 +24,7 @@ from typing import Dict, List, Optional, Set
 PERSONAS: Dict[str, dict] = {
     "coding": {
         "name": "软件工程师",
-        "mutually_exclusive_with": {"novel", "interactive-novel"},
+        "mutually_exclusive_with": {"novel"},
         "anchors": ["pyproject.toml", "package.json", "go.mod", "Cargo.toml",
                     "requirements.txt"],
         "keywords": ["修复", "重构", "测试", "部署", "接口", "bug", "ci",
@@ -33,11 +33,11 @@ PERSONAS: Dict[str, dict] = {
         "allowed_modes": ["task", "project", "autonomous"],
         "default_rt": "STANDARD",
         "capabilities": ["research", "testing", "review", "agent-governance", "dar"],
-        "forbidden_capabilities": ["game-engine", "worldbuilding", "npc-simulation"],
+        "forbidden_capabilities": ["worldbuilding"],
     },
     "conversation": {
         "name": "通用助手",
-        "mutually_exclusive_with": {"novel", "interactive-novel", "agent-builder"},
+        "mutually_exclusive_with": {"novel", "agent-builder"},
         "anchors": [],
         "keywords": ["查询", "对比", "分析", "调研", "总结", "介绍", "解释",
                      "search", "compare", "explain"],
@@ -45,12 +45,11 @@ PERSONAS: Dict[str, dict] = {
         "allowed_modes": ["task", "project"],
         "default_rt": "QUICK",
         "capabilities": ["research", "dar"],
-        "forbidden_capabilities": ["engineering", "creative", "game-engine"],
+        "forbidden_capabilities": ["engineering", "creative"],
     },
     "novel": {
         "name": "小说家",
-        "mutually_exclusive_with": {"coding", "conversation", "interactive-novel",
-                                    "agent-builder", "paper"},
+        "mutually_exclusive_with": {"coding", "conversation", "agent-builder", "paper"},
         "anchors": [".ai-memory/creative-blueprint.md", "chapters", "outline.md"],
         "keywords": ["写一章", "续写", "人物", "伏笔", "文风", "世界观",
                      "小说", "chapter", "character"],
@@ -58,25 +57,11 @@ PERSONAS: Dict[str, dict] = {
         "allowed_modes": ["task", "project", "autonomous"],
         "default_rt": "STANDARD",
         "capabilities": ["research", "worldbuilding", "creative", "dar"],
-        "forbidden_capabilities": ["game-engine", "state-machine"],
-    },
-    "interactive-novel": {
-        "name": "互动叙事",
-        "mutually_exclusive_with": {"coding", "conversation", "novel",
-                                    "agent-builder", "paper"},
-        "anchors": [".game-state", "game-state-machine.md", "save-slot-0.json"],
-        "keywords": ["开始一局", "分支", "存档", "npc", "回合", "状态",
-                     "互动", "game", "branch"],
-        "default_mode": "task",
-        "allowed_modes": ["task", "project"],
-        "default_rt": "QUICK",
-        "capabilities": ["creative", "research", "state-machine", "npc-simulation",
-                         "adaptive-difficulty", "dar"],
-        "forbidden_capabilities": ["novel-chapter-deliverable-mode", "engineering"],
+        "forbidden_capabilities": [],
     },
     "paper": {
         "name": "学术写手",
-        "mutually_exclusive_with": {"novel", "interactive-novel"},
+        "mutually_exclusive_with": {"novel"},
         "anchors": [".ai-memory/paper-blueprint.md", "manuscript", "references.bib"],
         "keywords": ["论文", "文献综述", "摘要", "引言", "方法", "结果",
                      "讨论", "引用", "投稿", "审稿", "paper", "citation"],
@@ -84,12 +69,11 @@ PERSONAS: Dict[str, dict] = {
         "allowed_modes": ["task", "project", "autonomous"],
         "default_rt": "STANDARD",
         "capabilities": ["research", "dar"],
-        "forbidden_capabilities": ["game-engine", "state-machine", "npc-simulation",
-                                   "novel-chapter-deliverable-mode"],
+        "forbidden_capabilities": [],
     },
     "agent-builder": {
         "name": "Agent 构建师",
-        "mutually_exclusive_with": {"conversation", "novel", "interactive-novel"},
+        "mutually_exclusive_with": {"conversation", "novel"},
         "anchors": ["config.yaml", "tools.json", "test-cases.md"],
         "keywords": ["设计agent", "智能体配置", "工具权限", "评估",
                      "agent", "智能体", "persona"],
@@ -97,7 +81,7 @@ PERSONAS: Dict[str, dict] = {
         "allowed_modes": ["task", "project", "autonomous"],
         "default_rt": "STANDARD",
         "capabilities": ["research", "agent-governance", "engineering", "testing", "dar"],
-        "forbidden_capabilities": ["novel-chapter-deliverable-mode", "game-engine"],
+        "forbidden_capabilities": [],
     },
 }
 
@@ -106,10 +90,7 @@ CAPABILITY_DIRS = {
     "research": "research", "testing": "testing", "review": "review",
     "agent-governance": "agent-governance", "dar": "research/dar",
     "worldbuilding": "worldbuilding", "creative": "creative",
-    "state-machine": "state-machine", "npc-simulation": "npc-simulation",
-    "adaptive-difficulty": "adaptive-difficulty",
-    "engineering": "engineering", "game-engine": "game-engine",
-    "novel-chapter-deliverable-mode": "novel-chapter-deliverable-mode",
+    "engineering": "engineering",
 }
 
 
@@ -244,16 +225,16 @@ def are_mutually_exclusive(p1: str, p2: str) -> bool:
 def conflict_check(active: str, requested: str) -> Optional[str]:
     """Check switching conflict. Returns a warning message or None.
 
-    Per persona-router.md §7: novel ↔ interactive-novel switch must ask about
-    shared material; paper ↔ novel/interactive-novel must clear all state.
+    Per persona-router.md §7: novel ↔ paper 切换时必须清除/询问创作状态
+    （章节稿、创作蓝图等共享素材）。
     """
     if not are_mutually_exclusive(active, requested):
         return None
     pair = {active, requested}
-    if pair == {"novel", "interactive-novel"}:
-        return (f"切换 {active} → {requested}：是否保留共享素材（角色、世界观）？"
+    if pair == {"novel", "paper"}:
+        return (f"切换 {active} → {requested}：是否保留共享素材（章节稿、创作蓝图）？"
                 f"（P0: 切换须清除前一 Profile 上下文状态标记）")
-    if active in {"paper", "novel", "interactive-novel"}:
+    if active in {"paper", "novel"}:
         return (f"切换 {active} → {requested} 为互斥画像，"
                 f"必须清除前一 Profile 的全部创作状态。")
     return f"切换 {active} → {requested} 为互斥画像，请确认。"

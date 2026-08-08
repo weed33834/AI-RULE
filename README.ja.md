@@ -31,7 +31,7 @@ agentseed forge
 
 **安全ベースラインは上書き不可。** コアの安全ルール（rm -rf禁止、キーの捏造禁止、無断インストール禁止）は AgentSeed 本体に組み込まれていて、どのペルソナでも消せません。
 
-**6つのペルソナ、いつでも切替。** `coding`（デフォルト）、`novel`、`paper`、`conversation`、`interactive-novel`、`agent-builder`。それぞれにプロンプト・スキル・ツール設定が入ってます。途中で気分変えたくなったら `agentseed switch --profile novel`。
+**5つのシナリオパック、シーンに応じて自動ルーティング。** `coding`（デフォルト）、`conversation`、`novel`、`paper`、`agent-builder`。それぞれにプロンプト・スキル・ツール設定が入ってます。切替は `agentseed switch --profile novel`。
 
 **14プラットフォーム、一発同期。** ツールごとにフォーマット違う問題、AgentSeedが吸収：
 - Claude Code → `CLAUDE.md`

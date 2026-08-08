@@ -25,7 +25,7 @@ DAR_DIR = os.path.join(REPO_ROOT, "capabilities", "research", "dar")
 SPEC_FILE = os.path.join(REPO_ROOT, "core", "dar-spec.md")
 MANIFEST_DIR = os.path.join(REPO_ROOT, "personas")
 
-DOMAINS = ["paper", "coding", "conversation", "novel", "interactive-novel", "agent-builder"]
+DOMAINS = ["paper", "coding", "conversation", "novel", "agent-builder"]
 
 
 def _load_yaml(domain):

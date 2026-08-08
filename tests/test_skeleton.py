@@ -15,7 +15,7 @@ from sync_rules import (
     PROFILE_INLINE_BASENAMES, _collect_mcp_files, extract_metadata,
 )
 
-PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
+PROFILES = ["coding", "conversation", "novel", "paper", "agent-builder"]
 
 # skeleton 模式硬上限：每个 profile 的 skeleton 产物不应爆炸式膨胀
 # 对齐旧 full 模式的 1/3 体积作为兜底（agent-builder full 是 2.2MB，skeleton 1/3 即 ~750KB 上限）
@@ -23,7 +23,6 @@ SKELETON_HARD_LIMIT = {
     "coding": 50_000,
     "conversation": 70_000,
     "novel": 80_000,
-    "interactive-novel": 100_000,
     "paper": 80_000,
     "agent-builder": 150_000,
 }
@@ -161,7 +160,7 @@ def test_skeleton_templates_loaded_for_agent_builder():
 
 def test_skeleton_no_templates_for_non_agent_profiles():
     """非 agent-builder profile 不应出现 Templates 段"""
-    for pid in ["coding", "conversation", "novel", "interactive-novel", "paper"]:
+    for pid in ["coding", "conversation", "novel", "paper"]:
         rs = build_ruleset(pid, mode="skeleton")
         assert "## Templates (按需" not in rs, f"{pid}: 不应有 Templates 段"
     print("[PASS] 非 agent-builder profile 不含 Templates 段")
@@ -169,7 +168,7 @@ def test_skeleton_no_templates_for_non_agent_profiles():
 
 def test_skeleton_mcp_files_collected():
     """_collect_mcp_files 正确识别 MCP 相关 skill（有则识别，无则空列表）"""
-    expected_mcp_profiles = {"coding", "conversation", "novel", "interactive-novel", "paper"}
+    expected_mcp_profiles = {"coding", "conversation", "novel", "paper"}
     for pid in PROFILES:
         m = parse_manifest(pid)
         mcp_files = _collect_mcp_files(m)

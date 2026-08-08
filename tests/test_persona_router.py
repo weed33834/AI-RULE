@@ -18,7 +18,7 @@ from agentseed.router import (
     default_mode, default_rt, list_personas, capability_dir,
 )
 
-PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
+PROFILES = ["coding", "conversation", "novel", "paper", "agent-builder"]
 
 
 def test_router_md_exists():
@@ -75,7 +75,6 @@ def test_intent_keywords():
             ("帮我写小说续写人物", "novel"),
             ("修复这个bug然后重构", "coding"),
             ("写一篇论文摘要", "paper"),
-            ("开始一局互动游戏", "interactive-novel"),
             ("查询对比分析", "conversation"),
             ("设计一个智能体", "agent-builder"),
         ]
@@ -100,14 +99,14 @@ def test_mutex_symmetry():
 
 
 def test_mutex_pairs():
-    for a, b in [("novel", "interactive-novel"), ("coding", "novel"), ("agent-builder", "novel")]:
+    for a, b in [("novel", "paper"), ("coding", "novel"), ("agent-builder", "novel")]:
         assert are_mutually_exclusive(a, b), f"{a} 与 {b} 应互斥"
 
 
 def test_conflict_messages():
     """互斥切换应给出状态清理提示"""
     assert conflict_check("novel", "paper") is not None
-    assert "共享素材" in conflict_check("novel", "interactive-novel")
+    assert "共享素材" in conflict_check("novel", "paper")
     assert conflict_check("coding", "paper") is None  # 不互斥 → 无警告
 
 
@@ -130,7 +129,7 @@ def test_default_modes():
     """persona-router.md §8.2 默认模式表"""
     expected = {
         "coding": "project", "conversation": "task", "novel": "project",
-        "interactive-novel": "task", "paper": "project", "agent-builder": "project",
+        "paper": "project", "agent-builder": "project",
     }
     for pid, mode in expected.items():
         assert default_mode(pid) == mode, f"{pid} 默认模式应为 {mode}"

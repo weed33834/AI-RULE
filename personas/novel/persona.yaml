@@ -9,7 +9,6 @@ profile:
   mutually_exclusive_with:
     - coding
     - conversation
-    - interactive-novel
     - agent-builder
     - paper
   agent_mode:
@@ -63,8 +62,6 @@ enables_capabilities:
   - dar
 
 forbids_capabilities:
-  - game-engine
-  - state-machine
 
 activation_anchors:
   - .ai-memory/creative-blueprint.md

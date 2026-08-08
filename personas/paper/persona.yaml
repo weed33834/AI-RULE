@@ -8,7 +8,6 @@ profile:
   source_repo: badhope/paper
   mutually_exclusive_with:
     - novel
-    - interactive-novel
   agent_mode:
     default: project
     allowed:
@@ -53,10 +52,6 @@ enables_capabilities:
   - dar
 
 forbids_capabilities:
-  - game-engine
-  - state-machine
-  - npc-simulation
-  - novel-chapter-deliverable-mode
 
 activation_anchors:
   - .ai-memory/paper-blueprint.md

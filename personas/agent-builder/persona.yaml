@@ -9,7 +9,6 @@ profile:
   mutually_exclusive_with:
     - conversation
     - novel
-    - interactive-novel
   agent_mode:
     default: project
     allowed:
@@ -83,8 +82,6 @@ enables_capabilities:
   - orchestration
 
 forbids_capabilities:
-  - novel-chapter-deliverable-mode
-  - game-engine
 
 activation_anchors:
   - config.yaml

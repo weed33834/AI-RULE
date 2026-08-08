@@ -73,7 +73,6 @@
 | `coding` | `project` | task, project, autonomous |
 | `conversation` | `task` | task, project |
 | `novel` | `project` | task, project, autonomous |
-| `interactive-novel` | `task` | task, project |
 | `paper` | `project` | task, project, autonomous |
 | `agent-builder` | `project` | task, project, autonomous |
 

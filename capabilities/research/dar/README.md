@@ -33,7 +33,6 @@ DAR 通过预置权威源名录、打分公式、路由规则和领域知识，�
 | coding | `dar-coding.yaml` | 开发工具/资源平台/漏洞库 |
 | conversation | `dar-conversation.yaml` | 事实核查/统计数据/新闻源 |
 | novel | `dar-novel.yaml` | 词典/词源/人名/写作规范 |
-| interactive-novel | `dar-interactive-novel.yaml` | 引擎文档/游戏设计/叙事理论 |
 | agent-builder | `dar-agent-builder.yaml` | AI 模型库/框架文档/benchmark |
 
 ## 加载方式

@@ -99,26 +99,6 @@
 | T2 | [Query Tracker](https://querytracker.net/) | 出版信息 |
 | T2 | [Publishers Marketplace](https://www.publishersmarketplace.com/) | 出版信息 |
 
-### 1.4 互动小说 (interactive-novel)
-
-| Tier | 源 | 类型 |
-|---|---|---|
-| T1 | [Unity Docs](https://docs.unity3d.com/) | 引擎文档 |
-| T1 | [Unreal Engine Docs](https://docs.unrealengine.com/) | 引擎文档 |
-| T1 | [Godot Docs](https://docs.godotengine.org/) | 引擎文档 |
-| T1 | [Ren'Py Docs](https://www.renpy.org/doc/html/) | 视觉小说引擎 |
-| T1 | [Twine Docs](https://twinery.org/) | 互动叙事引擎 |
-| T1 | [Ink (Inkle) Docs](https://github.com/inkle/ink) | 叙事脚本语言 |
-| T2 | [Game Designing](https://www.gamedesigning.org/) | 游戏设计 |
-| T2 | [Gamasutra (Game Developer)](https://www.gamedeveloper.com/) | 游戏开发 |
-| T2 | [GDC Vault](https://www.gdcvault.com/) | 游戏开发演讲 |
-| T2 | [Game Writing Resource](https://www.gamewriting.org/) | 游戏叙事写作 |
-| T2 | [Interactive Narrative](https://www.interactivenarrative.net/) | 互动叙事研究 |
-| T2 | [Game AI Pro](http://www.gameaipro.com/) | 游戏 AI |
-| T2 | [Game Dev Patterns](https://gameprogrammingpatterns.com/) | 游戏编程模式 |
-| T3 | [RPG.NET](https://www.rpg.net/) | 社区讨论 |
-| T3 | [itch.io devlogs](https://itch.io/) | 开发日志 |
-
 ### 1.5 论文写作 (paper)
 
 | Tier | 源 | 类型 |
@@ -212,10 +192,6 @@
 | [novel] 历史背景 | 永不过期 | 1.0 | 历史事实不变 |
 | [novel] 写作规范 | 10 年 | 0.9 | 规范偶尔修订 |
 | [novel] 出版信息 | 1 年 | 0.8 | 出版界变化快 |
-| [interactive-novel] 引擎 API | 2 年 | 0.7 | 检查版本兼容性 |
-| [interactive-novel] 设计模式 | 5 年 | 0.9 | 设计模式相对稳定 |
-| [interactive-novel] 叙事理论 | 10 年 | 1.0 | 理论稳定 |
-| [interactive-novel] 工具版本 | 1 年 | 0.6 | 检查最新版本 |
 | [paper] 实证研究 | 5-10 年 | 0.8 | 检查是否有新研究推翻 |
 | [paper] 理论研究 | 10-20 年 | 0.9 | 经典理论不降权 |
 | [paper] 预印本 | 1 年 | 0.7 | 未同行评审，需标注 |
@@ -250,12 +226,6 @@
 | [novel] 同义词, synonym, 近义词 | multi_source | Power Thesaurus, Thesaurus.com | Merriam-Webster |
 | [novel] 历史背景, 历史事件, historical | cross_verify | Britannica, JSTOR | Wikipedia |
 | [novel] 写作规范, 格式, style guide | prefer_authoritative | Purdue OWL, Chicago Manual of Style | Wikipedia |
-| [interactive-novel] Unity, Unity3D, unity | prefer_official | Unity Docs | Game Developer, Stack Overflow |
-| [interactive-novel] Unreal, UE5, UE4 | prefer_official | Unreal Engine Docs | Game Developer |
-| [interactive-novel] Ren'Py, renpy, 视觉小说 | prefer_official | Ren'Py Docs |  itch.io devlogs |
-| [interactive-novel] 分支叙事, branching narrative, Twine,  Ink | prefer_official | Twine Docs, Ink Docs | Interactive Narrative |
-| [interactive-novel] 游戏叙事, game writing, 叙事设计 | multi_source | Game Writing Resource, GDC Vault | Game Developer, Interactive Narrative |
-| [interactive-novel] 游戏 AI, game AI, NPC AI | multi_source | Game AI Pro, Unity Docs | Game Developer |
 | [paper] 文献综述, literature review, related work | must_cite | Google Scholar, Semantic Scholar, PubMed, DBLP | arXiv, SSRN, JSTOR |
 | [paper] 引用验证, citation verification, 引用检查 | must_verify | CrossRef, Google Scholar, Semantic Scholar | ResearchGate, Academia.edu |
 | [paper] 撤稿检查, retraction check, 撤稿 | must_check | Retraction Watch, CrossRef | Google Scholar |
@@ -336,29 +306,6 @@
 - 地名拼写错误——查 GeoNames
 - 历史细节错误——交叉验证
 
-### 5.4 互动小说 (interactive-novel)
-
-**术语**：
-
-- branching narrative: 分支叙事
-- state machine: 状态机
-- visual novel: 视觉小说
-- interactive fiction (IF): 互动小说
-- dialogue tree: 对话树
-- save/load: 存档/读档
-- NPC: 非玩家角色
-- quest: 任务
-- playthrough: 通关流程
-- ending: 结局（true/good/bad ending）
-
-**常见陷阱**：
-
-- 分支过多导致内容稀释
-- 状态机死锁——玩家无法继续
-- NPC 反应不符合设定
-- 存档/读档逻辑错误
-- 结局缺乏差异感
-
 ### 5.5 论文写作 (paper)
 
 **术语**：
@@ -436,15 +383,6 @@
 **Extended**：`[DAR Routing] Priority sources (T1): Merriam-Webster, OED, Cambridge Dictionary, Etymonline, Behind the Name, GeoNames, Purdue OWL.
 [DAR Scoring] Score = 0.35×Relevance + 0.20×Credibility + 0.05×Freshness + 0.40×Consensus. Consensus weighted highest.
 [DAR Terms] etymology, denotation, connotation, archaism, neologism, anachronism. Check word etymology for period accuracy.`
-
-### 6.4 互动小说 (interactive-novel)
-
-**Standard**：`[DAR] interactive fiction/game narrative 优先源：Twine Docs/Ren'Py Docs/Ink Docs/GDC talks/IGDA。关键术语：branching narrative/dialogue tree/choice cone/state machine。指引：标注引擎版本、区分线性/分支/网状叙事结构。
-要求：①事实附URL+日期 ②来源冲突时呈现分歧 ③引擎特性标注版本号。`
-
-**Extended**：`[DAR Routing] Priority sources (T1): Twine Docs, Ren'Py Docs, Ink (Inkle) Docs, Unity Docs, Unreal Docs, GDC Vault, IGDA, Narrative Design Toolkit.
-[DAR Scoring] Score = 0.35×Relevance + 0.25×Credibility + 0.15×Freshness + 0.25×Consensus.
-[DAR Terms] branching narrative, dialogue tree, choice cone, state machine, affinity system, flag tracking. Specify engine versions.`
 
 ### 6.5 论文写作 (paper)
 

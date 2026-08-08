@@ -33,7 +33,7 @@ That's it. From empty directory to a 1200-line AGENTS.md with safety rules, proj
 
 **A baseline that doesn't get overwritten.** Core safety rules (don't rm -rf, don't hallucinate credentials, don't install things unprompted) are part of the governance kernel and ship with AgentSeed — no scenario pack can override them.
 
-**Pluggable scenario packs.** Six starter packs: `coding` (your default), `novel`, `paper`, `conversation`, `interactive-novel`, `agent-builder`. Each pack bundles a scenario protocol, prompts, skills, and a capability whitelist, routed automatically from project anchors and user intent (or switched manually with `agentseed switch --profile novel`). Packs are pluggable and extensible — a new scenario is just a directory plus a manifest; the kernel never changes.
+**Pluggable scenario packs.** Five starter packs: `coding` (your default), `conversation`, `novel`, `paper`, `agent-builder`. Each pack bundles a scenario protocol, prompts, skills, and a capability whitelist, routed automatically from project anchors and user intent (or switched manually with `agentseed switch --profile novel`). Packs are pluggable and extensible — a new scenario is just a directory plus a manifest; the kernel never changes.
 
 **All your tools, one sync.** Generates the right format for 15 platforms:
 - Claude Code → `CLAUDE.md`

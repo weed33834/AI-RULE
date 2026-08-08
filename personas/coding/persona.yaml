@@ -8,7 +8,6 @@ profile:
   source_repo: https://github.com/weed33834/agentseed.git
   mutually_exclusive_with:
     - novel
-    - interactive-novel
   agent_mode:
     default: project
     allowed:
@@ -45,9 +44,7 @@ enables_capabilities:
   - dar
 
 forbids_capabilities:
-  - game-engine
   - worldbuilding
-  - npc-simulation
 
 activation_anchors:
   - pyproject.toml

@@ -24,7 +24,6 @@ def select_profile_by_keywords(keywords: list) -> str:
     rules = {
         "coding": ["修复", "重构", "测试", "部署", "接口", "Bug", "CI", "代码"],
         "novel": ["写一章", "续写", "人物", "伏笔", "文风", "世界观", "章节"],
-        "interactive-novel": ["开始一局", "分支", "存档", "NPC", "回合", "状态", "选项"],
         "agent-builder": ["设计 Agent", "智能体配置", "工具权限", "评估", "部署 Agent"],
         "conversation": ["查询", "对比", "分析", "调研", "总结", "解释"],
     }
@@ -56,7 +55,7 @@ def scenario_1_fastapi_bug():
     profile = select_profile_by_keywords(keywords)
     assert profile == "coding", f"应选 coding，实际 {profile}"
     assert check_capability_allowed("coding", "testing"), "coding 应允许 testing 能力包"
-    assert not check_capability_allowed("coding", "game-engine"), "coding 不应允许 game-engine"
+    assert not check_capability_allowed("coding", "worldbuilding"), "coding 不应允许 worldbuilding"
     # 验证生成的规则集包含 coding 特有内容
     ruleset = build_ruleset("coding")
     assert "PowerShell" in ruleset or "pip" in ruleset, "coding 规则集应含工程命令"
@@ -70,29 +69,13 @@ def scenario_2_novel_chapter():
     profile = select_profile_by_keywords(keywords)
     assert profile == "novel", f"应选 novel，实际 {profile}"
     assert check_capability_allowed("novel", "worldbuilding"), "novel 应允许 worldbuilding"
-    assert not check_capability_allowed("novel", "game-engine"), "novel 不应允许 game-engine"
+    assert not check_capability_allowed("novel", "testing"), "novel 不应允许 testing"
     # 验证互斥：novel 与 coding 不能同时加载
     assert check_mutex("novel", "coding"), "novel 与 coding 应互斥"
     # 验证规则集含小说特有规则
     ruleset = build_ruleset("novel")
     assert len(ruleset) > 5000, f"novel 规则集过小: {len(ruleset)}"
     print("[PASS] 场景2 小说第三章创作 → novel + worldbuilding，与 coding 互斥")
-
-
-# === 场景 3: 互动小说分支设计，状态迁移 ===
-def scenario_3_interactive_state():
-    """用户：设计一个有 NPC 关系值和存档的分支故事，每回合输出状态变化"""
-    keywords = ["分支", "存档", "NPC", "回合", "状态"]
-    profile = select_profile_by_keywords(keywords)
-    assert profile == "interactive-novel", f"应选 interactive-novel，实际 {profile}"
-    assert check_capability_allowed("interactive-novel", "state-machine"), "应允许 state-machine"
-    assert check_capability_allowed("interactive-novel", "npc-simulation"), "应允许 npc-simulation"
-    assert check_capability_allowed("interactive-novel", "adaptive-difficulty"), "应允许 adaptive-difficulty"
-    # 验证互斥：interactive-novel 与 novel 互斥
-    assert check_mutex("interactive-novel", "novel"), "与 novel 应互斥"
-    ruleset = build_ruleset("interactive-novel")
-    assert len(ruleset) > 5000, f"interactive-novel 规则集过小: {len(ruleset)}"
-    print("[PASS] 场景3 互动小说状态机 → interactive-novel + state-machine/npc/difficulty")
 
 
 # === 场景 4: 设计代码审查 Agent ===
@@ -103,7 +86,7 @@ def scenario_4_design_agent():
     assert profile == "agent-builder", f"应选 agent-builder，实际 {profile}"
     assert check_capability_allowed("agent-builder", "agent-governance"), "应允许 agent-governance"
     assert check_capability_allowed("agent-builder", "testing"), "应允许 testing"
-    assert not check_capability_allowed("agent-builder", "game-engine"), "不应允许 game-engine"
+    assert not check_capability_allowed("agent-builder", "worldbuilding"), "不应允许 worldbuilding"
     # 验证模板存在
     templates_dir = REPO_ROOT / "personas" / "agent-builder" / "docs" / "templates"
     assert templates_dir.exists(), "agent-builder 模板目录应存在"
@@ -138,13 +121,12 @@ def scenario_5_cross_tool():
 
 # === 场景 6: 模糊意图必须澄清 ===
 def scenario_6_ambiguous():
-    """用户：写一个带分支的悬疑故事——可能是小说也可能是互动游戏"""
-    keywords = ["写", "分支", "故事"]
-    # "分支"同时命中 novel 和 interactive-novel 的关键词
+    """用户：写一个带引用的章节——可能想写小说（章节），也可能在写论文（引用）"""
+    keywords = ["章节", "引用"]
+    # "章节"命中 novel，"引用"命中 paper → 意图不唯一
     novel_score = sum(1 for kw in keywords if kw in ["写一章", "续写", "人物", "伏笔", "文风", "世界观", "章节"])
-    interactive_score = sum(1 for kw in keywords if kw in ["开始一局", "分支", "存档", "NPC", "回合", "状态", "选项"])
-    # "分支"命中 interactive-novel
-    assert interactive_score >= 1, "分支应命中 interactive-novel"
+    paper_score = sum(1 for kw in keywords if kw in ["论文", "文献综述", "摘要", "引言", "方法", "结果", "讨论", "引用", "投稿", "审稿"])
+    assert novel_score >= 1 and paper_score >= 1, "应同时命中 novel 与 paper"
     # 这种模糊情况 persona-router 要求询问
     router = load_router()
     assert "识别不唯一时必须澄清" in router, "router 应要求模糊时澄清"
@@ -158,7 +140,6 @@ def run_all():
     scenarios = [
         ("FastAPI Bug 修复", scenario_1_fastapi_bug),
         ("小说第三章创作", scenario_2_novel_chapter),
-        ("互动小说状态机", scenario_3_interactive_state),
         ("设计审查 Agent", scenario_4_design_agent),
         ("跨工具生成一致性", scenario_5_cross_tool),
         ("模糊意图澄清", scenario_6_ambiguous),

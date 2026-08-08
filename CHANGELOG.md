@@ -24,6 +24,7 @@ AgentSeed 首个正式版本。此前内部迭代（2.x / 1.x 实验版本）已
 - **Windows 中文环境编码**：stdio/HTTP 启动强制 stdout/stderr 为 UTF-8，CLI `--json` 输出同样强制 UTF-8。
 - **场景协议源文件缺失（基线缺陷）**：6 个 `personas/<id>/AGENTS.md` 此前被 `.gitignore` 无锚定规则静默忽略、从未入库，导致 forge 产物出现 `[missing]` 标记。已补全 6 份源文件并把 `.gitignore` 锚定为 `/AGENTS.md`（根级生成文件）。
 - coding 包 manifest 补 `agent_mode` 声明。
+- 场景包组合精简：移除 `interactive-novel` 与孤儿能力包（`state-machine` / `npc-simulation` / `adaptive-difficulty` / `game-engine` / `novel-chapter-deliverable-mode`），首发场景规则包 6 → 5（coding / conversation / novel / paper / agent-builder）。
 
 ### Infrastructure
 - GitHub Releases 清理历史 2.x 版本，v1.0.0 作为唯一正式发布（wheel 随 Release 分发）。

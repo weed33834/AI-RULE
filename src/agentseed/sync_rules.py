@@ -316,10 +316,6 @@ DOMAIN_QUALITY_GATES = {
         ("角色一致性", "personas/novel/skills/character-consistency-system.md §5", "Character_Consistency_Score", "≥0.95 优 / 0.85-0.95 良 / <0.7 差"),
         ("伏笔回收", "personas/novel/skills/foreshadow-tracking.md §3", "Foreshadow_Resolution_Rate", "≥0.9 优秀 / 0.7-0.9 合格 / <0.7 不合格"),
     ],
-    "interactive-novel": [
-        ("状态机可达性", "personas/interactive-novel/skills/game-state-machine.md §8", "State_Reachability_Score", "≥0.95 优 / 0.7-0.85 中 / <0.7 差"),
-        ("角色一致性", "personas/novel/skills/character-consistency-system.md §5", "Character_Consistency_Score (跨 profile 复用)", "≥0.95 优 / <0.7 差"),
-    ],
     "agent-builder": [
         ("评估严谨度", "personas/agent-builder/skills/evaluation-framework.md", "Eval_Rigor_Score", "≥0.85 高 / 0.6-0.85 中 / <0.4 极低"),
         ("工具设计副作用", "personas/agent-builder/skills/tool-design.md", "副作用五级 + 决策树", "L1-L5 分级"),
@@ -1175,7 +1171,6 @@ PROFILE_ANCHORS = {
     "go.mod": "coding",
     "pom.xml": "coding",
     "build.gradle": "coding",
-    ".game-state/": "interactive-novel",
     "manuscript.md": "novel",
     "novel.md": "novel",
     # paper 锚点：含 .tex / .bib / paper.md
@@ -1191,7 +1186,6 @@ PROFILE_ANCHORS = {
 INTENT_KEYWORDS = {
     "coding": ["写代码", "开发", "bug", "重构", "code", "develop", "编程", "修复"],
     "novel": ["写小说", "小说", "章节", "novel", "story", "创作小说"],
-    "interactive-novel": ["互动小说", "分支剧情", "状态机", "interactive novel", "game state"],
     "paper": ["论文", "文献综述", "paper", "academic", "research paper", "投稿"],
     "conversation": ["问答", "调研", "对比", "信息检索", "research", "general"],
     "agent-builder": ["智能体", "agent", "bot", "助手", "构建 agent"],

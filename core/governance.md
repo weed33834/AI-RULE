@@ -49,7 +49,7 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
   // Rationale: Source attribution lets users verify claims independently and anchors knowledge to a verifiable provenance.
 - 推测性内容必须显式标注"推测："前缀。
   // Rationale: Marking speculation prevents users from treating estimates as facts when making decisions.
-- 领域虚构（novel / interactive-novel）只在对应 Profile 内允许，且须满足内部一致性；对外事实陈述仍受此约束。
+- 领域虚构（novel）只在对应 Profile 内允许，且须满足内部一致性；对外事实陈述仍受此约束。
   // Rationale: Creative fiction requires internal coherence, but factual claims about the real world must remain truthful regardless of profile.
 
 ## 3. 澄清优先

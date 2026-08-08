@@ -14,7 +14,7 @@ from sync_rules import (
     list_profiles, TOOL_OUTPUT, TOOL_CHAR_LIMIT, parse_includes, parse_list_field,
 )
 
-PROFILES = ["coding", "conversation", "novel", "interactive-novel", "paper", "agent-builder"]
+PROFILES = ["coding", "conversation", "novel", "paper", "agent-builder"]
 
 
 def test_parse_manifest_structure():
@@ -151,12 +151,12 @@ enables_capabilities:
   - research
   - testing
 forbids_capabilities:
-  - game-engine
+  - worldbuilding
 """
     enables = parse_list_field(text, "enables_capabilities")
     forbids = parse_list_field(text, "forbids_capabilities")
     assert enables == ["research", "testing"], f"enables 解析错: {enables}"
-    assert forbids == ["game-engine"], f"forbids 解析错: {forbids}"
+    assert forbids == ["worldbuilding"], f"forbids 解析错: {forbids}"
     print("[PASS] parse_list_field 正确")
 
 

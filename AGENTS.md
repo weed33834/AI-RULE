@@ -1,4 +1,4 @@
-<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-08-06 15:42:53 | hash: 8198e411d84b | 禁止手工编辑 -->
+<!-- 由 sync_rules.py 自动生成 | profile: coding | mode: skeleton | generated: 2026-08-08 23:03:16 | hash: 8198e411d84b | 禁止手工编辑 -->
 <!-- 源: core/*.md + personas/<id>/{AGENTS.md,prompts/} + capabilities/<cap>/  + personas/*.yaml | 生成产物（AGENTS.md / CLAUDE.md / GEMINI.md 等）均非源，请勿手改 -->
 
 
@@ -108,7 +108,7 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
   // Rationale: Source attribution lets users verify claims independently and anchors knowledge to a verifiable provenance.
 - 推测性内容必须显式标注"推测："前缀。
   // Rationale: Marking speculation prevents users from treating estimates as facts when making decisions.
-- 领域虚构（novel / interactive-novel）只在对应 Profile 内允许，且须满足内部一致性；对外事实陈述仍受此约束。
+- 领域虚构（novel）只在对应 Profile 内允许，且须满足内部一致性；对外事实陈述仍受此约束。
   // Rationale: Creative fiction requires internal coherence, but factual claims about the real world must remain truthful regardless of profile.
 
 ## 3. 澄清优先
@@ -315,7 +315,6 @@ Empirical research (ManyIFEval, ICLR 2025) demonstrates that as the number of si
 ## 9. 各 Profile 的语言特例
 
 - `novel`：小说正文的默认语言由创作种子决定；元对话用用户语言。
-- `interactive-novel`：游戏内叙事语言由游戏种子决定；系统交互用用户语言。
 - `coding`：代码、提交信息、文档语言跟随项目约定；无约定时用用户语言。
 - `agent-builder`：生成的 Agent 配置文件用英语；面向用户的解释用其语言。
 - `conversation`：始终用用户语言。
@@ -454,6 +453,7 @@ When the user's task requires factual support, dependency verification, or error
 - 技能注册表: `@personas/coding/skills/registry.md` (按需 Read)
 - 远程沙箱工程规范: `@personas/coding/skills/remote-sandbox-sop.md` (按需 Read)
 - Trae 平台专属护栏（条件激活）: `adapters/trae/session-guardrails.md`
+
 
 ## [profile] personas/coding/prompts/system-prompt.md
 # System Prompt
@@ -620,7 +620,7 @@ Before producing your final output:
 ## Meta Rules (按需，仅切换 profile 时加载)
 | 用途 | 文件路径 |
 |---|---|
-| 本文件定义如何从用户意图或项目锚点确定唯一主 Profile，以及可叠加的能力包白名单。 每次会话只能有一个主 Profile；`novel`、`interactive-novel`、`paper` 两两互斥；`agent-builder` 仅用于构建/评估/部署智能体。 | core/persona-router.md |
+| 本文件定义如何从用户意图或项目锚点确定唯一主 Profile，以及可叠加的能力包白名单。 每次会话只能有一个主 Profile；`novel`、`paper` 互斥；`agent-builder` 仅用于构建/评估/部署智能体。 | core/persona-router.md |
 
 ## Subagent Prompts (按需)
 | 触发关键词 | 用途 | 文件路径 | 大小 |

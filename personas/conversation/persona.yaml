@@ -8,7 +8,6 @@ profile:
   source_repo: badhope/universal
   mutually_exclusive_with:
     - novel
-    - interactive-novel
     - agent-builder
   agent_mode:
     default: task
@@ -51,7 +50,6 @@ enables_capabilities:
 forbids_capabilities:
   - engineering
   - creative
-  - game-engine
 
 activation_anchors: []
 

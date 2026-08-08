@@ -98,7 +98,7 @@ def test_persona_list_not_empty_without_env():
     personas = ms._handle_persona_list({})
     ids = [p["id"] for p in personas]
     assert "coding" in ids and "agent-builder" in ids
-    assert len(ids) >= 6
+    assert len(ids) >= 5
 
 
 def test_tools_list_via_json_rpc():
