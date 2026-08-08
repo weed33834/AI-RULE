@@ -16,10 +16,28 @@
 
 ### 2.1 官方 Registry（modelcontextprotocol/registry）
 
-1. 仓库已备好 `mcp/server.json`（reverse-DNS 命名 `io.github.weed33834/agentseed`）。
-2. 提交方式：Fork `modelcontextprotocol/registry` → 在 `servers/io.github.weed33834/agentseed/server.json` 放置 → PR。
-3. 命名空间校验：注册表会用 GitHub 账号/域名验证所有权（本仓库 GitHub 账号即为 weed33834，无需额外验证）。
-4. 通过后，任何 MCP 客户端/聚合器可通过注册表 API 发现本 server。
+> ⚠️ 更新（2026-08-08）：Registry **不接受 PR 提交**，必须用官方 `mcp-publisher` CLI。
+> 且 PyPI 类型的所有权校验 = 检查 **pypi.org 上已发布包**的 README 是否含 `mcp-name: io.github.weed33834/agentseed`。
+> 因此正式提交**依赖 PyPI 先上线**（见 §3）。当前已备好：
+> - `mcp/server.json`：Registry 当前 schema（2025-12-11，`packages[].registryType: pypi`，reverse-DNS 命名）
+> - README.md 已埋所有权令牌 `<!-- mcp-name: io.github.weed33834/agentseed -->`
+
+PyPI 上线后的提交步骤：
+
+```bash
+# 1. 安装 mcp-publisher（Windows PowerShell）
+$arch = if ([System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture -eq "Arm64") { "arm64" } else { "amd64" }
+Invoke-WebRequest -Uri "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_windows_$arch.tar.gz" -OutFile "mcp-publisher.tar.gz"
+tar xf mcp-publisher.tar.gz mcp-publisher.exe; rm mcp-publisher.tar.gz
+
+# 2. 认证（GitHub token）
+$env:GITHUB_TOKEN = "<fine-grained token>"
+
+# 3. 提交 server 元数据（在仓库根执行）
+mcp-publisher publish --file mcp/server.json
+```
+
+通过后，任何 MCP 客户端/聚合器可通过注册表 API 发现本 server。
 
 ### 2.2 下游市场（聚合器，重点投）
 

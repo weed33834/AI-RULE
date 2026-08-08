@@ -1,41 +1,17 @@
 {
-  "$schema": "https://modelcontextprotocol.io/registry/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.weed33834/agentseed",
+  "title": "AgentSeed",
+  "description": "The governance layer for AI agents — P0 security red-line checks, scenario pack management, and capability gap detection (MCP).",
   "version": "1.0.0",
-  "description": "AgentSeed MCP Server — 面向自主智能体的高约束规则治理：P0 安全红线检查（governance_check）、场景规则包列表/激活（scenario_list / scenario_activate）、能力缺口检测（gap_detect）。",
-  "source": "https://github.com/weed33834/agentseed",
-  "documentation": "https://github.com/weed33834/agentseed/blob/main/docs/INTEGRATION.zh.md",
-  "license": "Apache-2.0",
-  "executable": {
-    "package": "agentseed",
-    "command": "agentseed",
-    "args": ["serve"]
-  },
-  "tools": [
+  "packages": [
     {
-      "name": "governance_check",
-      "description": "Check if a tool call violates P0 security red lines (destructive ops, hardcoded secrets, auto-installing MCP servers). Tool-name agnostic."
-    },
-    {
-      "name": "scenario_list",
-      "description": "List available scenario packs (场景规则包). Alias of persona_list."
-    },
-    {
-      "name": "scenario_activate",
-      "description": "Activate a scenario pack and return its configuration summary. Alias of persona_activate."
-    },
-    {
-      "name": "persona_list",
-      "description": "List available scenario packs (compatibility alias)."
-    },
-    {
-      "name": "persona_activate",
-      "description": "Activate a scenario pack (compatibility alias)."
-    },
-    {
-      "name": "gap_detect",
-      "description": "Analyze context for capability gaps based on the self-evolution gap score formula."
+      "registryType": "pypi",
+      "identifier": "agentseed",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
     }
-  ],
-  "notes": "安装: pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl；随后在任意 MCP 客户端添加 { \"mcpServers\": { \"agentseed\": { \"command\": \"agentseed\", \"args\": [\"serve\"] } } }"
+  ]
 }

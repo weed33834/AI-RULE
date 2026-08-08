@@ -1,5 +1,7 @@
 # AgentSeed
 
+<!-- mcp-name: io.github.weed33834/agentseed -->
+
 > **`pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl && agentseed forge`**
 
 **🌐 [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)**
