@@ -1,8 +1,8 @@
 # AgentSeed Architecture v1.0
 
-> **定位**: One command to give a blank agent a brain.
+> **定位**: 面向自主智能体的高约束规则治理框架。
 >
-> `pip install agentseed && agentseed forge` → 空白 Agent 立刻拥有完整人格、规则体系、技能和工具配置。
+> `pip install agentseed && agentseed forge` → 空白智能体立刻被包进一层不可协商的治理约束，并按任务场景插上对应的规则包（协议、技能、能力白名单）。
 
 ---
 
@@ -13,7 +13,7 @@
 │                        AgentSeed                                   │
 │                                                                   │
 │  ┌─────────────────────────────────────────────────────────────┐ │
-│  │              ⚡ GOVERNANCE ENGINE (宪法层 — 不可插拔)          │ │
+│  │              ⚡ GOVERNANCE ENGINE (治理内核 — 不可插拔)        │ │
 │  │                                                               │ │
 │  │  governance.md        安全/保密/真实性/澄清/P0 红线            │ │
 │  │  constraints.yaml     机器可执行约束 (PreToolUse hook)        │ │
@@ -22,7 +22,7 @@
 │  │  interaction.md       交互协议                                │ │
 │  │  language-mediation.md 语言中介                               │ │
 │  │  mcp-integration.md   MCP 红线                                │ │
-│  │  persona-router.md    画像路由                                │ │
+│  │  persona-router.md    场景路由                                │ │
 │  │  dar-spec.md          域权威注册表 (搜索质量引擎)              │ │
 │  │                                                               │ │
 │  │  🧬 SELF-EVOLUTION ENGINE (自进化引擎) ★ 新增                 │ │
@@ -31,45 +31,43 @@
 │  │  │  (见 §Self-Evolution Engine 详细设计)                  │   │ │
 │  │  └───────────────────────────────────────────────────────┘   │ │
 │  └─────────────────────────────────────────────────────────────┘ │
-│                              ↓ 基于画像路由                       │
+│                              ↓ 基于场景路由                       │
 │  ┌─────────────────────────────────────────────────────────────┐ │
-│  │           🎭 PERSONA PACKS (可插拔画像插件)                    │ │
+│  │           🧩 SCENARIO PACKS (可插拔场景规则包)                 │ │
 │  │                                                               │ │
 │  │  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────┐   │ │
 │  │  │ 🧑‍💻 coding │ │ 📖 novel │ │ 💬 conv  │ │ 🎮 i-novel  │   │ │
 │  │  │          │ │          │ │          │ │              │   │ │
-│  │  │ SOUL.md  │ │ SOUL.md  │ │ SOUL.md  │ │ SOUL.md      │   │ │
-│  │  │ AGENTS   │ │ AGENTS   │ │ AGENTS   │ │ AGENTS       │   │ │
-│  │  │ Skills   │ │ Skills   │ │ Skills   │ │ Skills       │   │ │
-│  │  │ MCP list │ │ MCP list │ │ MCP list │ │ MCP list     │   │ │
+│  │  │ Protocol │ │ Protocol │ │ Protocol │ │ Protocol     │   │ │
 │  │  │ Prompts  │ │ Prompts  │ │ Prompts  │ │ Prompts      │   │ │
+│  │  │ Skills   │ │ Skills   │ │ Skills   │ │ Skills       │   │ │
+│  │  │ Caps     │ │ Caps     │ │ Caps     │ │ Caps         │   │ │
 │  │  └──────────┘ └──────────┘ └──────────┘ └──────────────┘   │ │
 │  │                                                               │ │
 │  │  ┌──────────┐ ┌──────────────┐ ┌──────────────────────┐     │ │
-│  │  │ 📝 paper │ │ 🤖 agent-bld │ │ 🔮 你的自定义画像...  │     │ │
+│  │  │ 📝 paper │ │ 🤖 agent-bld │ │ 🔮 你的自定义场景...  │     │ │
 │  │  │          │ │              │ │ agentseed persona new  │     │ │
 │  │  └──────────┘ └──────────────┘ └──────────────────────┘     │ │
 │  │                                                               │ │
-│  │  Persona Pack = SOUL (Who) + Rules (Boundary)                 │ │
-│  │               + Skills (How) + MCP (Tools) + Prompts (Style)  │ │
+│  │  Scenario Pack = 场景协议 + 提示词 + 技能 + 能力白名单          │ │
 │  └─────────────────────────────────────────────────────────────┘ │
 │                              ↓ 同步引擎                           │
 │  ┌─────────────────────────────────────────────────────────────┐ │
-│  │           🚀 PLATFORM SYNC (13 平台一键生成)                   │ │
+│  │           🚀 PLATFORM SYNC (15 平台一键生成)                   │ │
 │  │                                                               │ │
 │  │  Claude Code │ Cursor │ Copilot │ Trae │ Gemini │ Windsurf   │ │
 │  │  Cline │ Continue │ Amazon Q │ Qodo │ Lingma │ Comate │      │ │
-│  │  AGENTS.md (通用)                                              │ │
+│  │  QwenWork │ AGENTS.md (通用)                                   │ │
 │  └─────────────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## §1 Governance Engine (宪法层)
+## §1 Governance Engine (治理内核)
 
 ### 定位
-Agent 的"永久大脑"，不被任何 Persona Pack 覆盖。定义了 Agent 的绝对边界和决策框架。
+Agent 的"永久约束层"，不被任何 Scenario Pack 覆盖。定义了 Agent 的绝对边界和决策框架。
 
 ### 包含模块
 | 模块 | 功能 | 不可覆盖等级 |
@@ -81,13 +79,13 @@ Agent 的"永久大脑"，不被任何 Persona Pack 覆盖。定义了 Agent 的
 | `interaction.md` | 交互协议 | P0 |
 | `language-mediation.md` | 语言中介 | P0 |
 | `mcp-integration.md` | MCP 配置红线 | P0 |
-| `persona-router.md` | 画像路由与选择 | P0 |
+| `persona-router.md` | 场景路由与选择 | P0 |
 | `dar-spec.md` | 搜索权威打分协议 | P0 |
 | **`self-evolution.md`** | ★ 自进化引擎 (新增) | P0 |
 
 ### 优先级
 ```
-P0 Governance > P1 用户确认 > P2 Persona Pack > P3 Capabilities > P4 模型默认
+P0 Governance > P1 用户确认 > P2 Scenario Pack > P3 Capabilities > P4 模型默认
 ```
 
 ---
@@ -212,23 +210,22 @@ GapScore > 0.75  → 全自动获取 + 配置 + 热加载，完成后告知用�
 
 ---
 
-## §3 Persona Packs (可插拔画像)
+## §3 Scenario Packs (可插拔场景规则包)
 
 ### 3.1 定义
 
 ```
-Persona Pack = SOUL + RULES + SKILLS + MCP + PROMPTS
+Scenario Pack = 场景协议 + 提示词 + 技能 + 能力白名单 + 路由锚点
 ```
 
 | 组件 | 内容 | 文件 |
 |------|------|------|
-| SOUL | 角色身份、语气风格 | SOUL.md |
-| RULES | 领域约束 (Profile 级别) | AGENTS.md / 领域规则 |
-| SKILLS | 可执行技能工作流 | skills/*.md |
-| MCP | 推荐工具配置 | 配置 JSON |
+| Protocol | 场景工作协议与领域约束 | AGENTS.md / 领域规则 |
 | PROMPTS | 子代理/专业化提示词 | prompts/*.md |
+| SKILLS | 可执行技能工作流 | skills/*.md |
+| CAPS | 能力白名单（启用/禁用 L2 插件） | persona.yaml (enables/forbids) |
 
-### 3.2 核心画像（当前 6 个）
+### 3.2 首发场景规则包（当前 6 个，可扩展）
 
 | Pack ID | 名称 | 核心能力 | 互斥 |
 |---------|------|---------|------|

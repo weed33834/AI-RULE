@@ -9,6 +9,11 @@ profile:
   mutually_exclusive_with:
     - novel
     - interactive-novel
+  agent_mode:
+    default: project
+    allowed:
+      - task
+      - project
 
 includes:
   core:

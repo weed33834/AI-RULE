@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agentseed"
-version = "2.4.1"
+version = "1.0.0"
 description = "AgentSeed — One command to give your AI agent a brain. Persona Packs + Governance Engine + Self-Evolution + 13-platform sync."
 readme = "README.md"
 license = { text = "MIT" }

@@ -1,13 +1,13 @@
-"""AgentSeed MCP Server — stdio JSON-RPC 2.0 protocol.
+"""AgentSeed MCP Server — stdio / HTTP JSON-RPC 2.0 protocol.
 
 Exposes governance / persona management as MCP tools for any MCP-compatible client.
 
 Usage:
-    agentseed serve          # stdio mode (default)
-    agentseed serve --port N # HTTP/SSE mode (optional stub)
+    agentseed serve          # stdio mode (default, for MCP clients)
+    agentseed serve --port N # HTTP mode (JSON-RPC over POST /mcp, stdlib only)
 """
 
-__version__ = "2.4.1"
+__version__ = "1.0.0"
 
 import json
 import sys
@@ -15,16 +15,68 @@ import os
 from pathlib import Path
 from typing import Any
 
-# ── resolve project root ──────────────────────────────────────────
-_PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+# ── resolve resources root ───────────────────────────────────────
+_PACK_DIR_NAMES = ("scenarios", "personas")  # scenarios 优先（未来规范目录），personas 兼容
+
+
+def _has_pack_dir(p: Path) -> bool:
+    """目录是否为 AgentSeed 资源根（含场景包目录 scenarios/ 或 personas/）。"""
+    return any((p / name).is_dir() for name in _PACK_DIR_NAMES)
+
+
+def _pack_dir(root: Path) -> Path:
+    """返回场景包目录：scenarios/ 优先，personas/ 兼容回退。"""
+    for name in _PACK_DIR_NAMES:
+        cand = root / name
+        if cand.is_dir():
+            return cand
+    return root / "personas"
 
 
 def _resolve_resources_root() -> Path:
-    """Resolve resources root: prefer AGENTSEED_REPO env, fallback to project root."""
+    """Resolve the rule-hub resources root.
+
+    Priority (mirrors sync_rules._find_rule_hub_root):
+      1. AGENTSEED_REPO env var — explicit user override, hot-swappable
+      2. packaged layout: <pkg>/_resources   (pip wheel install)
+      3. dev/source layout: <repo>/src/agentseed -> parent.parent = repo root
+      4. legacy fallback: parent.parent.parent (kept for backwards compat)
+
+    The old single-path logic (`parent.parent.parent`) pointed at the wrong
+    directory in wheel installs, silently disabling persona/constraint loading.
+    """
     env = os.environ.get("AGENTSEED_REPO", "")
     if env:
-        return Path(env)
-    return _PROJECT_ROOT
+        p = Path(env).expanduser().resolve()
+        if _has_pack_dir(p):
+            return p
+
+    pkg = Path(__file__).resolve().parent / "_resources"
+    if _has_pack_dir(pkg):
+        return pkg
+
+    dev = Path(__file__).resolve().parent.parent
+    if _has_pack_dir(dev):
+        return dev
+
+    legacy = Path(__file__).resolve().parent.parent.parent
+    return legacy
+
+
+def _force_utf8_streams() -> None:
+    """Force UTF-8 on stdout/stderr so JSON-RPC survives Windows GBK locales.
+
+    MCP stdio transport is UTF-8 by spec; without this, Chinese persona names
+    are emitted as GBK bytes on zh-CN Windows and corrupt the stream for MCP
+    clients. Safe no-op when the stream is not reconfigurable (e.g. consoles).
+    """
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            try:
+                stream.reconfigure(encoding="utf-8")
+            except Exception:
+                pass
 
 
 # ── constraints.yaml loader ───────────────────────────────────────
@@ -109,9 +161,9 @@ def _parse_simple_yaml(content: str) -> dict:
 # ── persona helpers ────────────────────────────────────────────────
 
 def _list_personas() -> list:
-    """List persona packs from personas/ directory."""
+    """List scenario packs from the packs directory (scenarios/ or personas/)."""
     root = _resolve_resources_root()
-    personas_dir = root / "personas"
+    personas_dir = _pack_dir(root)
     if not personas_dir.exists():
         return []
 
@@ -153,9 +205,9 @@ def _read_persona_info(yaml_path: Path) -> dict:
 
 
 def _load_persona_config(persona_id: str) -> dict:
-    """Load full persona.yaml for a given persona."""
+    """Load full persona.yaml for a given scenario pack."""
     root = _resolve_resources_root()
-    yaml_path = root / "personas" / persona_id / "persona.yaml"
+    yaml_path = _pack_dir(root) / persona_id / "persona.yaml"
     if not yaml_path.exists():
         return {}
     try:
@@ -316,10 +368,28 @@ def _compute_gap_score(context: str) -> dict:
 
 # ── MCP tool handlers ──────────────────────────────────────────────
 
+def _collect_strings(value: Any, acc: list) -> None:
+    """Recursively collect all string leaves from tool args for command scanning."""
+    if isinstance(value, str):
+        acc.append(value)
+    elif isinstance(value, dict):
+        for v in value.values():
+            _collect_strings(v, acc)
+    elif isinstance(value, (list, tuple)):
+        for v in value:
+            _collect_strings(v, acc)
+
+
 def _handle_governance_check(args: dict) -> dict:
-    """Check if a tool call violates P0 security red lines."""
+    """Check if a tool call violates P0 security red lines.
+
+    Tool-name agnostic: command-bearing arguments (command/cmd/code/script/...)
+    are scanned regardless of the reported tool name, so clients that report
+    non-standard tool names (e.g. shell_executor) get the same protection as
+    bash/terminal/git. Secrets are matched against the full serialized call.
+    """
     tool_name = args.get("tool_name", "")
-    tool_args = args.get("tool_args", {})
+    tool_args = args.get("tool_args", {}) or {}
 
     constraints = _load_constraints()
     p0_constraints = [c for c in constraints.get("constraints", [])
@@ -328,25 +398,27 @@ def _handle_governance_check(args: dict) -> dict:
     if not p0_constraints:
         return {"allowed": True, "reason": "No P0 constraints loaded", "risk_level": "none"}
 
-    # Check against each P0 constraint
+    # Collect every string leaf of the args, then scan the union as command text.
+    strings: list = []
+    _collect_strings(tool_args, strings)
+    cmd_text = "\n".join(strings)
+    tool_call_str = json.dumps({"tool": tool_name, "args": tool_args}, ensure_ascii=False)
+
     for c in p0_constraints:
         cid = c.get("id", "")
-        # Build a simple summary of tool_call for pattern matching
-        tool_call_str = json.dumps({"tool": tool_name, "args": tool_args})
 
-        # DESTRUCTIVE_OP check
-        if cid == "DESTRUCTIVE_OP_REQUIRES_CONFIRM" and tool_name in ("bash", "terminal", "git"):
-            cmd = str(tool_args.get("command", tool_args.get("cmd", "")))
-            destructive_patterns = ["rm -rf", "rm -r", "git push --force", "git push -f",
+        # DESTRUCTIVE_OP check — any tool whose args carry a destructive command
+        if cid == "DESTRUCTIVE_OP_REQUIRES_CONFIRM":
+            destructive_patterns = ["rm -rf", "rm -r ", "git push --force", "git push -f",
                                     "git reset --hard", "git clean -fd", "DROP TABLE",
                                     "DROP DATABASE", "TRUNCATE TABLE"]
-            if any(p in cmd for p in destructive_patterns):
+            if any(p in cmd_text for p in destructive_patterns):
                 return {"allowed": False,
                         "reason": f"[P0 {cid}] 破坏性操作已拦截，需用户确认",
                         "risk_level": "P0"}
 
-        # SECRETS check
-        if cid == "SECRETS_NO_HARDCODE" and tool_name in ("write_file", "edit", "write"):
+        # SECRETS check — any tool whose args carry hardcoded secret material
+        if cid == "SECRETS_NO_HARDCODE":
             import re
             secret_patterns = [
                 r'sk-[A-Za-z0-9]{20,}',
@@ -354,17 +426,15 @@ def _handle_governance_check(args: dict) -> dict:
                 r'AKIA[0-9A-Z]{16}',
                 r'-----BEGIN [A-Z ]*PRIVATE KEY-----',
             ]
-            for pattern in secret_patterns:
-                if re.search(pattern, tool_call_str):
-                    return {"allowed": False,
-                            "reason": f"[P0 {cid}] 检测到疑似硬编码密钥",
-                            "risk_level": "P0"}
+            if any(re.search(pattern, tool_call_str) for pattern in secret_patterns):
+                return {"allowed": False,
+                        "reason": f"[P0 {cid}] 检测到疑似硬编码密钥",
+                        "risk_level": "P0"}
 
-        # MCP_NO_AUTO_INSTALL check
-        if cid == "MCP_NO_AUTO_INSTALL" and tool_name in ("bash", "terminal"):
-            cmd = str(tool_args.get("command", tool_args.get("cmd", "")))
-            if "mcp" in cmd.lower() and any(kw in cmd.lower() for kw in
-                                              ["npm install", "pip install", "npx", "uvx"]):
+        # MCP_NO_AUTO_INSTALL check — any command that installs MCP servers
+        if cid == "MCP_NO_AUTO_INSTALL":
+            install_keywords = ["install", "npm", "pip", "npx", "uvx", "pipx"]
+            if "mcp" in cmd_text.lower() and any(k in cmd_text.lower() for k in install_keywords):
                 return {"allowed": False,
                         "reason": f"[P0 {cid}] AI 禁止自行安装 MCP",
                         "risk_level": "P0"}
@@ -415,11 +485,16 @@ _TOOL_HANDLERS = {
     "persona_list": _handle_persona_list,
     "persona_activate": _handle_persona_activate,
     "gap_detect": _handle_gap_detect,
+    # scenario_* 为 persona_* 的规范别名（对外术语"场景规则包"）；旧名保留兼容
+    "scenario_list": _handle_persona_list,
+    "scenario_activate": _handle_persona_activate,
 }
 
 _TOOL_SCHEMAS = {
     "governance_check": {
-        "description": "Check if a tool call violates P0 security red lines defined in core/constraints.yaml",
+        "description": "Check if a tool call violates P0 security red lines (destructive ops, hardcoded secrets, "
+                       "auto-installing MCP servers). Tool-name agnostic: command strings are extracted from any "
+                       "tool's arguments, so clients reporting non-standard tool names get the same protection.",
         "inputSchema": {
             "type": "object",
             "properties": {
@@ -430,18 +505,18 @@ _TOOL_SCHEMAS = {
         },
     },
     "persona_list": {
-        "description": "List all available persona packs from personas/ directory",
+        "description": "List available scenario packs (场景规则包) from personas/ directory",
         "inputSchema": {
             "type": "object",
             "properties": {},
         },
     },
     "persona_activate": {
-        "description": "Switch to a specific persona and return configuration summary",
+        "description": "Activate a scenario pack (场景规则包) and return its configuration summary",
         "inputSchema": {
             "type": "object",
             "properties": {
-                "persona_id": {"type": "string", "description": "Persona pack identifier"},
+                "persona_id": {"type": "string", "description": "Scenario pack identifier"},
             },
             "required": ["persona_id"],
         },
@@ -456,11 +531,30 @@ _TOOL_SCHEMAS = {
             "required": ["context"],
         },
     },
+    # 规范别名（对外术语"场景规则包"）；persona_* 保留为兼容旧客户端
+    "scenario_list": {
+        "description": "List available scenario packs (场景规则包). Alias of persona_list.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {},
+        },
+    },
+    "scenario_activate": {
+        "description": "Activate a scenario pack (场景规则包) and return its configuration summary. "
+                       "Alias of persona_activate.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "persona_id": {"type": "string", "description": "Scenario pack identifier"},
+            },
+            "required": ["persona_id"],
+        },
+    },
 }
 
 _SERVER_INFO = {
     "name": "agentseed-mcp-server",
-    "version": "2.4.1",
+    "version": "1.0.0",
 }
 
 
@@ -549,6 +643,7 @@ def _log(msg: str) -> None:
 
 def run_stdio() -> None:
     """Run MCP server over stdio (JSON-RPC 2.0 line-delimited)."""
+    _force_utf8_streams()
     _log(f"Server v{_SERVER_INFO['version']} starting in stdio mode")
     _log("Waiting for initialize request...")
     for line in sys.stdin:
@@ -574,10 +669,65 @@ def run_stdio() -> None:
 
 
 def run_http(port: int = 8080) -> None:
-    """Run MCP server over HTTP/SSE (minimal stub — use stdio mode for production)."""
-    print(f"[AgentSeed MCP Server] HTTP/SSE mode not yet implemented. Port: {port}", file=sys.stderr)
-    print("[AgentSeed MCP Server] Use stdio mode instead: agentseed serve", file=sys.stderr)
-    sys.exit(1)
+    """Run MCP server over HTTP (JSON-RPC 2.0, stdlib only, no third-party deps).
+
+    Minimal transport for remote / agent-to-agent usage:
+      POST /mcp      — JSON-RPC request, JSON response (Content-Type: application/json)
+      GET  /healthz  — {"ok": true, "name": ..., "version": ...}
+
+    Notes:
+      - Streamable-HTTP / SSE transports are not implemented; for MCP client
+        integration prefer stdio mode (`agentseed serve`).
+      - Binds to 127.0.0.1 only — do not expose to untrusted networks.
+    """
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+    _force_utf8_streams()
+
+    class _Handler(BaseHTTPRequestHandler):
+        def log_message(self, fmt, *args):  # route request logs to stderr via _log
+            _log(fmt % args)
+
+        def _send_json(self, status: int, payload: dict) -> None:
+            body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def do_GET(self) -> None:
+            if self.path.rstrip("/") in ("/healthz", "/health"):
+                self._send_json(200, {"ok": True, **_SERVER_INFO})
+                return
+            self._send_json(404, {"error": "not found", "hint": "POST /mcp or GET /healthz"})
+
+        def do_POST(self) -> None:
+            if self.path.rstrip("/") != "/mcp":
+                self._send_json(404, {"error": "not found", "hint": "POST /mcp or GET /healthz"})
+                return
+            try:
+                length = int(self.headers.get("Content-Length", 0) or 0)
+                raw = self.rfile.read(length) if length else b""
+                request = json.loads(raw.decode("utf-8"))
+            except Exception as e:
+                self._send_json(400, {"jsonrpc": "2.0", "id": None,
+                                      "error": {"code": -32700, "message": f"Parse error: {e}"}})
+                return
+            response = _handle_request(request)
+            if response is None:  # notification — acknowledge with an empty result
+                response = {"jsonrpc": "2.0", "id": None, "result": None}
+            _log(f"http {request.get('method', '?')} id={request.get('id')}")
+            self._send_json(200, response)
+
+    _log(f"Server v{_SERVER_INFO['version']} starting in HTTP mode on port {port}")
+    server = ThreadingHTTPServer(("127.0.0.1", port), _Handler)
+    _log(f"Listening on http://127.0.0.1:{port}/mcp (GET /healthz) — Ctrl+C to stop")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        _log("HTTP server stopped")
+        server.server_close()
 
 
 # ── Public API ──────────────────────────────────────────────────────

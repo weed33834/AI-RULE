@@ -11,7 +11,7 @@ AIGC:
 
 # AgentSeed MCP Server 接入教程
 
-> 版本：AgentSeed v2.4.1 | 最后更新：2026-08-04
+> 版本：AgentSeed v1.0.0 | 最后更新：2026-08-08
 
 ---
 
@@ -77,10 +77,18 @@ AgentSeed MCP Server 在整个系统中处于以下架构位置：
 AgentSeed 通过 GitHub Releases 分发 whl 包，**不发布到 PyPI**。使用 `pip` 直接安装：
 
 ```bash
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
+pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl
 ```
 
 > **要求**：Python 3.10+
+
+> **关于 `AGENTSEED_REPO`**：v1.0.0 起 MCP Server 已修复 wheel 安装下的资源路径解析，开箱即用，**不再需要**设置该环境变量。它仅在你希望用自定义规则源覆盖包内资源时使用：
+>
+> ```bash
+> export AGENTSEED_REPO=/path/to/your/agentseed-clone
+> ```
+>
+> **关于 Windows 编码**：v1.0.0 起 server 启动时自动强制 stdout/stderr 为 UTF-8，无需再手动设置 `PYTHONIOENCODING=utf-8`。
 
 ### 2.2 验证安装
 
@@ -97,7 +105,16 @@ agentseed serve
 成功输出示例：
 
 ```
-AgentSeed MCP Server v2.4.1 starting in stdio mode...
+AgentSeed MCP Server v1.0.0 starting in stdio mode...
+```
+
+HTTP 模式验证（v1.0.0+，另开终端）：
+
+```bash
+agentseed serve --port 8080
+curl http://127.0.0.1:8080/healthz   # → {"ok": true, "name": ..., "version": ...}
+curl -X POST http://127.0.0.1:8080/mcp -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
 ```
 
 ---
@@ -106,10 +123,11 @@ AgentSeed MCP Server v2.4.1 starting in stdio mode...
 
 | 属性 | 值 |
 |------|-----|
-| **传输协议** | stdio（标准输入/输出） |
+| **传输协议** | stdio（默认，MCP 客户端用）/ HTTP（`--port N`，JSON-RPC over POST） |
 | **通信格式** | JSON-RPC 2.0 |
 | **工具数量** | 4 个 |
-| **启动命令** | `agentseed serve` |
+| **启动命令** | `agentseed serve`（stdio）/ `agentseed serve --port N`（HTTP） |
+| **HTTP 端点** | `POST /mcp` + `GET /healthz`（仅绑定 127.0.0.1） |
 | **认证** | 无需认证（本地进程通信） |
 
 通用 MCP 客户端配置模板：
@@ -203,6 +221,8 @@ AgentSeed MCP Server v2.4.1 starting in stdio mode...
   }
 }
 ```
+
+> **匹配规则（v1.0.0+）**：`governance_check` 是**工具名无关**的——会从 `tool_args` 中递归提取所有字符串（command/cmd/code/script/文本等）进行匹配。因此无论客户端上报的是 `bash`、`terminal`、`shell_executor` 还是任意自定义工具名，破坏性命令、硬编码密钥、MCP 自装三类 P0 红线都会被拦截。示例中的 `shell_executor` + `rm -rf /etc/nginx` 在 v2.4.2 中会返回 `allowed: false`。
 
 ### 4.2 persona_list
 
@@ -578,6 +598,46 @@ claude mcp add agentseed -- agentseed serve
 }
 ```
 
+### 5.10 千问办公 (QwenWork)
+
+千问办公是桌面端 AI 办公助手。接入 AgentSeed 有两条互补路径：
+
+**路径 A：规则文件（零配置，推荐先用这个）**。千问办公的 awareness 模式会原生读取项目根的 `AGENTS.md`。AgentSeed 已把千问办公注册为内置平台（`qwenwork`，entry=AGENTS.md），只需：
+
+```bash
+cd <你的项目目录>
+agentseed forge            # 生成 AGENTS.md（含 P0 红线 + 人设）
+```
+
+同一份 `AGENTS.md` 同时被千问办公和 20+ 主流工具原生读取，无需任何配置。
+
+**路径 B：MCP Server（可选增强）**。在千问办公的设置 → MCP 中添加：
+
+```json
+{
+  "mcpServers": {
+    "agentseed": {
+      "command": "agentseed",
+      "args": ["serve"]
+    }
+  }
+}
+```
+
+> Windows 下若 `agentseed` 不在 PATH，`command` 需填绝对路径，如 `C:\Users\<用户名>\anaconda3\Scripts\agentseed.exe`（或 `python -m agentseed.cli`）。
+
+添加后，千问办公会话内即可调用 `governance_check` / `persona_list` / `persona_activate` / `gap_detect` 四个工具，对千问办公没有 hooks.json 机制的场景，这是 P0 红线运行时检查的补充通道。
+
+**路径 C：CLI 脚本化（自动化）**。v1.0.0 起以下命令支持 `--json`，Agent/脚本可直接消费结构化结果：
+
+```bash
+agentseed list --json
+agentseed forge --dry-run --json
+agentseed status --json
+agentseed platform list --json
+agentseed persona list --json
+```
+
 ---
 
 ## 6. 常见问题
@@ -613,9 +673,19 @@ MCP Server 以 stdio 模式运行，仅在客户端发送请求时占用 CPU，�
 
 使用 `persona_activate` 工具传入目标 `persona_id`。当前可用 ID 可以通过 `persona_list` 查询。切换后，后续的 MCP 调用将使用新 Persona 的规则和约束。
 
+### Q6: persona_list 返回空 / governance_check 报 "No P0 constraints loaded"？
+
+这是 1.0.0 之前的内部版本（2.x 等）wheel 安装下的资源路径解析 bug（已在 1.0.0 修复）。排查与规避：
+- 升级到 v1.0.0+ 即可开箱即用。
+- 若仍需临时规避，在 MCP 配置中给 server 进程加环境变量 `AGENTSEED_REPO=<AgentSeed 仓库克隆路径>`。
+
+### Q7: HTTP 模式怎么用？支持 SSE 吗？
+
+`agentseed serve --port 8080` 提供最小 HTTP 传输：`POST /mcp`（JSON-RPC 2.0）+ `GET /healthz`，仅绑定 127.0.0.1，纯标准库实现。不实现 Streamable-HTTP/SSE——标准 MCP 客户端请使用 stdio 模式（`agentseed serve`）。
+
 ---
 
-> **参考**：本文档基于 AgentSeed v2.4.1 编写，项目仓库：[GitHub](https://github.com/weed33834/agentseed)（主仓库）· [Gitee](https://gitee.com/badhope/agentseed)（镜像）· [Gitcode](https://gitcode.com/badhope/agentseed)（镜像）
+> **参考**：本文档基于 AgentSeed v1.0.0 编写，项目仓库：[GitHub](https://github.com/weed33834/agentseed)（主仓库）· [Gitee](https://gitee.com/badhope/agentseed)（镜像）· [Gitcode](https://gitcode.com/badhope/agentseed)（镜像）
 >
 > 更多信息请参阅 [README.md](../README.md) 和 [AGENTSEED_ARCHITECTURE.md](AGENTSEED_ARCHITECTURE.md)。
 *（内容由AI生成，仅供参考）*

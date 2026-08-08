@@ -1,6 +1,6 @@
 # AgentSeed
 
-> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl && agentseed forge`**
+> **`pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl && agentseed forge`**
 
 **🌐 [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)**
 
@@ -8,15 +8,15 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
-![Platforms](https://img.shields.io/badge/platforms-14-orange)
-![Tests](https://img.shields.io/badge/tests-143%20passing-brightgreen)
+![Platforms](https://img.shields.io/badge/platforms-15-orange)
+![Tests](https://img.shields.io/badge/tests-162%20passing-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%2B-informational)
 
 ---
 
-每次开一个新的 AI 编程会话，前十分钟都在干同一件事：告诉它别幻觉、别跑 `rm -rf`、你的技术栈是什么。AgentSeed 把这件事做一遍，然后同步到你用的所有工具里。
+每次开一个新的 AI 编程会话，前十分钟都在干同一件事：告诉它别幻觉、别跑 `rm -rf`、你的技术栈是什么。AgentSeed 把这件事做成一整层**不可协商的约束**，再按任务场景插上对应的**场景规则包**，一次装配，同步到你用的所有 AI 工具。
 
-一条命令检测你的项目类型，选好对应的"人设"，给你用的 Claude Code、Cursor、Copilot、Windsurf、Trae 全部生成好规则文件。
+一条命令检测你的项目场景，插上对应的场景规则包，为 Claude Code、Cursor、Copilot、Windsurf、Trae 等 15 个智能体工具统一生成高约束规则文件。
 
 ```bash
 agentseed forge
@@ -28,11 +28,11 @@ agentseed forge
 
 ## 它能干什么
 
-**安全底线不会丢。** 核心安全规则（禁止 `rm -rf`、禁止捏造密钥、禁止不经确认装东西）是写死在 AgentSeed 里的，换什么人设都覆盖不掉。
+**安全底线不会丢。** 核心安全规则（禁止 `rm -rf`、禁止捏造密钥、禁止不经确认装东西）是治理内核的一部分，写死在 AgentSeed 里，换什么场景规则包都覆盖不掉。
 
-**六个预设人设，随时切。** `coding`（默认）、`novel`、`paper`、`conversation`、`interactive-novel`、`agent-builder`。每个自带提示词、技能列表、工具偏好。项目做到一半想换口味？`agentseed switch --profile novel`。
+**六个首发场景规则包，随场景自动路由。** `coding`（默认）、`novel`、`paper`、`conversation`、`interactive-novel`、`agent-builder` 面向不同任务场景——每个规则包 = 场景协议 + 提示词 + 技能 + 能力白名单，由项目锚点与用户意图自动选择，也可 `agentseed switch --profile novel` 手动切换。规则包可插拔、可扩展：新增场景只需一个目录 + 一份清单，机制开放，后续场景持续加入，全程不需要改内核。
 
-**14 个平台，一次同步。** 不同工具要不同格式，AgentSeed 自己搞定：
+**15 个平台，一次同步。** 不同工具要不同格式，AgentSeed 自己搞定：
 - Claude Code → `CLAUDE.md`
 - Cursor → `.cursor/rules/project.mdc`
 - Copilot → `.github/copilot-instructions.md`
@@ -46,11 +46,12 @@ agentseed forge
 - 通义灵码 → `.lingma/rules/project.md`
 - 腾讯云代码助手 → `.comate/rules/project.mdr`
 - Codex → `.codex/rules.md`
+- 千问办公 → `AGENTS.md`（原生读取）
 - AGENTS.md（20+ 工具原生读取）
 
 **每个平台都有拦截钩子。** `adapters/hooks/` 下 14 个平台的 `pre_tool_use.py`，在危险操作执行前拦截。fail-open 设计：钩子崩了操作照常，不会误伤。
 
-**MCP Server。** `agentseed serve` 启动，任何支持 MCP 的客户端可以直接调用 `governance_check`（安全红线检查）、`persona_list`（人设列表）、`persona_activate`（切换人设）、`gap_detect`（能力缺口检测）。
+**MCP Server。** `agentseed serve` 启动，任何支持 MCP 的客户端可以直接调用 `governance_check`（安全红线检查）、`persona_list`（场景规则包列表）、`persona_activate`（激活场景规则包）、`gap_detect`（能力缺口检测）。stdio 模式用于 MCP 客户端；`--port N` 启动 HTTP 模式（`POST /mcp` + `GET /healthz`），供远程/Agent 间调用。
 
 **自进化。** AgentSeed 会给你的项目打分——缺什么工具、哪些领域不懂——然后告诉你该装什么。不是魔法，就是一个加权公式，你装的能力越多它建议越准。
 
@@ -59,7 +60,7 @@ agentseed forge
 ## 安装
 
 ```bash
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
+pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl
 ```
 
 源码安装：
@@ -94,12 +95,14 @@ agentseed sync --platform cursor
 agentseed status             # 看看装了啥、缺啥
 
 agentseed serve              # 启动 MCP server (stdio)
-agentseed serve --port 8080  # 启动 MCP server (HTTP)
+agentseed serve --port 8080  # 启动 MCP server (HTTP: POST /mcp + GET /healthz)
 
-agentseed platform list      # 14 个内置平台
+agentseed platform list      # 15 个内置平台
+agentseed platform list --json     # JSON 输出（供脚本/Agent 消费）
+agentseed forge --dry-run --json   # 装配预览（JSON 输出）
 agentseed platform import my-ide --entry .myide/rules.md --format markdown
 
-agentseed persona list       # 当前所有人设
+agentseed persona list       # 列出场景规则包（命令名兼容保留）
 agentseed persona search "产品经理"
 ```
 
@@ -118,10 +121,10 @@ agentseed platform import my-editor --entry .myeditor/rules.md --format markdown
 ## 目录结构
 
 ```
-core/                  安全底线（P0 红线、决策公式、路由规则）
-personas/              各人设独立目录（coding、novel、paper...）
-capabilities/          模块化能力包（testing、research、creative...）
-adapters/hooks/        各平台的工具拦截钩子
+core/                  治理内核（P0 红线、决策公式、路由规则，不可变）
+personas/              场景规则包（coding、novel、paper...，可插拔）
+capabilities/          能力插件（testing、research、creative...，按需加载）
+adapters/hooks/        平台适配层：各平台的工具拦截钩子
 src/agentseed/         CLI、同步引擎、路由、装配、自进化
 ```
 
@@ -133,7 +136,7 @@ src/agentseed/         CLI、同步引擎、路由、装配、自进化
 - **agents.md** — 文件格式提案，只有格式没内容没工具链。
 - **ACP** — agent 配置管理器，没治理没自进化。
 - **Cursor Directory** — 社区规则片段合集，不支持多平台同步。
-- **AgentSeed** — 安全规则 + 六种人设 + 14 平台同步 + 拦截钩子 + 自进化，一个 CLI 全包。
+- **AgentSeed** — 治理内核 + 可插拔场景规则包 + 15 平台同步 + 拦截钩子 + 自进化，一个 CLI 全包。
 
 ---
 

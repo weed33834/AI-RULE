@@ -40,14 +40,31 @@ _RESOURCES_ROOT_CACHE: Path = None
 _RESOURCES_SOURCE: str = None  # 'packaged' | 'env' | 'dev' | 'cwd' | 'cache'
 
 
+_PACK_DIR_NAMES = ("scenarios", "personas")  # scenarios 优先（未来规范目录），personas 兼容
+
+
+def _has_pack_dir(p: Path) -> bool:
+    """目录是否为 AgentSeed 资源根（含场景包目录 scenarios/ 或 personas/）。"""
+    return any((p / name).is_dir() for name in _PACK_DIR_NAMES)
+
+
+def _pack_dir(p: Path) -> Path:
+    """返回场景包目录：scenarios/ 优先，personas/ 兼容回退。"""
+    for name in _PACK_DIR_NAMES:
+        cand = p / name
+        if cand.is_dir():
+            return cand
+    return p / "personas"
+
+
 def _packaged_resources_root() -> Path:
     """检查包内是否打包了规则源（pip install agentseed 后存在）。
 
     包内资源路径：agentseed/_resources/，由 setup.py / pyproject.toml 的 package-data 打包。
-    返回该目录若存在且含 personas/，否则返回 None。
+    返回该目录若存在且含场景包目录，否则返回 None。
     """
     pkg_root = Path(__file__).resolve().parent / "_resources"
-    if (pkg_root / "personas").is_dir() and (pkg_root / "core").is_dir():
+    if _has_pack_dir(pkg_root) and (pkg_root / "core").is_dir():
         return pkg_root
     return None
 
@@ -59,7 +76,7 @@ def _find_rule_hub_root() -> Path:
     0. AGENTSEED_REPO 环境变量（用户显式指定，最高优先级便于改规则后立即生效）
     1. 包内打包资源（pip install agentseed 后存在 agentseed/_resources/）
     2. 本文件所在目录的上一级（dev 模式：agentseed/ 在 REPO_ROOT/agentseed/）
-    3. 沿 cwd 祖先链查找含 personas/ + core/ 的目录
+    3. 沿 cwd 祖先链查找含场景包目录 (scenarios/ 或 personas/) + core/ 的目录
     4. clone 到 ~/.cache/agentseed/ 并返回
 
     注意：AGENTSEED_REPO 优先于 packaged，是为了让用户能用本地 clone 覆盖
@@ -74,7 +91,7 @@ def _find_rule_hub_root() -> Path:
     env = os.environ.get("AGENTSEED_REPO")
     if env:
         p = Path(env).expanduser().resolve()
-        if (p / "personas").is_dir():
+        if _has_pack_dir(p):
             _RESOURCES_ROOT_CACHE = p
             _RESOURCES_SOURCE = "env"
             return p
@@ -88,7 +105,7 @@ def _find_rule_hub_root() -> Path:
 
     # 2) dev 模式：agentseed/sync_rules.py 的 parent.parent = REPO_ROOT
     dev_root = Path(__file__).resolve().parent.parent
-    if (dev_root / "personas").is_dir() and (dev_root / "core").is_dir():
+    if _has_pack_dir(dev_root) and (dev_root / "core").is_dir():
         _RESOURCES_ROOT_CACHE = dev_root
         _RESOURCES_SOURCE = "dev"
         return dev_root
@@ -96,7 +113,7 @@ def _find_rule_hub_root() -> Path:
     # 3) 沿 cwd 祖先链查找（用户在 AgentSeed 仓库子目录里运行 CLI）
     cwd = Path.cwd().resolve()
     for parent in [cwd, *cwd.parents]:
-        if (parent / "personas").is_dir() and (parent / "core").is_dir():
+        if _has_pack_dir(parent) and (parent / "core").is_dir():
             _RESOURCES_ROOT_CACHE = parent
             _RESOURCES_SOURCE = "cwd"
             return parent
@@ -126,7 +143,7 @@ def _find_rule_hub_root() -> Path:
                 file=sys.stderr,
             )
             raise
-    elif not (cache / "personas").is_dir():
+    elif not _has_pack_dir(cache):
         # 缓存目录存在但内容不完整，重新 clone
         shutil.rmtree(cache, ignore_errors=True)
         # 递归调用前清掉缓存（否则会立即返回 None）
@@ -149,7 +166,7 @@ def _resolve_resources_root() -> Path:
     env = os.environ.get("AGENTSEED_REPO")
     if env:
         p = Path(env).expanduser().resolve()
-        if (p / "personas").is_dir():
+        if _has_pack_dir(p):
             return p
     # 其余回退到首次检测的缓存
     return _find_rule_hub_root()
@@ -163,7 +180,7 @@ def resources_source() -> str:
     env = os.environ.get("AGENTSEED_REPO")
     if env:
         p = Path(env).expanduser().resolve()
-        if (p / "personas").is_dir():
+        if _has_pack_dir(p):
             return "env"
     return _RESOURCES_SOURCE or "unknown"
 
@@ -172,7 +189,7 @@ REPO_ROOT = _find_rule_hub_root()
 # RESOURCES_ROOT 与 REPO_ROOT 同义，保留 REPO_ROOT 是为了向后兼容（测试和外部代码可能引用）
 # 资源根：只读源文件用，永不指向用户输出目录
 RESOURCES_ROOT = REPO_ROOT
-PERSONAS_DIR = RESOURCES_ROOT / "personas"
+PERSONAS_DIR = _pack_dir(RESOURCES_ROOT)
 CORE_DIR = RESOURCES_ROOT / "core"
 ADAPTERS_DIR = RESOURCES_ROOT / "adapters"
 
@@ -207,7 +224,7 @@ def refresh_resources_root() -> Path:
     new_root = _find_rule_hub_root()
     RESOURCES_ROOT = new_root
     REPO_ROOT = new_root
-    PERSONAS_DIR = new_root / "personas"
+    PERSONAS_DIR = _pack_dir(new_root)
     CORE_DIR = new_root / "core"
     ADAPTERS_DIR = new_root / "adapters"
     # 若 OUTPUT_ROOT 当前等于旧值（未被 --output 切走），同步刷新
@@ -219,6 +236,8 @@ def refresh_resources_root() -> Path:
 TOOL_OUTPUT = {
     # ── 跨工具标准（AGENTS.md 被 20+ 平台原生读取）──
     "agents-md": "AGENTS.md",
+    # ── 千问办公（QwenWork，原生读取 AGENTS.md）──
+    "qwenwork": "AGENTS.md",
     # ── 已有平台 ──
     "claude-code": "CLAUDE.md",
     "gemini": "GEMINI.md",

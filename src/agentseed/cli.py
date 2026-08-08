@@ -1,6 +1,6 @@
 """AgentSeed CLI：分发层入口。
 
-__version__ = "2.4.1"
+__version__ = "1.0.0"
 
 用法：
     agentseed list
@@ -28,10 +28,29 @@ __version__ = "2.4.1"
     agentseed verify --profile coding      # 验证单个 profile
 """
 import argparse
+import json
 import sys
 from pathlib import Path
 
 from . import sync_rules as _sr
+
+
+def _emit_json(args, payload: dict) -> bool:
+    """Emit payload as JSON when --json is given; returns True if emitted.
+
+    强制 stdout 为 UTF-8：--json 面向脚本/Agent 消费，必须不受 Windows GBK
+    控制台/管道编码影响（与 mcp_server._force_utf8_streams 同理）。
+    """
+    if getattr(args, "json", False):
+        reconfigure = getattr(sys.stdout, "reconfigure", None)
+        if callable(reconfigure):
+            try:
+                sys.stdout.reconfigure(encoding="utf-8")
+            except Exception:
+                pass
+        sys.stdout.write(json.dumps(payload, ensure_ascii=False, indent=2) + "\n")
+        return True
+    return False
 
 
 def cmd_list(args) -> int:
@@ -39,11 +58,23 @@ def cmd_list(args) -> int:
     _sr.refresh_resources_root()
     _sr.merge_user_platforms()
     profiles = _sr.list_profiles()
-    print("可用 Profile:")
+    tools = [
+        {"id": t, "output": _sr.TOOL_OUTPUT[t],
+         "char_limit": _sr.TOOL_CHAR_LIMIT.get(t)}
+        for t in _sr.TOOL_OUTPUT
+    ]
+    if _emit_json(args, {
+        "profiles": profiles,
+        "tools": tools,
+        "resources_root": str(_sr.RESOURCES_ROOT),
+        "resources_source": _sr.resources_source(),
+    }):
+        return 0
+    print("可用场景规则包:")
     for p in profiles:
         print(f"  - {p}")
     print()
-    print("可用 Tool:")
+    print("可用输出平台:")
     for t in _sr.TOOL_OUTPUT:
         out = _sr.TOOL_OUTPUT[t]
         limit = _sr.TOOL_CHAR_LIMIT.get(t)
@@ -72,13 +103,26 @@ def cmd_forge(args) -> int:
         print(f"error: {e}", file=sys.stderr)
         return 1
 
+    if _emit_json(args, {
+        "persona": result.persona_selected,
+        "tool": result.tool,
+        "mode": result.mode,
+        "capabilities_loaded": result.capabilities_loaded,
+        "gap_analysis": result.gap_analysis,
+        "files_generated": result.files_generated,
+        "files_updated": result.files_updated,
+        "warnings": result.warnings,
+        "dry_run": args.dry_run,
+    }):
+        return 0
+
     print("=" * 60)
     print(f"agentseed forge: 装配完成")
     print("=" * 60)
-    print(f"  persona : {result.persona_selected}")
+    print(f"  场景规则包 : {result.persona_selected}")
     print(f"  tool    : {result.tool}")
     print(f"  mode    : {result.mode}")
-    print(f"  能力包   : {', '.join(result.capabilities_loaded) or '(无)'}")
+    print(f"  能力插件   : {', '.join(result.capabilities_loaded) or '(无)'}")
     if result.gap_analysis:
         g = result.gap_analysis
         print(f"  GapScore: {g['gap_score']:.2f} → {g['action']}")
@@ -111,7 +155,7 @@ def cmd_switch(args) -> int:
         return 1
     result = switch_persona(args.profile)
     print("=" * 60)
-    print("agentseed switch: 画像切换")
+    print("agentseed switch: 场景规则包切换")
     print("=" * 60)
     print(f"  from : {result['from'] or '(未检测到)'}")
     print(f"  to   : {result['to']}")
@@ -127,7 +171,17 @@ def cmd_persona(args) -> int:
     """agentseed persona <sub> — list / search / install。"""
     from .router import list_personas, persona_info
     if args.persona_cmd == "list":
-        print("内置画像:")
+        personas = []
+        for p in list_personas():
+            info = persona_info(p)
+            personas.append({
+                "id": p,
+                "mode": info["default_mode"],
+                "capabilities": info["capabilities"],
+            })
+        if _emit_json(args, {"personas": personas}):
+            return 0
+        print("内置场景规则包:")
         for p in list_personas():
             info = persona_info(p)
             mode = info["default_mode"]
@@ -163,13 +217,25 @@ def cmd_status(args) -> int:
     from .router import default_mode, default_rt
     _sr.refresh_resources_root()
     ctx = detect_environment()
+    if _emit_json(args, {
+        "resources_root": str(_sr.RESOURCES_ROOT),
+        "resources_source": _sr.resources_source(),
+        "cwd": str(ctx.cwd),
+        "anchors_found": sorted(ctx.anchors_found),
+        "suggested_persona": ctx.suggested_persona or "conversation",
+        "default_mode": default_mode(ctx.suggested_persona) if ctx.suggested_persona else None,
+        "default_rt": default_rt(ctx.suggested_persona) if ctx.suggested_persona else None,
+        "platforms_detected": sorted(ctx.platforms_detected),
+        "existing_rules_count": len(ctx.existing_rules),
+    }):
+        return 0
     print("=" * 60)
     print("agentseed status")
     print("=" * 60)
     print(f"  资源根    : {_sr.RESOURCES_ROOT} ({_sr.resources_source()})")
     print(f"  工作目录  : {ctx.cwd}")
     print(f"  检测锚点  : {', '.join(sorted(ctx.anchors_found)) or '(无)'}")
-    print(f"  推断画像  : {ctx.suggested_persona or 'conversation (默认)'}")
+    print(f"  推断场景规则包 : {ctx.suggested_persona or 'conversation (默认)'}")
     if ctx.suggested_persona:
         print(f"  默认模式  : {default_mode(ctx.suggested_persona)}")
         print(f"  默认推理  : {default_rt(ctx.suggested_persona)}")
@@ -199,6 +265,8 @@ def cmd_sync(args) -> int:
     out = Path.cwd().resolve()
     out.mkdir(parents=True, exist_ok=True)
     _sr.set_output_root(out)
+    synced = []
+    skipped = []
     try:
         if args.platform:
             tools = [args.platform] if args.platform != "all" else list(_sr.TOOL_OUTPUT)
@@ -206,16 +274,23 @@ def cmd_sync(args) -> int:
             tools = list(_sr.TOOL_OUTPUT)
         for t in tools:
             if t not in _sr.TOOL_OUTPUT:
-                print(f"  ⚠ 跳过未知平台 {t}")
+                if not getattr(args, "json", False):
+                    print(f"  ⚠ 跳过未知平台 {t}")
+                skipped.append(t)
                 continue
             path = _sr.write_tool_file(t, persona, ruleset, mode=args.mode)
             try:
                 rel = path.relative_to(out)
             except ValueError:
                 rel = path
-            print(f"  [{t}] -> {rel}")
+            if not getattr(args, "json", False):
+                print(f"  [{t}] -> {rel}")
+            synced.append({"id": t, "output": str(rel)})
     finally:
         _sr.reset_output_root()
+    if _emit_json(args, {"persona": persona, "mode": args.mode,
+                         "platforms": synced, "skipped": skipped}):
+        return 0
     print(f"\n已同步 persona={persona} 到 {len(tools)} 个平台。")
     return 0
 
@@ -461,10 +536,13 @@ def cmd_platform(args) -> int:
     sub = args.platform_cmd
 
     if sub == "list":
+        platforms = _pf.list_platforms()
+        if _emit_json(args, {"platforms": platforms, "count": len(platforms)}):
+            return 0
         print("已注册平台:")
-        print(_pf.format_platform_table(_pf.list_platforms()))
+        print(_pf.format_platform_table(platforms))
         print()
-        print(f"共 {len(_pf.list_platforms())} 个平台（内置 + 用户添加）")
+        print(f"共 {len(platforms)} 个平台（内置 + 用户添加）")
         print("提示: 用 `agentseed platform import` 添加自定义平台")
         return 0
 
@@ -572,43 +650,53 @@ def main():
     )
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    p_list = sub.add_parser("list", help="列出可用 profile 和 tool")
+    p_list = sub.add_parser("list", help="列出可用场景规则包和输出平台")
+    p_list.add_argument("--json", action="store_true", default=False,
+                        help="输出 JSON（供脚本/Agent 消费）")
     p_list.set_defaults(func=cmd_list)
 
-    p_forge = sub.add_parser("forge", help="一键装配：检测环境 → 路由画像 → 生成平台文件")
-    p_forge.add_argument("--profile", default=None, help="显式指定画像 (coding/novel/...)")
-    p_forge.add_argument("--intent", default="", help="用户意图（用于自动路由画像）")
+    p_forge = sub.add_parser("forge", help="一键装配：检测环境 → 路由场景 → 生成平台文件")
+    p_forge.add_argument("--profile", default=None, help="显式指定场景规则包 (coding/novel/...)")
+    p_forge.add_argument("--intent", default="", help="用户意图（用于自动路由场景规则包）")
     p_forge.add_argument("--tool", default=None, help="目标平台 (claude-code/all/...)，默认自动检测")
     p_forge.add_argument("--mode", default="skeleton", choices=["skeleton", "full"],
                          help="装配模式（默认 skeleton）")
     p_forge.add_argument("--dry-run", action="store_true", default=False,
                          help="预览装配结果，不写入文件")
+    p_forge.add_argument("--json", action="store_true", default=False,
+                         help="输出 JSON（供脚本/Agent 消费）")
     p_forge.set_defaults(func=cmd_forge)
 
-    p_switch = sub.add_parser("switch", help="切换画像（含互斥检查）")
-    p_switch.add_argument("--profile", required=True, help="目标画像 (coding/novel/...)")
+    p_switch = sub.add_parser("switch", help="切换场景规则包（含互斥检查）")
+    p_switch.add_argument("--profile", required=True, help="目标场景规则包 (coding/novel/...)")
     p_switch.set_defaults(func=cmd_switch)
 
-    p_persona = sub.add_parser("persona", help="画像管理：list / search / install")
+    p_persona = sub.add_parser("persona", help="场景规则包管理：list / search / install")
     p_persona_sub = p_persona.add_subparsers(dest="persona_cmd", required=True)
-    p_persona_list = p_persona_sub.add_parser("list", help="列出内置画像")
+    p_persona_list = p_persona_sub.add_parser("list", help="列出内置场景规则包")
+    p_persona_list.add_argument("--json", action="store_true", default=False,
+                                help="输出 JSON（供脚本/Agent 消费）")
     p_persona_list.set_defaults(func=cmd_persona)
-    p_persona_search = p_persona_sub.add_parser("search", help="搜索社区画像")
+    p_persona_search = p_persona_sub.add_parser("search", help="搜索社区场景规则包")
     p_persona_search.add_argument("query", help="搜索关键词")
     p_persona_search.set_defaults(func=cmd_persona)
-    p_persona_install = p_persona_sub.add_parser("install", help="安装社区画像")
-    p_persona_install.add_argument("name", help="画像名")
+    p_persona_install = p_persona_sub.add_parser("install", help="安装社区场景规则包")
+    p_persona_install.add_argument("name", help="场景规则包名")
     p_persona_install.add_argument("--source", default=None, help="GitHub URL 或本地路径（默认查注册表）")
-    p_persona_install.add_argument("--active", default="", help="当前激活画像（用于兼容性检查）")
+    p_persona_install.add_argument("--active", default="", help="当前激活场景规则包（用于兼容性检查）")
     p_persona_install.set_defaults(func=cmd_persona)
 
-    p_status = sub.add_parser("status", help="查看当前装配状态（锚点/画像/平台）")
+    p_status = sub.add_parser("status", help="查看当前装配状态（锚点/场景/平台）")
+    p_status.add_argument("--json", action="store_true", default=False,
+                          help="输出 JSON（供脚本/Agent 消费）")
     p_status.set_defaults(func=cmd_status)
 
-    p_sync = sub.add_parser("sync", help="同步当前画像到平台")
-    p_sync.add_argument("--profile", default=None, help="画像 (默认自动推断)")
+    p_sync = sub.add_parser("sync", help="同步当前场景规则包到平台")
+    p_sync.add_argument("--profile", default=None, help="场景规则包 (默认自动推断)")
     p_sync.add_argument("--platform", default=None, help="平台 (默认全部，可指定 claude-code 等)")
     p_sync.add_argument("--mode", default="skeleton", choices=["skeleton", "full"])
+    p_sync.add_argument("--json", action="store_true", default=False,
+                        help="输出 JSON（供脚本/Agent 消费）")
     p_sync.set_defaults(func=cmd_sync)
 
     p_setup = sub.add_parser("setup", help="零配置默认链路：自动检测 profile + tool + emit-constraints")
@@ -663,6 +751,8 @@ def main():
     p_platform = sub.add_parser("platform", help="平台管理：list / import / remove / validate / export")
     p_platform_sub = p_platform.add_subparsers(dest="platform_cmd", required=True)
     p_platform_list = p_platform_sub.add_parser("list", help="列出所有已注册平台")
+    p_platform_list.add_argument("--json", action="store_true", default=False,
+                                 help="输出 JSON（供脚本/Agent 消费）")
     p_platform_list.set_defaults(func=cmd_platform)
     p_platform_import = p_platform_sub.add_parser("import", help="导入新平台（交互式或参数指定）")
     p_platform_import.add_argument("id", nargs="?", default=None, help="平台 ID（省略则交互式引导）")

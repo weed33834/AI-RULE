@@ -31,8 +31,8 @@ gh api repos/weed33834/agentseed/topics \
 
 ## Release SEO
 
-- **Tag names**: Use `v{major}.{minor}.{patch}` (e.g., `v2.4.1`)
-- **Release titles**: Include keywords: "AgentSeed v2.4.1 — MCP Server, 13-Platform Sync, Self-Evolution"
+- **Tag names**: Use `v{major}.{minor}.{patch}` (e.g., `v1.0.0`)
+- **Release titles**: Include keywords: "AgentSeed v1.0.0 — Governance Layer for AI Agents, 15-Platform Sync"
 - **Release notes**: First 160 chars appear in Google snippets — lead with value prop
 
 ## Cross-Platform SEO

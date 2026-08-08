@@ -169,6 +169,14 @@ BUILTIN_PLATFORMS: Dict[str, dict] = {
         "hooks": {"enabled": False},
         "note": "被 20+ 平台原生读取（通用标准）",
     },
+    "qwenwork": {
+        "name": "千问办公 (QwenWork)",
+        "entry": "AGENTS.md",
+        "format": "markdown",
+        "builtin": True,
+        "hooks": {"enabled": False},
+        "note": "原生读取 AGENTS.md（awareness 规则模式）",
+    },
     "qodo": {
         "name": "Qodo (Former Codium)",
         "entry": "best_practices.md",

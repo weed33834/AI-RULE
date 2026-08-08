@@ -1,0 +1,48 @@
+name: release
+
+# 打 tag（v1.0.0 等）时自动构建 wheel 并附到 GitHub Release。
+# 用法：git tag v1.0.0 && git push origin v1.0.0
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Build wheel
+        run: |
+          pip install --quiet build
+          python -m build --wheel
+      - name: Attach wheel to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.whl
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+
+  # ── PyPI 发布（计划中，暂不启用）──────────────────────────────
+  # 上线 PyPI 时：取消下方注释，并在仓库 Settings → Environments 配置 pypi
+  # （OpenID Connect trusted publishing 或 PYPI_API_TOKEN secret）。
+  #
+  # publish:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   environment: pypi
+  #   permissions:
+  #     id-token: write
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.11"
+  #     - run: pip install --quiet build && python -m build --wheel
+  #     - uses: pypa/gh-action-pypi-publish@release/v1

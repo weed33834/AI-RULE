@@ -1,6 +1,6 @@
 # AgentSeed
 
-> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl && agentseed forge`**
+> **`pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl && agentseed forge`**
 
 **🌐 [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)**
 
@@ -9,14 +9,14 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
 ![Platforms](https://img.shields.io/badge/platforms-14-orange)
-![Tests](https://img.shields.io/badge/tests-143%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-162%20passing-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%2B-informational)
 
 ---
 
-You know the drill. Every time you open a new AI coding session, you spend the first 10 minutes reminding it not to hallucinate, not to run `rm -rf`, and what stack you're using. AgentSeed writes that once and syncs it everywhere.
+You know the drill. Every time you open a new AI coding session, you spend the first 10 minutes reminding it not to hallucinate, not to run `rm -rf`, and what stack you're using. AgentSeed turns that into a **non-negotiable constraint layer**, then plugs in the **scenario pack** for your task context — once, and synced everywhere.
 
-One command detects your project, picks the right personality, and generates rule files for all your tools — Claude Code, Cursor, Copilot, Windsurf, Trae, whatever you use.
+One command detects your project scenario, plugs in the matching scenario pack, and generates highly-constrained rule files for all your tools — Claude Code, Cursor, Copilot, Windsurf, Trae, whatever you use.
 
 ```bash
 agentseed forge
@@ -28,11 +28,11 @@ That's it. From empty directory to a 1200-line AGENTS.md with safety rules, proj
 
 ## What you get
 
-**A baseline that doesn't get overwritten.** Core safety rules (don't rm -rf, don't hallucinate credentials, don't install things unprompted) ship with AgentSeed and no persona can override them.
+**A baseline that doesn't get overwritten.** Core safety rules (don't rm -rf, don't hallucinate credentials, don't install things unprompted) are part of the governance kernel and ship with AgentSeed — no scenario pack can override them.
 
-**Swappable personalities.** Six built-in: `coding` (your default), `novel`, `paper`, `conversation`, `interactive-novel`, `agent-builder`. Each comes with its own prompts, skills, and tool preferences. Switch mid-project with `agentseed switch --profile novel`.
+**Pluggable scenario packs.** Six starter packs: `coding` (your default), `novel`, `paper`, `conversation`, `interactive-novel`, `agent-builder`. Each pack bundles a scenario protocol, prompts, skills, and a capability whitelist, routed automatically from project anchors and user intent (or switched manually with `agentseed switch --profile novel`). Packs are pluggable and extensible — a new scenario is just a directory plus a manifest; the kernel never changes.
 
-**All your tools, one sync.** Generates the right format for 14 platforms:
+**All your tools, one sync.** Generates the right format for 15 platforms:
 - Claude Code → `CLAUDE.md`
 - Cursor → `.cursor/rules/project.mdc`
 - Copilot → `.github/copilot-instructions.md`
@@ -46,11 +46,12 @@ That's it. From empty directory to a 1200-line AGENTS.md with safety rules, proj
 - Lingma → `.lingma/rules/project.md`
 - Comate → `.comate/rules/project.mdr`
 - Codex → `.codex/rules.md`
+- QwenWork → `AGENTS.md` (read natively)
 - AGENTS.md (works with 20+ tools that natively read it)
 
 **Hooks with teeth.** Every platform gets a `pre_tool_use.py` interceptor that blocks dangerous operations before they execute. Fail-open design: if the hook crashes, the tool call goes through.
 
-**MCP Server.** Run `agentseed serve` and any MCP-compatible client gets `governance_check`, `persona_list`, `persona_activate`, and `gap_detect`.
+**MCP Server.** Run `agentseed serve` and any MCP-compatible client gets `governance_check` (P0 red-line check), `persona_list` (scenario packs), `persona_activate` (activate a pack), and `gap_detect`.
 
 **Self-evolution.** AgentSeed scores capability gaps (missing tools, unknown domains) and suggests what to install. Not magic — just a weighted formula that gets better as you add more skills.
 
@@ -59,7 +60,7 @@ That's it. From empty directory to a 1200-line AGENTS.md with safety rules, proj
 ## Install
 
 ```bash
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
+pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl
 ```
 
 Or build from source:
@@ -90,10 +91,10 @@ agentseed status             # what's assembled, what's missing
 agentseed serve              # start MCP server (stdio)
 agentseed serve --port 8080  # start MCP server (HTTP)
 
-agentseed platform list      # 14 built-in platforms
+agentseed platform list      # 15 built-in platforms
 agentseed platform import my-ide --entry .myide/rules.md --format markdown
 
-agentseed persona list       # available personas
+agentseed persona list       # list scenario packs (command name kept for compatibility)
 agentseed persona search "product manager"
 ```
 
@@ -112,10 +113,10 @@ This registers the platform, generates a pre-tool-use hook, and includes it in e
 ## Project structure
 
 ```
-core/                  safety baseline (P0 red lines, decision formulas, router)
-personas/              one directory per personality (coding, novel, paper, …)
-capabilities/          modular skill packs (testing, research, creative, …)
-adapters/hooks/        per-platform pre-tool-use interceptors
+core/                  governance kernel (P0 red lines, decision formulas, routing — immutable)
+personas/              one directory per scenario pack (coding, novel, paper, … — pluggable)
+capabilities/          capability plugins (testing, research, creative, … — on-demand)
+adapters/hooks/        platform adapters: per-platform pre-tool-use interceptors
 src/agentseed/         CLI, sync engine, router, forge, evolution
 ```
 
@@ -127,7 +128,7 @@ src/agentseed/         CLI, sync engine, router, forge, evolution
 - **agents.md** — file format proposal; no content, no toolchain.
 - **ACP** — agent config manager; no governance or self-evolution.
 - **Cursor Directory / cursor.directory** — community rule snippets; no multi-platform sync.
-- **AgentSeed** — safety rules + personas + 14-platform sync + hooks + self-evolution, all from one CLI.
+- **AgentSeed** — governance kernel + pluggable scenario packs + 15-platform sync + hooks + self-evolution, all from one CLI.
 
 ---
 

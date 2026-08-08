@@ -1,6 +1,6 @@
 # AgentSeed
 
-> **`pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl && agentseed forge`**
+> **`pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl && agentseed forge`**
 
 **🌐 [English](README.md) · [中文](README.zh.md) · [日本語](README.ja.md)**
 
@@ -9,7 +9,7 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
 ![Platforms](https://img.shields.io/badge/platforms-14-orange)
-![Tests](https://img.shields.io/badge/tests-143%20passing-brightgreen)
+![Tests](https://img.shields.io/badge/tests-162%20passing-brightgreen)
 ![Python](https://img.shields.io/badge/python-3.10%2B-informational)
 
 ---
@@ -59,7 +59,7 @@ agentseed forge
 ## インストール
 
 ```bash
-pip install https://github.com/weed33834/agentseed/releases/download/v2.4.1/agentseed-2.4.1-py3-none-any.whl
+pip install https://github.com/weed33834/agentseed/releases/download/v1.0.0/agentseed-1.0.0-py3-none-any.whl
 ```
 
 ソースから：
