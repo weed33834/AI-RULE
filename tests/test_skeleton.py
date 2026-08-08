@@ -234,8 +234,14 @@ def test_full_mode_backward_compat():
 def test_provenance_records_mode():
     """provenance JSON 记录 mode 字段"""
     import json
+    from sync_rules import reset_output_root, set_output_root
     rs = build_ruleset("coding", mode="skeleton")
-    write_tool_file("agents-md", "coding", rs, mode="skeleton")
+    # 显式锁定输出根：避免依赖全局 OUTPUT_ROOT 状态（测试顺序/平台无关）
+    set_output_root(REPO_ROOT)
+    try:
+        write_tool_file("agents-md", "coding", rs, mode="skeleton")
+    finally:
+        reset_output_root()
     prov = REPO_ROOT / "provenance" / "coding-agents-md.json"
     assert prov.exists(), "provenance 未生成"
     rec = json.loads(prov.read_text(encoding="utf-8"))
