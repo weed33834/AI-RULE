@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install
-        run: pip install --quiet -e .
+        run: pip install --quiet -e ".[dev]"
       - name: Run tests
         run: python -m pytest tests/ -q
       - name: Validate scenario packs

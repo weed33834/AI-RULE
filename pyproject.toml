@@ -5,24 +5,22 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "agentseed"
 version = "1.0.0"
-description = "AgentSeed — One command to give your AI agent a brain. Persona Packs + Governance Engine + Self-Evolution + 13-platform sync."
+description = "AgentSeed — the governance layer for AI agents. Non-negotiable kernel + pluggable scenario packs + 15-platform sync."
 readme = "README.md"
 license = { text = "MIT" }
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 authors = [{ name = "badhope" }]
 keywords = [
-    "ai-agent", "agent-framework", "persona-governance", "mcp",
-    "model-context-protocol", "ai-rules", "system-prompt",
-    "prompt-engineering", "claude-code", "cursor", "copilot",
-    "trae", "gemini", "windsurf", "cline", "continue",
+    "ai-agent", "agent-framework", "governance", "guardrails",
+    "scenario-packs", "mcp", "model-context-protocol", "ai-rules",
+    "system-prompt", "prompt-engineering", "claude-code", "cursor",
+    "copilot", "trae", "gemini", "windsurf", "cline", "continue",
     "amazon-q", "coding-assistant", "developer-tools",
     "automation", "workflow", "cli", "python", "open-source"
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -32,6 +30,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
+
+[project.optional-dependencies]
+dev = ["pytest", "build"]
 
 [project.urls]
 Homepage = "https://github.com/weed33834/agentseed"
