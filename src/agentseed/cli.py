@@ -648,6 +648,8 @@ def main():
         prog="agentseed",
         description="AgentSeed CLI — 装配 AI 协作规则（skeleton + 按需加载）",
     )
+    parser.add_argument("--version", action="version",
+                        version=f"%(prog)s {__version__}")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p_list = sub.add_parser("list", help="列出可用场景规则包和输出平台")
