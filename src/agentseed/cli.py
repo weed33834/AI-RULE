@@ -1,7 +1,5 @@
 """AgentSeed CLI：分发层入口。
 
-__version__ = "1.0.0"
-
 用法：
     agentseed list
     agentseed setup                          # 零配置默认链路（推荐入门）
@@ -33,6 +31,8 @@ import sys
 from pathlib import Path
 
 from . import sync_rules as _sr
+
+__version__ = "1.0.0"
 
 
 def _emit_json(args, payload: dict) -> bool:
