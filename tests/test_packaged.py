@@ -40,10 +40,11 @@ def packaged_resources_dir():
     使用真实 agentseed/_resources/ 路径而非 tmp_path，因为 _packaged_resources_root()
     用 Path(__file__).resolve().parent / "_resources" 检测，必须在那里创建。
     """
-    # 备份当前 cache 状态
+    # 备份当前 cache 状态 + _resources 原始存在性（teardown 按原状恢复）
     saved_cache = _sr._RESOURCES_ROOT_CACHE
     saved_source = _sr._RESOURCES_SOURCE
     saved_env = os.environ.pop("AGENTSEED_REPO", None)
+    existed_before = RESOURCES_DIR.exists()
 
     # 创建 _resources/ + 拷贝真实源让 build_ruleset 能装配
     RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
@@ -63,18 +64,20 @@ def packaged_resources_dir():
 
     yield RESOURCES_DIR
 
-    # 清理后恢复：不直接删除（否则会清掉真实安装包的 _resources，导致后续
-    # 测试/运行 flaky），改为用仓库源重建，保证安装包在测试后仍可用。
+    # teardown：恢复夹具前原状
+    # - 夹具前 _resources 不存在（dev/editable 安装）→ 删除，避免污染资源根探测（漂移到 packaged 模式）
+    # - 夹具前存在（wheel 安装）→ 用仓库源重建，保证安装包在测试后仍可用
     if RESOURCES_DIR.exists():
         shutil.rmtree(RESOURCES_DIR)
-    RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
-    for src in ["core", "personas", "capabilities", "adapters", "mcp.example.json"]:
-        src_path = REPO_ROOT / src
-        dst_path = RESOURCES_DIR / src
-        if src_path.is_dir():
-            shutil.copytree(src_path, dst_path)
-        elif src_path.is_file():
-            shutil.copy2(src_path, dst_path)
+    if existed_before:
+        RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
+        for src in ["core", "personas", "capabilities", "adapters", "mcp.example.json"]:
+            src_path = REPO_ROOT / src
+            dst_path = RESOURCES_DIR / src
+            if src_path.is_dir():
+                shutil.copytree(src_path, dst_path)
+            elif src_path.is_file():
+                shutil.copy2(src_path, dst_path)
     _sr._RESOURCES_ROOT_CACHE = saved_cache
     _sr._RESOURCES_SOURCE = saved_source
     if saved_env is not None:
