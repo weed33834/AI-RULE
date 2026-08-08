@@ -9,6 +9,7 @@ description = "AgentSeed — the governance layer for AI agents. Non-negotiable 
 readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.10"
+dependencies = ["PyYAML"]
 authors = [{ name = "badhope" }]
 keywords = [
     "ai-agent", "agent-framework", "governance", "guardrails",

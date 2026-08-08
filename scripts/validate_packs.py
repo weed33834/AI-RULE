@@ -27,34 +27,13 @@ VALID_MODES = {"task", "project", "autonomous"}
 
 
 def _load_manifest(path: Path):
-    """加载 manifest。优先 PyYAML；缺失时回退最小解析器（保证零依赖可用）。"""
-    try:
-        import yaml
-        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    except Exception:
-        pass
-    # 最小 fallback：只解析本校验需要的顶层键（够用即可，正常环境走 PyYAML）
-    text = path.read_text(encoding="utf-8")
-    data = {"profile": {}}
-    current = None
-    list_key = None
-    for line in text.splitlines():
-        stripped = line.strip()
-        if not stripped or stripped.startswith("#"):
-            continue
-        if stripped.startswith("profile:") and not stripped.startswith("profile_") and current is None:
-            current = "profile"
-            continue
-        if current == "profile":
-            for key in ("id:", "name:", "source_repo:", "mutually_exclusive_with:"):
-                if stripped.startswith(key):
-                    data["profile"][key[:-1]] = stripped.split(":", 1)[1].strip()
-                    break
-            if stripped.startswith("- ") and list_key:
-                data["profile"].setdefault(list_key, []).append(stripped[2:].strip())
-            if stripped.startswith("mutually_exclusive_with:"):
-                list_key = "mutually_exclusive_with"
-    return data
+    """加载 manifest。PyYAML 是 agentseed 的运行时依赖（platforms.py 同源使用）。
+
+    不提供无 yaml 的手写降级解析——降级解析容易产生误导性校验结果
+    （如把 includes 解析错导致误报），直接让缺依赖时快速失败更诚实。
+    """
+    import yaml
+    return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
 
 
 def _capability_exists(cap: str) -> bool:
