@@ -6,7 +6,7 @@
 
 **📦 [GitHub](https://github.com/weed33834/agentseed) (主站) · [Gitee](https://gitee.com/badhope/agentseed) · [Gitcode](https://gitcode.com/badhope/agentseed)**
 
-![License](https://img.shields.io/badge/license-MIT-blue)
+![License](https://img.shields.io/badge/license-Apache_2.0-blue)
 ![Personas](https://img.shields.io/badge/personas-6-green)
 ![Platforms](https://img.shields.io/badge/platforms-15-orange)
 ![Tests](https://img.shields.io/badge/tests-162%20passing-brightgreen)

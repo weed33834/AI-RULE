@@ -105,7 +105,7 @@
 | 类型 | 微软开源的多 Agent 对话框架 |
 | 官网 | https://github.com/microsoft/autogen |
 | 文档 | https://microsoft.github.io/autogen/ |
-| 开源协议 | MIT（需验证，以仓库 LICENSE 为准） |
+| 开源协议 | Apache-2.0（以仓库 LICENSE 为准） |
 | 核心特点 | 以"可对话实体（Conversable Agent）"为核心抽象，支持多 Agent 对话、群聊（GroupChat）、代码执行（Code Executor）、事件驱动架构（v0.4+）；AutoGen Studio 提供无代码 UI |
 | 适用场景 | 研究/实验型多 Agent 协作、需要 Agent 间自由对话与代码生成执行的场景 |
 | 注意事项 | v0.2 与 v0.4 架构差异较大，迁移需注意 API 变化；微软正将其与 Semantic Kernel 整合进统一的 Agent 体系（需验证整合的最终形态） |
@@ -118,7 +118,7 @@
 | 官网 | https://www.crewai.com |
 | GitHub | https://github.com/crewAIInc/crewAI |
 | 文档 | https://docs.crewai.com |
-| 开源协议 | MIT（需验证，以仓库 LICENSE 为准） |
+| 开源协议 | Apache-2.0（以仓库 LICENSE 为准） |
 | 核心特点 | 三大核心概念——Agent（执行者，含 Role/Goal/Backstory）、Task（任务定义）、Crew（组织与编排）；支持工具、流程（Process：sequential/hierarchical）、Handoff 模式；企业版提供托管与监控 |
 | 适用场景 | 内容生产流水线、研究自动化、需要"团队分工"隐喻的业务流程自动化 |
 | 注意事项 | 抽象较重，Token 消耗可能较高（多角色对话）；调试链路较长 |
@@ -130,7 +130,7 @@
 | 类型 | 微软开源的 AI 编排 SDK（支持 C# / Python / Java） |
 | 官网 | https://github.com/microsoft/semantic-kernel |
 | 文档 | https://learn.microsoft.com/semantic-kernel/ |
-| 开源协议 | MIT（需验证，以仓库 LICENSE 为准） |
+| 开源协议 | Apache-2.0（以仓库 LICENSE 为准） |
 | 核心特点 | 以"插件（Plugin）+ 函数（Function）"为核心，原生 Function Calling 与规划（Planner）；与 .NET / Azure 生态深度集成；强调企业级可扩展性 |
 | 适用场景 | .NET 技术栈团队、企业级应用集成 Azure OpenAI、需要强类型与工程化治理的场景 |
 | 注意事项 | Python 生态不如 LangChain 丰富；主要面向微软技术栈 |

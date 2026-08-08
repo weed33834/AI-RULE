@@ -27,6 +27,7 @@ AgentSeed 首个正式版本。此前内部迭代（2.x / 1.x 实验版本）已
 
 ### Infrastructure
 - GitHub Releases 清理历史 2.x 版本，v1.0.0 作为唯一正式发布（wheel 随 Release 分发）。
+- 许可证：Apache-2.0（替代 MIT，增加专利授权保护与版权声明义务）。
 - 全量测试：162 passed / 1 skipped（此前 151 passed + 5 基线失败）。
 
 ## 历史版本

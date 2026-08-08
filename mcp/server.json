@@ -5,7 +5,7 @@
   "description": "AgentSeed MCP Server — 面向自主智能体的高约束规则治理：P0 安全红线检查（governance_check）、场景规则包列表/激活（scenario_list / scenario_activate）、能力缺口检测（gap_detect）。",
   "source": "https://github.com/weed33834/agentseed",
   "documentation": "https://github.com/weed33834/agentseed/blob/main/docs/INTEGRATION.zh.md",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "executable": {
     "package": "agentseed",
     "command": "agentseed",

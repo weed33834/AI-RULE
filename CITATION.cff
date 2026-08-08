@@ -1,19 +1,20 @@
 cff-version: 1.2.0
 message: "If you use AgentSeed in your research or project, please cite it as below."
-title: "AgentSeed: A Persona-Governance Platform for AI Agents"
+title: "AgentSeed: A Governance Layer for AI Agents"
 version: 1.0.0
-date-released: 2026-08-05
+date-released: 2026-08-08
 authors:
   - family-names: "AgentSeed"
     given-names: "Project"
 repository-code: "https://github.com/weed33834/agentseed"
 repository-artifact: "https://github.com/weed33834/agentseed/releases"
-license: MIT
+license: Apache-2.0
 keywords:
   - ai-agent
   - agent-framework
+  - governance
+  - scenario-packs
   - model-context-protocol
-  - persona-governance
   - ai-rules
   - system-prompt
   - prompt-engineering

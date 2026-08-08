@@ -4,7 +4,7 @@
   "name": "AgentSeed",
   "description": "One command to give your AI agent a brain. Persona-Governance Platform with safety rules, swappable personalities, and 13-platform sync.",
   "version": "1.0.0",
-  "license": "https://spdx.org/licenses/MIT",
+  "license": "https://spdx.org/licenses/Apache-2.0",
   "codeRepository": "https://github.com/weed33834/agentseed",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
