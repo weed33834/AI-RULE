@@ -218,8 +218,8 @@ def test_validate_structure(tmp_path):
     p.mkdir()
     (p / "persona.yaml").write_text("id: x\n", encoding="utf-8")
     missing = _validate_structure(p)
-    assert missing == ["SOUL.md"]
-    (p / "SOUL.md").write_text("# x\n", encoding="utf-8")
+    assert missing == ["AGENTS.md"]
+    (p / "AGENTS.md").write_text("# x\n", encoding="utf-8")
     assert _validate_structure(p) == []
 
 

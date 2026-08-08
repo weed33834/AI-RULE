@@ -39,9 +39,10 @@ KNOWN_REGISTRY: dict = {
 }
 
 MIN_PERSONA_FILES = {"persona.yaml"}
-CORE_PERSONA_FILES = {"SOUL.md", "AGENTS.md"}
+CORE_PERSONA_FILES = {"AGENTS.md", "prompts/system-prompt.md"}
 
-REQUIRED_STRUCTURE = ["persona.yaml", "SOUL.md"]
+# 场景规则包必需结构（SCENARIO_PACK_SPEC.md §3）：清单 + 场景协议
+REQUIRED_STRUCTURE = ["persona.yaml", "AGENTS.md"]
 
 
 @dataclass

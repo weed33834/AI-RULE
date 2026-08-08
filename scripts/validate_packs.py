@@ -25,6 +25,9 @@ CAPABILITIES_DIR = REPO_ROOT / "capabilities"
 
 VALID_MODES = {"task", "project", "autonomous"}
 
+# 市场已知场景包（仓库即市场）：本地未安装但存在于市场时，互斥引用只警告不报错
+MARKET_KNOWN_PACKS = {"coding", "conversation", "novel", "paper", "agent-builder"}
+
 
 def _load_manifest(path: Path):
     """加载 manifest。PyYAML 是 agentseed 的运行时依赖（platforms.py 同源使用）。
@@ -46,17 +49,24 @@ def _capability_exists(cap: str) -> bool:
     return False
 
 
-def _referenced_files(pack_dir: Path, manifest: dict) -> list:
+def _referenced_files(pack_dir: Path, manifest: dict, base: Path = None) -> list:
     files = []
     includes = manifest.get("includes", {})
     for section in ("core", "profile", "skills"):
         for rel in includes.get(section, []) or []:
-            files.append((section, rel, REPO_ROOT / rel))
+            files.append((section, rel, (base or REPO_ROOT) / rel))
     return files
 
 
-def validate_pack(pack_id: str) -> dict:
-    pack_dir = PERSONAS_DIR / pack_id
+def validate_pack(pack_id: str, personas_dir: Path = None, ref_root: Path = None) -> dict:
+    """校验单个场景包。
+
+    - personas_dir：包所在根（默认仓库 personas/），pack 目录 = personas_dir/<id>
+    - ref_root：includes 引用解析根（清单内路径相对此根；用户项目内发布时传项目根）
+    """
+    base = personas_dir or PERSONAS_DIR
+    ref_base = ref_root or REPO_ROOT
+    pack_dir = base / pack_id
     errors, warnings = [], []
     manifest_path = pack_dir / "persona.yaml"
     manifest = _load_manifest(manifest_path)
@@ -89,9 +99,13 @@ def validate_pack(pack_id: str) -> dict:
         errors.append("includes.core 为空")
     if not includes.get("profile"):
         errors.append("includes.profile 为空")
-    for section, rel, path in _referenced_files(pack_dir, manifest):
+    for section, rel, path in _referenced_files(pack_dir, manifest, ref_base):
         if not path.exists():
-            errors.append(f"includes.{section} 引用不存在: {rel}")
+            if section == "core" and personas_dir is not None:
+                # 用户项目内校验：core 由内核安装提供，缺失仅警告
+                warnings.append(f"includes.core 引用 {rel} 将在安装内核后可用（当前项目无此文件）")
+            else:
+                errors.append(f"includes.{section} 引用不存在: {rel}")
         elif path.stat().st_size == 0:
             errors.append(f"includes.{section} 引用为空文件: {rel}")
 
@@ -106,8 +120,11 @@ def validate_pack(pack_id: str) -> dict:
     if not mutex:
         warnings.append("mutually_exclusive_with 为空（无法参与互斥校验）")
     for other in mutex:
-        if not (PERSONAS_DIR / other / "persona.yaml").exists():
-            errors.append(f"mutually_exclusive_with 引用不存在包: {other}")
+        if not (base / other / "persona.yaml").exists():
+            if other in MARKET_KNOWN_PACKS:
+                warnings.append(f"互斥引用 {other} 在市场中但未安装（可 `agentseed pack add {other}` 按需获取）")
+            else:
+                errors.append(f"mutually_exclusive_with 引用不存在包: {other}")
 
     return {"id": pack_id, "ok": not errors, "errors": errors, "warnings": warnings}
 

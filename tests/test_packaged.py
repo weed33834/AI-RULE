@@ -63,9 +63,18 @@ def packaged_resources_dir():
 
     yield RESOURCES_DIR
 
-    # 清理：删除临时 _resources/，恢复 cache 和环境变量
+    # 清理后恢复：不直接删除（否则会清掉真实安装包的 _resources，导致后续
+    # 测试/运行 flaky），改为用仓库源重建，保证安装包在测试后仍可用。
     if RESOURCES_DIR.exists():
         shutil.rmtree(RESOURCES_DIR)
+    RESOURCES_DIR.mkdir(parents=True, exist_ok=True)
+    for src in ["core", "personas", "capabilities", "adapters", "mcp.example.json"]:
+        src_path = REPO_ROOT / src
+        dst_path = RESOURCES_DIR / src
+        if src_path.is_dir():
+            shutil.copytree(src_path, dst_path)
+        elif src_path.is_file():
+            shutil.copy2(src_path, dst_path)
     _sr._RESOURCES_ROOT_CACHE = saved_cache
     _sr._RESOURCES_SOURCE = saved_source
     if saved_env is not None:

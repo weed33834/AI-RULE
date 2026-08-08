@@ -629,6 +629,70 @@ def cmd_platform(args) -> int:
     return 1
 
 
+# ─── pack: 场景规则包市场（仓库即市场，按需安装/创建/发布） ───
+
+def cmd_pack(args) -> int:
+    """agentseed pack <sub> — 市场场景规则包管理。"""
+    from . import pack as _pk
+
+    sub = args.pack_cmd
+
+    if sub == "list":
+        packs = _pk.list_market(Path.cwd())
+        if _emit_json(args, {"packs": [p.__dict__ for p in packs],
+                             "count": len(packs)}):
+            return 0
+        print(_pk.format_pack_list(packs))
+        return 0
+
+    if sub == "add":
+        result = _pk.add_pack(args.id, source=getattr(args, "source", None))
+        if not result.ok:
+            print(f"error: {result.message}", file=sys.stderr)
+            return 1
+        if _emit_json(args, {"ok": True, "pack_id": result.pack_id,
+                             "message": result.message,
+                             "target": str(result.target) if result.target else None,
+                             "gates": result.gates}):
+            return 0
+        print(f"✅ {result.message}")
+        return 0
+
+    if sub == "remove":
+        result = _pk.remove_pack(args.id)
+        if not result.ok:
+            print(f"error: {result.message}", file=sys.stderr)
+            return 1
+        print(f"✅ {result.message}")
+        return 0
+
+    if sub == "new":
+        result = _pk.new_pack(args.id, name=args.name or "",
+                              scenario=args.scenario or "")
+        if not result.ok:
+            print(f"error: {result.message}", file=sys.stderr)
+            return 1
+        if _emit_json(args, {"ok": True, "pack_id": result.pack_id,
+                             "target": str(result.target)}):
+            return 0
+        print(f"✅ {result.message}")
+        return 0
+
+    if sub == "publish":
+        result = _pk.publish_pack(args.id)
+        if not result.ok:
+            print(f"error: {result.message}", file=sys.stderr)
+            return 1
+        if _emit_json(args, {"ok": True, "pack_id": result.pack_id,
+                             "message": result.message,
+                             "details": result.details}):
+            return 0
+        print(result.message)
+        return 0
+
+    return 1
+
+
 # ─── serve: MCP Server ───
 
 def cmd_serve(args) -> int:
@@ -775,6 +839,34 @@ def main():
     p_platform_export = p_platform_sub.add_parser("export", help="导出平台配置为 YAML")
     p_platform_export.add_argument("id", help="平台 ID")
     p_platform_export.set_defaults(func=cmd_platform)
+
+    p_pack = sub.add_parser("pack", help="场景规则包市场：list / add / remove / new / publish（仓库即市场，按需安装）")
+    p_pack_sub = p_pack.add_subparsers(dest="pack_cmd", required=True)
+    p_pack_list = p_pack_sub.add_parser("list", help="列出市场全部场景包与安装状态")
+    p_pack_list.add_argument("--json", action="store_true", default=False,
+                             help="输出 JSON（供脚本/Agent 消费）")
+    p_pack_list.set_defaults(func=cmd_pack)
+    p_pack_add = p_pack_sub.add_parser("add", help="按需安装单个场景包（只拉取该包，不克隆全仓库）")
+    p_pack_add.add_argument("id", help="场景包 ID（如 novel / paper / 自建包）")
+    p_pack_add.add_argument("--source", default=None, help="市场仓库 URL（默认 AGENTSEED_MARKET 或主仓库）")
+    p_pack_add.add_argument("--json", action="store_true", default=False,
+                            help="输出 JSON（供脚本/Agent 消费）")
+    p_pack_add.set_defaults(func=cmd_pack)
+    p_pack_remove = p_pack_sub.add_parser("remove", help="移除本地场景包（git 仓库内可恢复）")
+    p_pack_remove.add_argument("id", help="场景包 ID")
+    p_pack_remove.set_defaults(func=cmd_pack)
+    p_pack_new = p_pack_sub.add_parser("new", help="创建新场景包（模板 + 校验指引）")
+    p_pack_new.add_argument("id", help="新包 ID（小写字母/数字/连字符）")
+    p_pack_new.add_argument("--name", default="", help="显示名称")
+    p_pack_new.add_argument("--scenario", default="", help="适用场景描述")
+    p_pack_new.add_argument("--json", action="store_true", default=False,
+                            help="输出 JSON（供脚本/Agent 消费）")
+    p_pack_new.set_defaults(func=cmd_pack)
+    p_pack_publish = p_pack_sub.add_parser("publish", help="发布自建包回市场（校验 + 生成 PR 材料）")
+    p_pack_publish.add_argument("id", help="场景包 ID")
+    p_pack_publish.add_argument("--json", action="store_true", default=False,
+                                help="输出 JSON（供脚本/Agent 消费）")
+    p_pack_publish.set_defaults(func=cmd_pack)
 
     p_serve = sub.add_parser("serve", help="启动 MCP Server（stdio 模式，--port 启用 HTTP/SSE）")
     p_serve.add_argument("--port", type=int, default=None, help="HTTP/SSE 端口（默认 stdio）")

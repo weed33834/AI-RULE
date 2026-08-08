@@ -80,6 +80,26 @@ git clone https://gitee.com/badhope/agentseed.git
 
 ---
 
+## 快速开始（最小基础 + 按需加包）
+
+仓库即市场：克隆**最小基础内核**（core + 平台适配 + coding），其余场景包按需安装，不要求全量克隆。
+
+```bash
+# 最小基础克隆（sparse，只拉基础目录）
+git clone --depth 1 --filter=blob:none --sparse https://github.com/weed33834/agentseed.git
+cd agentseed
+git sparse-checkout set core adapters src scripts docs .github personas/coding \
+  capabilities/engineering capabilities/testing capabilities/review \
+  capabilities/agent-governance capabilities/research pyproject.toml setup.py LICENSE
+agentseed forge --profile coding          # 立即可用
+
+# 按需增强：只拉取单个场景包
+agentseed pack list                       # 市场包清单（含已安装状态）
+agentseed pack add novel                  # 装 novel（只拉这一个包，Quality Gate 前置）
+agentseed pack new my-scenario --name "我的场景" --scenario "数据分析"
+agentseed pack publish my-scenario        # 校验 + 生成回传市场的 PR 材料
+```
+
 ## 常用命令
 
 ```bash
@@ -103,9 +123,15 @@ agentseed platform list --json     # JSON 输出（供脚本/Agent 消费）
 agentseed forge --dry-run --json   # 装配预览（JSON 输出）
 agentseed platform import my-ide --entry .myide/rules.md --format markdown
 
+agentseed pack list          # 市场场景包清单
+agentseed pack add novel     # 按需安装单个场景包
+agentseed pack new my-scenario  # 创建自定义场景包（模板 + 校验）
+
 agentseed persona list       # 列出场景规则包（命令名兼容保留）
 agentseed persona search "产品经理"
 ```
+
+市场模型详见 [docs/PACK_MARKET.md](docs/PACK_MARKET.md)。
 
 ---
 

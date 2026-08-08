@@ -97,6 +97,10 @@ agentseed serve --port 8080  # start MCP server (HTTP)
 agentseed platform list      # 15 built-in platforms
 agentseed platform import my-ide --entry .myide/rules.md --format markdown
 
+agentseed pack list          # market catalog (installed status)
+agentseed pack add novel     # install a single scenario pack on demand
+agentseed pack new my-scenario  # scaffold a custom scenario pack
+
 agentseed persona list       # list scenario packs (command name kept for compatibility)
 agentseed persona search "product manager"
 ```
